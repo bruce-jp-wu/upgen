@@ -1,0 +1,56 @@
+Test suites for upgen
+
+contents
+1 Files in the package of test suites
+2 Pre-requirements
+3 How to test
+
+
+1 Files in the package of test suites
+-------------------------------------
+1) c++test: the command to perform test cases written in C++
+2) pastest: the command to peform test cases written in Obect Pascal
+3) pas-script: the test script that contains all the test cases in C++
+4) cpp-script: the test script that contains all the test cases in Object Pascal
+5) genscript.upg: the Upgen script used to build a tool (its name is genscript)
+to create test suites from test script.
+
+2 Pre-requirements
+------------------
+1) GNU C++ and libstdc++ (4.1.2 or above)
+2) GNU building system: autoconf (2.61 or above), automake (1.10 or above)
+3) Free pascal compiler: fpc 2.40, (for test suites in Object Pascal)
+4) upgen, must be installed at /usr/bin
+
+
+3 How to test
+-------------
+For test suites in C++, just invoke `c++test'; for Object Pascal, invoke `pastest'.
+The syntax of the two commands is:
+	command action_type suite_type
+where command is either `c++test' or `pastest';
+action_type has following two possible legal values:
+	make -- only create test suites
+	test -- create test suites and run all test cases
+suite_type has following six possible legal values:
+	file -- indicate input of every test case in the test suites is from a file
+	stdin -- indicate input of every test case is the test suites from standard input
+	buffer -- indicate input of every test case is the test suites from a string buffer.
+	cbuffer -- indicate input of every test case is the test suites from a string buffer,
+               but the scanner has its own inner buffer by copying the input string buffer.
+	all -- all types of suites above are created
+	clean -- remove test suites and their logs
+
+The test results are stored .log files in the director ./upgen_test_log/.
+
+Here is some examples.
+1) To create a test suite in which all test cases parses text from a file, the command is
+	c++test make file (C++)
+	pastest make file (Object Pascal)
+2) To run all test suites, the command is
+	c++test test all (C++)
+	pastest test all (Object Pascal)
+
+-----------------------------------
+author's email: upgen.tools@yahoo.com
+

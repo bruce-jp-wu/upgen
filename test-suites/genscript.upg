@@ -1,0 +1,1146 @@
+%{
+
+#include <fstream>
+using std::ofstream;
+#include <iostream>
+using std::cerr;
+using std::endl;
+using std::ostream;
+
+#include <string>
+using std::string;
+#include <vector>
+using std::vector;
+
+#include <stack>
+using std::stack;
+#include <map>
+using std::map;
+using std::pair;
+
+#include <cassert>
+#include <cstring>
+#include <sys/stat.h>
+#include <errno.h>
+
+#define SCRIPT_NAME		"script.upg"
+#define AMFILE_NAME		"Makefile.am"
+#define MAKEFILE_NAME		"Makefile"
+#define CONFIG_NAME		"configure.ac"
+#define STUB_SUBDIRS		"subdirs"
+#define STUB_MAKEFILES		"makefiles"
+
+typedef vector<int> vint_t;
+
+typedef map<string, int> s2i_map_t;
+typedef pair<string, int> s2i_pair_t;
+typedef s2i_map_t::iterator s2i_it_t;
+typedef s2i_map_t::const_iterator s2i_cit_t;
+
+typedef map<string, vint_t* > s2vi_map_t;
+typedef pair<string, vint_t* > s2vi_pair_t;
+typedef s2vi_map_t::iterator s2vi_it_t;
+typedef s2vi_map_t::const_iterator s2vi_cit_t;
+
+typedef map<string, string*> s2ps_map_t;
+typedef s2ps_map_t::iterator s2ps_it_t;
+typedef s2ps_map_t::const_iterator s2ps_cit_t;
+typedef pair<string, string*> s2ps_pair_t;
+ 
+
+typedef vector < string* > vpstr_t;
+
+enum{
+	SUITE_TYPE_FILE = 0,
+	SUITE_TYPE_STDIN = 1,
+	SUITE_TYPE_BUF = 2,
+	SUITE_TYPE_CBUF = 3
+};
+
+template<class T>
+class tpool_t {
+
+	typedef vector< T* > vt_t;
+public:
+
+	~tpool_t(void) {
+		free();
+	}
+
+	T* alloc(void) {
+
+		T *pt = new T;
+		m_tpool.push_back(pt);
+		return pt;
+	}
+	T* alloc(const T& e) {
+		
+		T *pt = new T(e);
+		m_tpool.push_back(pt);
+		return pt;
+	}
+	void free(void) {
+
+		for(vector<int>::size_type i = 0; i < m_tpool.size(); ++i) {
+			assert(m_tpool[i]);
+			delete m_tpool[i];
+		}
+		m_tpool.clear();
+	}
+private:
+
+	vt_t m_tpool;
+};
+
+typedef tpool_t<string> strpool_t;
+typedef tpool_t<vint_t> vipool_t;
+
+static strpool_t s_spool;
+inline static string *alloc_string(void) {
+	return s_spool.alloc();
+}
+inline static string *alloc_string(const string &a_str) {
+	return s_spool.alloc(a_str);
+}
+
+static vipool_t s_vipool;
+inline static vint_t *alloc_vint(void) {
+	return s_vipool.alloc();
+}
+ 
+class templ_t {
+
+public:
+	templ_t(void){}
+	templ_t(const templ_t& src) {
+		for(vpstr_t::size_type i = 0; i < src.m_vpText.size(); ++i) {
+			m_vpText.push_back(src.m_vpText[i]);
+		}
+		m_mapStub.insert(src.m_mapStub.begin(), src.m_mapStub.end());
+	}
+
+	void addText(string *a_pstrText) {
+		m_vpText.push_back(a_pstrText);
+	}
+	
+	void addStub(const string &a_strStub, string *a_pstrDef = NULL) {
+
+		s2vi_cit_t cit = m_mapStub.find(a_strStub);
+		if(cit != m_mapStub.end()) {
+			cit->second->push_back((int)m_vpText.size());
+		}
+		else {
+			vint_t *pvi = alloc_vint();
+			pvi->push_back((int)m_vpText.size());
+			m_mapStub.insert(s2vi_pair_t(a_strStub, pvi));
+		}
+		m_vpText.push_back(a_pstrDef);
+	}
+
+	bool hasStub(const string &a_strStub) const {
+
+		return m_mapStub.find(a_strStub) != m_mapStub.end();
+	}
+	
+	void subt(const string &a_strStub, string *a_pstrText) {
+
+		s2vi_cit_t cit = m_mapStub.find(a_strStub);
+		if(cit != m_mapStub.end()) {
+			for(vint_t::size_type i = 0; i < cit->second->size(); ++i) {
+
+				m_vpText[(*(cit->second))[i]] = a_pstrText;
+			}
+		}
+	}
+
+	friend ostream& operator<<(ostream& os, const templ_t &src) {
+
+		for(vpstr_t::size_type i = 0; i < src.m_vpText.size(); ++i) {
+			if(src.m_vpText[i]) {
+				os << *src.m_vpText[i];
+			}
+		}
+		return os;
+	}
+private:
+	vpstr_t m_vpText;
+	s2vi_map_t m_mapStub;
+};
+
+static bool try_mkdir(const string &strDir);
+static vector< templ_t* > s_vpTempl;
+static s2i_map_t s_tname2Idx;
+
+static s2ps_map_t s_setting;
+
+static stack<templ_t*> s_stTempl;
+static stack<string> s_stPath;
+
+static string s_strFName, s_strFBuf;
+static string *s_pstrTemp = NULL;
+
+static int s_suite_type = SUITE_TYPE_FILE;
+static int s_cur_suite_type = SUITE_TYPE_FILE;
+%}
+
+%union%{
+	vpstr_t *pvstrVal;
+	string *pstrVal;
+	int	nVal;
+%}
+
+%destructor%{ delete $$;%} <pvstrVal>
+%formal-param%{const string &strRoot%}
+%actual-param%{strRoot%}
+%lexvar-decl%{
+	int i;
+%}
+%parsevar-decl%{
+	int i;
+	string *pstr = NULL;
+	string strPath;
+	string g_strMFList;
+	templ_t *pcurTempl = NULL;
+%}
+
+int     [\+\-]?[0-9]+
+tlabel  [0-9A-Za-z\~\`\!\@\#\$\%\^\&\(\)\_\-\+\=\[\]\{\}\"\;\'\,\.\?]+
+stub	[0-9A-Za-z_]+
+
+%x	SCSET
+%x	SCGRP
+%x	SCGRP2
+%x  	SCN1
+%x	SCN2
+%x	SCN3
+%x	SCN4
+%x	SCN5
+%x	SCN6
+%x	CMMT
+
+%token HSETS TSETS
+%token<pstrVal> HSET TSET
+%token HTPLS TTPLS
+%token HSUTS TSUTS
+%token HSUT TSUT HCS TCS 
+%token<pstrVal> HSTUB TSTUB
+%token<pstrVal> TLABEL
+%token<nVal> LMAKE HSCRIPT HUFILE
+%token TSCRIPT TUFILE
+%token HCNF TCNF
+%token FEOF
+
+%type<pstrVal> Suite Case
+%type<pvstrVal> Suites Suitebody Cases
+
+%start Doc
+
+%%
+
+<*>^"<<<"	|
+<*>^">>>"		{
+		yy_push_state(CMMT);
+	}
+<CMMT>\n		{
+		yy_pop_state();
+	}
+<CMMT>.
+
+"<<settings>>"		{
+		yy_push_state(SCSET);
+		return HSETS;
+	}
+
+<SCSET>"<<group>>"	{
+		
+		if(s_cur_suite_type == s_suite_type) {
+			yy_push_state(SCGRP);
+		}
+		else {
+			yy_push_state(SCGRP2);
+		}
+
+		s_cur_suite_type = (s_cur_suite_type + 1) % 4;
+	}
+<SCGRP,SCGRP2>"<</group>>"	{
+		yy_pop_state();
+	}
+
+<SCSET>"<</settings>>"	{
+		yy_pop_state();
+		return TSETS;
+	}
+
+"<<templs>>"			return HTPLS;
+"<</templs>>"			return TTPLS;
+"<<templ"[ \t]+\"{tlabel}\"[ \t]*">>"		{
+
+		i = yyleng - 2;
+		while(yytext[--i] != '\"');
+		assert(i > 7);
+		yytext[i] = '\0';
+		while(yytext[--i] != '\"');
+		++i;
+
+		s_tname2Idx.insert(s2i_pair_t(&yytext[i], (int)s_vpTempl.size()));
+
+		BEGIN(SCN3);
+		templ_t *pt = new templ_t;
+		s_vpTempl.push_back(pt);
+		s_pstrTemp = NULL;
+	}
+"<<templ>>"		{
+		BEGIN(SCN3);
+		templ_t *pt = new templ_t;
+		s_vpTempl.push_back(pt);
+		s_pstrTemp = NULL;
+	}
+<SCN3>"<<"{stub}"/>>"	{
+
+		if(s_pstrTemp) {
+			s_vpTempl[s_vpTempl.size() - 1]->addText(s_pstrTemp);
+			s_pstrTemp = NULL;
+		}
+		yytext[yyleng - 3] = '\0';
+		assert(s_vpTempl.size() > 0);
+
+		s2ps_cit_t cit = s_setting.find(&yytext[2]);
+		if(cit != s_setting.end()) {
+			s_vpTempl[s_vpTempl.size() - 1]->addStub(&yytext[2], cit->second);
+		}
+		else {
+			s_vpTempl[s_vpTempl.size() - 1]->addStub(&yytext[2]);
+		}
+	}
+<SCN3>^[ \t]*"<</templ>>"	{
+
+		if(s_pstrTemp) {
+			s_vpTempl[s_vpTempl.size() - 1]->addText(s_pstrTemp);
+			s_pstrTemp = NULL;
+		}
+		BEGIN(INITIAL);
+	}
+<SCN3>\\"<<"	{
+		assert(s_vpTempl.size() > 0);
+		if( !s_pstrTemp) {
+			s_pstrTemp = alloc_string(&yytext[1]);
+		}
+		else {
+			*s_pstrTemp += &yytext[1];
+		}
+	}
+<SCN3>.|\n        {
+		assert(s_vpTempl.size() > 0);
+		if( !s_pstrTemp) {
+			s_pstrTemp = alloc_string(yytext);
+		}
+		else {
+			*s_pstrTemp += yytext;
+		}
+	}
+"<<suites"         	{
+
+		yy_push_state(SCN1);
+		return HSUTS;
+	}
+"<<suite"   		{
+		yy_push_state(SCN1);
+		return HSUT;
+	}
+"<<case"        		{
+		yy_push_state(SCN1);
+		return HCS;
+	}
+"<<conf"		{
+		yy_push_state(SCN1);
+		return HCNF;
+	}
+<SCN1>"make="{int}		{
+		yylval.nVal = atoi(&yytext[5]);
+		return LMAKE;
+	}
+<SCN1>"make="\"{tlabel}\"	{
+		yytext[yyleng - 1] = '\0';
+		s2i_cit_t cit = s_tname2Idx.find(&yytext[6]);
+		if(cit == s_tname2Idx.end()) {
+			cerr << "Error: invalid template name." << endl;
+			yylval.nVal = -1;
+		}
+		else {
+			assert(cit->second >= 0 && cit->second < (int)s_vpTempl.size());
+			yylval.nVal = cit->second;
+		}
+		return LMAKE;
+	}
+<SCN1>\"{tlabel}\"    		{
+		yytext[yyleng - 1] = '\0';
+		yylval.pstrVal = alloc_string(&yytext[1]);
+		return TLABEL;
+        }
+<SCN1>">>"			{
+		yy_pop_state();
+	}
+<SCN1>[ \t]+
+
+"<<script"[ \t]+{int}[ \t]*">>"		{
+		
+		i = yyleng - 3;
+		while(' ' == yytext[i] || '\t' == yytext[i]) {
+			--i;
+		}
+		
+		yytext[i + 1] = '\0';
+		while(yytext[i] >= '0' && yytext[i] <= '9') {
+			--i;
+		}
+		++i;
+
+		yylval.nVal = atoi(&yytext[i]);
+		return HSCRIPT;
+	}
+"<<script"[ \t]+\"{tlabel}\"[ \t]*">>"		{
+		
+		i = yyleng - 2;
+		while('\"' != yytext[--i]);
+		yytext[i] = '\0';
+		while('\"' != yytext[--i]);
+		++i;
+
+		s2i_cit_t cit = s_tname2Idx.find(&yytext[i]);
+		if(cit == s_tname2Idx.end()) {
+			cerr << "Error: invalid template name." << endl;
+			yylval.nVal = -1;
+		}
+		else {
+			assert(cit->second >= 0 && cit->second < (int)s_vpTempl.size());
+			yylval.nVal = cit->second;
+		}
+
+		return HSCRIPT;
+	}
+	
+"<<ufile"[ \t]+\"{tlabel}\"[ \t]+\"{tlabel}\"[ \t]*">>"	{
+		i = yyleng - 2;
+		while('\"' != yytext[--i]);
+		yytext[i] = '\0';
+		while('\"' != yytext[--i]);
+		++i;
+		
+		s2i_cit_t cit = s_tname2Idx.find(&yytext[i]);
+		if(cit == s_tname2Idx.end()) {
+			cerr << "Error: invalid template name." << endl;
+			yylval.nVal = -1;
+		}
+		else {
+			assert(cit->second >= 0 && cit ->second < (int)s_vpTempl.size());
+			yylval.nVal = cit->second;
+		}
+	
+		i -= 2;
+		while('\"' != yytext[--i]);
+		yytext[i] = '\0';
+		while('\"' != yytext[--i]);
+		++i;
+
+		s_strFName = &yytext[i];
+		
+		return HUFILE;
+	}
+
+"<</suites>>"			return TSUTS;
+"<</suite>>"			return TSUT;
+"<</case>>"			return TCS;
+"<</conf>>"			return TCNF;
+"<</script>>"			return TSCRIPT;
+"<</ufile>>"		return TUFILE;
+
+"<<textfile"		{
+		yy_push_state(SCN5);
+		yy_push_state(SCN4);		
+	}
+"<<bytefile"		{
+		yy_push_state(SCN6);
+		yy_push_state(SCN4);
+	}
+<SCN4>[ \t]
+<SCN4>\"{tlabel}\"		{
+		assert( ! s_stPath.empty());
+		s_strFName = strRoot;
+		s_strFName += "/";
+		s_strFName += s_stPath.top();
+		s_strFName += "/";
+
+		yytext[yyleng - 1] = '\0';
+		s_strFName += &yytext[1];
+	}
+<SCN4>">>"[ \t]*\r?\n	{
+		yy_pop_state();
+		s_strFBuf.clear();
+	}
+<SCN5>[ \t]*"<</textfile>>"	{
+		ofstream ofs(s_strFName.c_str());
+		if(!ofs) {
+			cerr << "Error: failed to open file `"
+				<< s_strFName << "\'." << endl;
+		}
+		else {
+			ofs << s_strFBuf;
+			ofs.flush();
+			ofs.close();
+		}
+		s_strFBuf.clear();
+
+		yy_pop_state();
+	}
+<SCN5>"<<"{stub}"/>>"	{
+
+		yytext[yyleng - 3] = '\0';
+		s2ps_cit_t cit = s_setting.find(&yytext[2]);
+		if(cit != s_setting.end() && cit->second) {
+			s_strFBuf += *(cit->second);
+		}
+	}
+<SCN5>\\"<<"	{
+		s_strFBuf += &yytext[1];
+	}
+<SCN5>.|\n		{
+		s_strFBuf += yytext[0];
+	}
+
+<SCN6>{int}		{
+		s_strFBuf += (char)atoi(yytext);
+	}
+<SCN6>[ \t]*"<</bytefile>>"	{
+
+		ofstream ofs(s_strFName.c_str());
+		if(!ofs) {
+			cerr << "Error: failed to open file `"
+				<< s_strFName << "\'." << endl;
+		}
+		else {
+			ofs << s_strFBuf;
+			ofs.flush();
+			ofs.close();
+		}
+		s_strFBuf.clear();
+
+		yy_pop_state();
+	}
+
+<SCN6>[ \t\r\n]
+
+<SCN6>.		{
+		cerr << "Error: invalid symbol {" << (int)yytext[0] << "} in byte file." << endl;
+	}
+
+<INITIAL,SCGRP,SCSET>"<<"{stub}">>"		{
+		
+		i = 0;
+		while(' ' == yytext[i] || '\t' == yytext[i]) {
+			++i;
+		}
+		yytext[yyleng - 2] = '\0';
+
+		yylval.pstrVal = alloc_string(&yytext[i + 2]);
+		s_pstrTemp = alloc_string();		
+
+		switch(YYSTART()) {
+		case INITIAL:
+			yy_push_state(SCN2);
+			return HSTUB;
+		case SCGRP:
+		case SCSET:
+			yy_push_state(SCN2);
+			return HSET;
+		default:
+			break;
+		}
+	}
+<SCN2>"<</"{stub}">>"	{
+		yylval.pstrVal = s_pstrTemp;
+		yy_pop_state();
+		switch(YYSTART()) {
+		case INITIAL:
+			return TSTUB;
+		case SCGRP:
+		case SCSET:
+			return TSET;
+		default:
+			break;
+		}
+	}
+<SCN2>"<<"{stub}"/>>"	{
+
+		yytext[yyleng - 3] = '\0';
+		s2ps_cit_t cit = s_setting.find(&yytext[2]);
+		if(cit != s_setting.end() && cit->second) {
+			*s_pstrTemp += *(cit->second);
+		}
+	}
+<SCN2>\\"<<"	{
+		*s_pstrTemp += &yytext[1];
+	}
+<SCN2>.|\n      {
+		*s_pstrTemp += yytext[0];
+	}
+
+<*>.|\n
+
+<*><<EOF>> 				return FEOF;
+
+%%
+
+Doc:	sett_sect
+	templ_sect
+        suite_sect
+        conf_sect
+	FEOF %{
+		YYACCEPT();
+	%}
+        ;
+sett_sect: HSETS Settings TSETS
+	;
+Settings: Settings HSET TSET	%{
+
+		if( ! s_setting.insert(s2ps_pair_t(*$2, $3)).second) {
+
+			cerr << "Error: at line " << @2.firstLine
+				<< "; description:  setting `" << *$2
+				<< " is duplicated and ignored." << endl;
+		}
+	%}
+	|
+	;
+templ_sect: HTPLS TTPLS;
+suite_sect: HSUTS LMAKE %{
+		
+		s_stPath.push("");
+		if( ! try_mkdir(strRoot)) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description:  failed to create directory: "
+				<< strRoot << "." << endl;
+			YYABORT();
+		}
+		else {
+
+			if( $2 < 0 || $2 >= (int)s_vpTempl.size()) {
+				cerr << "Error: at line " << @1.firstLine
+					<< "; description: makefile reference is out of range in top level suite." << endl;
+				YYABORT();
+			}
+			else {
+				s_stTempl.push(new templ_t(*s_vpTempl[$2]));
+			}
+		}
+	%}
+	Stubs Suites TSUTS	%{
+
+		strPath = strRoot;
+		strPath += "/";
+		strPath += AMFILE_NAME;
+		ofstream ofs(strPath.c_str());
+		if( ! ofs) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: " << "failed to open file `"
+				<< strPath << "\'." << endl;
+			YYABORT();
+		}
+
+		pcurTempl = s_stTempl.top();
+		s_stTempl.pop();
+
+		pstr = NULL;
+		if($5 && $5->size() > 0 && pcurTempl->hasStub(STUB_SUBDIRS)) {
+			pstr = new string;
+			for(i = 0; i < (int)$5->size(); ++i) {
+				*pstr += *(*$5)[i];
+				*pstr += " ";
+			}
+			pcurTempl->subt(STUB_SUBDIRS, pstr);
+		}
+		
+		ofs << *pcurTempl;
+		ofs.flush();
+		ofs.close();
+
+		if(pstr) {
+			delete pstr;
+		}
+		delete $5;
+		delete pcurTempl;
+		pcurTempl = NULL;
+
+		ofs.flush();
+		ofs.close();
+
+		g_strMFList += "\n";
+		g_strMFList += MAKEFILE_NAME;
+	%}
+        ;
+
+Stubs:	Stubs StubItem
+		| /* empty */
+		;
+
+StubItem: HSTUB TSTUB	%{
+		assert(s_stTempl.size() > 0);
+		s_stTempl.top()->subt(*$1, $2);
+	%}
+	;
+	
+Suites: Suites Suite	%{
+
+		$$ = $1;
+		$$->push_back($2);
+	%}
+        | Suite		%{
+
+		$$ = new vpstr_t;
+		$$->push_back($1);
+	%}
+        ;
+
+Suite:  HSUT TLABEL LMAKE %{
+
+		if(s_stPath.top().empty()) {
+			s_stPath.push(*$2);
+		}
+		else {
+			strPath = s_stPath.top();
+			strPath += "/";
+			strPath += *$2;
+			s_stPath.push(strPath); 
+		}
+		strPath = strRoot;
+		strPath += "/";
+		strPath += s_stPath.top();
+
+		if( ! try_mkdir(strPath)) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description:  failed to create directory: "
+				<< strPath << endl;
+			YYABORT();
+		}
+		else {
+			if( $3 < 0 || $3 >= (int)s_vpTempl.size()) {
+				cerr << "Error: at line " << @3.firstLine
+					<< "; description: makefile reference is out of range suite "
+					<< *$2 << "." << endl;
+				YYABORT();
+			}
+			else {
+				s_stTempl.push(new templ_t(*s_vpTempl[$3]));
+			}
+		}
+	%}
+	 Stubs Suitebody TSUT %{
+
+		strPath = strRoot;
+		strPath += "/";
+		strPath += s_stPath.top();
+		strPath += "/";
+		strPath += AMFILE_NAME;
+		ofstream ofs(strPath.c_str());
+		if( ! ofs) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: " << "failed to open file `"
+				<< strPath << "\'." << endl;
+			YYABORT();
+		}
+		else {
+
+			templ_t *pcurTempl = s_stTempl.top();
+			s_stTempl.pop();
+
+			pstr = NULL;
+			if($6 && $6->size() > 0 && pcurTempl->hasStub(STUB_SUBDIRS)) {
+				pstr = new string;
+				for(i = 0; i < (int)$6->size(); ++i) {
+					*pstr += *(*$6)[i];
+					*pstr += " ";
+				}
+				pcurTempl->subt(STUB_SUBDIRS, pstr);
+			}
+		
+			ofs << *pcurTempl;
+			ofs.flush();
+			ofs.close();
+
+			if(pstr) {
+				delete pstr;
+			}
+			delete $6;
+			delete pcurTempl;
+			pcurTempl = NULL;
+		
+			ofs.flush();
+			ofs.close();		
+
+			g_strMFList += "\n";
+			g_strMFList += s_stPath.top();
+			g_strMFList += "/";
+			g_strMFList += MAKEFILE_NAME;
+
+			s_stPath.pop();
+
+			$$ = $2;
+		}
+	%}
+    ;
+
+Suitebody: Cases	%{
+
+		$$ = $1;
+	%}
+	| Suites	%{
+
+		$$ = $1;
+	%}
+	;
+Cases:  Cases Case	%{
+
+		$$ = $1;
+		$$->push_back($2);
+	%}
+        | Case		%{
+
+		$$ = new vpstr_t;
+		$$->push_back($1);
+	%}
+        ;
+Case:	HCS TLABEL LMAKE %{
+
+		if(s_stPath.top().empty()) {
+			s_stPath.push(*$2);
+		}
+		else {
+			strPath = s_stPath.top();
+			strPath += "/";
+			strPath += *$2;
+			s_stPath.push(strPath); 
+		}
+		strPath = strRoot;
+		strPath += "/";
+		strPath += s_stPath.top();
+
+		if( ! try_mkdir(strPath)) {
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description:  failed to create directory: "
+				<< strPath << endl;
+			YYABORT();
+		}
+		else {
+
+			if($3 < 0 || $3 >= (int)s_vpTempl.size()) {
+				cerr << "Error: at line " << @1.firstLine
+					<< "; description: makefile reference is out range in case"
+					<< strPath << "." << endl;
+				YYABORT();
+			}
+			else {
+
+				s_stTempl.push(new templ_t(*s_vpTempl[$3]));
+			}
+		}
+	%}
+	CaseBody TCS %{
+
+		strPath = strRoot;
+		strPath += "/";
+		strPath += s_stPath.top();
+		strPath += "/";
+		strPath += AMFILE_NAME;
+		ofstream ofs(strPath.c_str());
+		if( ! ofs) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: " << "failed to open file `"
+				<< strPath << "\'." << endl;
+			YYABORT();
+		}
+		else {
+
+			pcurTempl = s_stTempl.top();
+			s_stTempl.pop();
+
+			ofs << *pcurTempl;
+
+			delete pcurTempl;
+			pcurTempl = NULL;
+
+			ofs.flush();
+			ofs.close();
+
+			$$ = $2;
+
+			g_strMFList += "\n";
+			g_strMFList += s_stPath.top();
+			g_strMFList += "/";
+			g_strMFList += MAKEFILE_NAME;
+
+			s_stPath.pop();
+		}
+	%}
+     ;
+
+CaseBody: CaseBody CaseItem
+	| /* empty */
+	;
+
+CaseItem: Script
+	| UFile
+	| StubItem
+	;
+	 
+Script: HSCRIPT %{
+
+		if($1 < 0 || $1 >= (int)s_vpTempl.size()) {
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: script referrecne is out range in case"
+				<< s_stPath.top() << "." << endl;
+			YYABORT();
+		}
+		else {
+			s_stTempl.push(new templ_t(*s_vpTempl[$1]));
+		}
+	%}
+	 Stubs TSCRIPT %{
+		
+		strPath = strRoot;
+		strPath += "/";
+		strPath += s_stPath.top();
+		strPath += "/";
+		strPath += SCRIPT_NAME;
+
+		ofstream ofs(strPath.c_str());
+		if( ! ofs) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: " << "failed to open file `"
+				<< strPath << "\'." << endl;
+			YYABORT();
+		}
+		else {
+
+			pcurTempl = s_stTempl.top();
+			s_stTempl.pop();
+
+			ofs << *pcurTempl;
+			ofs.flush();
+			ofs.close();
+
+			delete pcurTempl;
+			pcurTempl = NULL;
+		}
+	%}
+	;
+	
+UFile: HUFILE %{
+
+		if($1 < 0 || $1 >= (int)s_vpTempl.size()) {
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: script referrecne is out range in case"
+				<< s_stPath.top() << "." << endl;
+			YYABORT();
+		}
+		else {
+			s_stTempl.push(new templ_t(*s_vpTempl[$1]));
+		}
+	%}
+	 Stubs TUFILE %{
+		
+		strPath = strRoot;
+		strPath += "/";
+		strPath += s_stPath.top();
+		strPath += "/";
+		strPath += s_strFName;
+		
+		ofstream ofs(strPath.c_str());
+		if( ! ofs) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: " << "failed to open file `"
+				<< strPath << "\'." << endl;
+			YYABORT();
+		}
+		else {
+
+			pcurTempl = s_stTempl.top();
+			s_stTempl.pop();
+
+			ofs << *pcurTempl;
+			ofs.flush();
+			ofs.close();
+
+			delete pcurTempl;
+			pcurTempl = NULL;
+		}
+	%}
+	;
+	
+conf_sect: HCNF LMAKE %{
+
+		if($2 < 0 || $2 >= (int)s_vpTempl.size()) {
+			cerr << "Error: at line " << @2.firstLine
+				<< "; description: script referrecne is out range in configure file." << endl;
+			YYABORT();
+		}
+		else {
+			s_stTempl.push(new templ_t(*s_vpTempl[$2]));
+		}
+	%}
+	 Stubs TCNF	%{
+
+		strPath = strRoot;
+		strPath += "/";
+		strPath += CONFIG_NAME;
+		
+		ofstream ofs(strPath.c_str());
+		if( ! ofs) {
+
+			cerr << "Error: at line " << @1.firstLine
+				<< "; description: " << "failed to open file `"
+				<< strPath << "\'." << endl;
+			YYABORT();
+		}
+		else {
+
+			pstr = NULL;
+			pcurTempl = s_stTempl.top();
+			s_stTempl.pop();
+
+			if(pcurTempl->hasStub(STUB_MAKEFILES)) {
+				pstr = new string(g_strMFList);
+				pcurTempl->subt(STUB_MAKEFILES, pstr);
+			}
+		
+			ofs << *pcurTempl;
+
+			if(pstr) {
+				delete pstr;
+			}
+
+			delete pcurTempl;
+			pcurTempl = NULL;
+
+			ofs.flush();
+			ofs.close();
+		}
+	%}
+	;
+
+%%
+
+bool try_mkdir(const string &strDir) {
+
+	struct stat stbuf;
+	if(0 != stat(strDir.c_str(), &stbuf)) {
+
+		if(ENOENT == errno) {
+			if(0 != mkdir(strDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void usage(void) {
+
+	cerr << "Usage: gtest test-script [home-path]" << endl;
+}
+
+int main(int argc, char **argv) {
+
+	if(argc < 2) {
+		
+		return -1;
+	}
+
+	if( 0 != yylexfile(argv[1], false)) {
+		cerr << "Error: failed to initialize scanner." << endl;
+		return -1;
+	}
+
+	string strRoot;
+	if(argc < 3) {
+		strRoot = ".";
+	}
+	else {
+		strRoot = argv[2];
+	}
+
+	if(argc > 3) {
+		char *p = argv[3];
+		for(; *p; ++p) {
+			if( ! isdigit(*p)) break;
+		}
+		if(*p) {
+			cerr << "Warning: the third argument should be integer." << endl;
+		}
+		else {
+			s_suite_type = atoi(argv[3]);
+			s_suite_type %= 4;
+		}
+	}
+
+	int nret = yyparse(strRoot);
+
+	for(vint_t::size_type i = 0; i < s_vpTempl.size(); ++i) {
+		delete s_vpTempl[i];
+	}
+	while(!s_stTempl.empty()) {
+		delete s_stTempl.top();
+		s_stTempl.pop();
+	}
+
+	if(strRoot[strRoot.size() - 1] == '/') {
+		strRoot = strRoot.substr(0, strRoot.size() - 1);
+	}
+
+	string strFName = "upgen_test_log";
+	try_mkdir(strFName);
+
+	strFName = strRoot;
+	strFName += "/AUTHORS";
+	ofstream ofs(strFName.c_str());
+	ofs << endl;
+	ofs.close();
+
+	strFName = strRoot;
+	strFName += "/ChangeLog";
+	ofs.open(strFName.c_str());
+	ofs << endl;
+	ofs.close();
+
+	strFName = strRoot;
+	strFName += "/COPYING";
+	ofs.open(strFName.c_str());
+	ofs << endl;
+	ofs.close();
+
+	strFName = strRoot;
+	strFName += "/INSTALL";
+	ofs.open(strFName.c_str());
+	ofs << endl;
+	ofs.close();
+
+	strFName = strRoot;
+	strFName += "/NEWS";
+	ofs.open(strFName.c_str());
+	ofs << endl;
+	ofs.close();
+
+	strFName = strRoot;
+	strFName += "/README";
+	ofs.open(strFName.c_str());
+	ofs << endl;
+	ofs.close();
+
+	return nret;
+}
+

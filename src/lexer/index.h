@@ -1,0 +1,18 @@
+#ifndef LEXER_INDEX_H__
+#define LEXER_INDEX_H__
+
+
+#define FIRST_CHAR			0
+#define FIRST_META			0
+
+#define INVALID_CHAR		(FIRST_CHAR - 1)
+#define INVALID_META		(FIRST_META - 1)
+
+#define WILD_STATE			(FIRST_STATE - 2)
+
+#define MIN_SIZE_TO_MINIMIZE	10
+#define MAX_SIZE_TO_MINIMIZE	1200
+#define MIN_TOTAL_TO_COMPRESS	2
+#define MIN_DENSE_TO_COMPRESS	1
+
+#endif //LEXER_INDEX_H__

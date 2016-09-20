@@ -1,0 +1,895 @@
+%header%{
+/*
+    Upgen -- a scanner and parser generator.
+    Copyright (C) 2010  Bruce Wu
+    
+    This file is a part of Upgen program
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+#include "../coder/ctoken.h"
+using coder_ns::ctoken_t;
+#include "../coder/dmmap.h"
+#include "../coder/coder.h"
+#include "../coder/cmmgr.h"
+using coder_ns::coder_t;
+using coder_ns::cmacro_mgr_t;
+using coder_ns::dmmap_t;
+%}
+
+%{
+/*
+    Upgen -- a scanner and parser generator.
+    Copyright (C) 2010  Bruce Wu
+    
+    This file is a part of Upgen program
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+#include "../main/upgmain.h"
+#ifdef UPGEN_TEST_VERSION
+#include <iostream>
+using std::cerr;
+using std::endl;
+#endif
+
+#include <iosfwd>
+using std::ostream;
+
+#include "../common/common.h"
+#include "../common/reporter.h"
+
+#include "../common/strhelper.h"
+using common_ns::strhelper_t;
+#include "../common/types.h"
+
+#include "../coder/ctoken.h"
+using coder_ns::ctoken_t;
+#include "../coder/cmacro.h"
+#include "../coder/cmcond.h"
+#include "../coder/dmmap.h"
+#include "../coder/coder.h"
+#include "../coder/cmmgr.h"
+using coder_ns::coder_t;
+using coder_ns::cmacro_mgr_t;
+using coder_ns::dmmap_t;
+using coder_ns::vterm_t;
+using coder_ns::cmacro_t;
+using coder_ns::cond_t;
+using coder_ns::cond_elemrel_t;
+using coder_ns::cond_compound_t;
+using coder_ns::cond_item_t;
+using coder_ns::mac2cond_pair_t;
+using coder_ns::vmac2cond_t;
+using coder_ns::cmacro_term_t;
+%}
+
+%formal-param%{coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr%}
+%actual-param%{coder, dmap, cmmgr%}
+%union ctoken_t;
+
+%lvar-decl%{
+	int c;
+%}
+
+%option prefix=coder_
+
+int_mc		[\-\+]?[0-9]([0-9]{0,3})
+cid_mc		([_A-Za-z\$]([0-9_A-Za-z\$]*))
+qstr_mc		\"[^\"\n\r]*\"
+symb_mc		[\<\>\/\?\=\#\!]
+
+%token LBL_MSHEAD LBL_MSTAIL LBL_MACRO
+%token LBL_CASEHEAD LBL_CASETAIL LBL_DEFAULTHEAD LBL_DEFAULTTAIL
+%token LBL_IFHEAD LBL_IFTAIL LBL_ELSEHEAD LBL_ELSETAIL
+%token LBL_EMPTY LBL_HAS
+%token LBL_END LBL_LAST LBL_MORE LBL_MOD LBL_GROUP LBL_GROUPFIRST
+%token LBL_TRUE LBL_FALSE
+%token LBL_PHEAD LBL_PTAIL LBL_SETUPHEAD
+%token LBL_DECLARE LBL_DEFINE
+%token LBL_EQUAL LBL_UNEQUAL LBL_SCALAR
+%token<m_pstrVal> QUOTEDSTR CID
+%token<m_textVal> PLAIN_TEXT
+%token<m_nVal> INTEGER
+
+%type<m_bVal> Boolean
+%type<m_pstrVal> MacroHead
+%type<m_pmacRef> MacroRef
+%type<m_pvnVal> IndexList
+%type<m_pvstrVal> ParamList
+
+%type<m_pMac> Macro
+%type<m_pvmac2Cond> MacroBody
+%type<m_pmac2Cond> MacroItem
+
+%type<m_pvmTerms> MIList
+%type<m_pmTerm> MIAtom
+
+%type<m_pCpdcond> CaseHead
+%type<m_pCpdcond> MCBody
+%type<m_pcondItem> MCItem
+
+%type<m_bVal> IfClause
+%type<m_bVal> IfCond
+%type<m_bVal> IfcItem
+
+%start Document
+
+%%
+
+"<![["		{
+		
+		if(coder.isThrowAway()) {
+		
+			coder_lval.m_textVal = nullptr;
+			
+			while((c = yyinput()) != END_OF_FILE) {
+			
+				switch(c) {
+
+				case ']':
+				
+					if((c = yyinput()) == ']') {
+						if((c = yyinput()) == '>') {
+							c = END_OF_FILE;
+						}
+						else {
+							yyunput(c);
+						}
+					}
+					else {
+						yyunput(c);
+					}
+					
+					break;
+					
+				default:
+	
+					break;
+				}
+				
+				if(END_OF_FILE == c) {
+					break;
+				}
+			}
+		}
+		else {
+			
+			coder_lval.m_textVal = new int2pstr_t;
+			coder_lval.m_textVal->second = new string;
+			coder_lval.m_textVal->first = 0;
+			c = yyinput();
+			
+			while(END_OF_FILE != c) {
+			
+				if(']' == c) {
+				
+					c = yyinput();
+					if(']' == c) {
+						c = yyinput();
+						if(c != '>') {
+							(*coder_lval.m_textVal->second) += ']';
+							(*coder_lval.m_textVal->second) += ']';
+						}
+						else {
+							break;
+						}
+					}
+					else {
+						(*coder_lval.m_textVal->second) += ']';
+					}
+				}
+				else if('&' == c) {
+					c = yyinput();
+					switch(c) {
+					case '&':
+						c = yyinput();
+						switch(c) {
+						case 'g':
+							c = yyinput();
+							if('t' == c) {
+								c = yyinput();
+								if(';' == c) {
+									(*coder_lval.m_textVal->second) += "&gt;";
+								}
+								else {
+									(*coder_lval.m_textVal->second) += "&&gt";
+								}
+							}
+							else {
+								(*coder_lval.m_textVal->second) += "&&g";
+							}
+							break;
+						case 'l':
+							c = yyinput();
+							if('t' == c) {
+								c = yyinput();
+								if(';' == c) {
+									(*coder_lval.m_textVal->second) += "&lt;";
+								}
+								else {
+									(*coder_lval.m_textVal->second) += "&&lt";
+								}
+							}
+							else {
+								(*coder_lval.m_textVal->second) += "&&l";
+							}
+							break;
+						default:
+							(*coder_lval.m_textVal->second) += "&&";
+							break;
+						}
+						break;
+					case 'g':
+						c = yyinput();
+						if('t' == c) {
+							c = yyinput();
+							if(';' == c) {
+								(*coder_lval.m_textVal->second) += '>';
+								c = yyinput();
+							}
+							else {
+								(*coder_lval.m_textVal->second) += "&gt";
+							}
+						}
+						else {
+							(*coder_lval.m_textVal->second) += "&g";
+						}
+						break;
+					case 'l':
+						c = yyinput();
+						if('t' == c) {
+							c = yyinput();
+							if(';' == c) {
+								(*coder_lval.m_textVal->second) += '<';
+								c = yyinput();
+							}
+							else {
+								(*coder_lval.m_textVal->second) += "&lt";
+							}
+						}
+						else {
+							(*coder_lval.m_textVal->second) += "&l";
+						}
+						break;
+					default:
+						(*coder_lval.m_textVal->second) += '&';
+						break;
+					}
+				}
+				
+				if(END_OF_FILE != c) {
+					if(']' != c && '&' != c) {
+						if('\n' == c) {
+							++coder_lval.m_textVal->first;
+						}
+						(*coder_lval.m_textVal->second) += c;
+						c = yyinput();
+					}
+				}
+			}
+		}
+
+		return PLAIN_TEXT;
+	}
+	
+{symb_mc}		return yytext[0];
+
+"Has"			return LBL_HAS;
+
+"Empty"			return LBL_EMPTY;
+
+"Equal"			return LBL_EQUAL;
+
+"Unequal"		return LBL_UNEQUAL;
+
+"End"			return LBL_END;
+
+"Last"			return 	LBL_LAST;
+
+"More"			return LBL_MORE;
+
+"GroupFirst"	return LBL_GROUPFIRST;
+
+"GroupFlag"		return LBL_GROUP;
+
+"Mod"			return LBL_MOD;
+
+"True"			return LBL_TRUE;
+
+"False"			return LBL_FALSE;
+
+"Scalar"		return LBL_SCALAR;
+	
+"<?Setup"		return LBL_SETUPHEAD;
+	
+"<Macros>"		return LBL_MSHEAD;
+	
+"</Macros>"		return LBL_MSTAIL;
+	
+"Macro"			return LBL_MACRO;
+	
+"<Default>"		return LBL_DEFAULTHEAD;
+	
+"</Default>"	return LBL_DEFAULTTAIL;
+
+"<Case"			return LBL_CASEHEAD;
+
+"</Case>"		return LBL_CASETAIL;
+
+"<If"			return LBL_IFHEAD;
+
+"</If>"			return LBL_IFTAIL;
+	
+"<Else>"		return LBL_ELSEHEAD;
+
+"</Else>"		return LBL_ELSETAIL;
+
+"<Declare/>"	return LBL_DECLARE;
+
+"<Define/>"		return LBL_DEFINE;
+
+"<Program>"		return LBL_PHEAD;
+
+"</Program>"	return LBL_PTAIL;
+
+{qstr_mc}		{
+		if( ! coder.isThrowAway()) {
+			yytext[yyleng - 1] = '\0';
+			coder_lval.m_pstrVal = new string(&yytext[1]);
+		}
+		else {
+			coder_lval.m_pstrVal = nullptr;
+		}
+		return QUOTEDSTR;
+	}
+{cid_mc}		{
+		if( ! coder.isThrowAway()) {		
+			coder_lval.m_pstrVal = new string(yytext);
+		}
+		else {
+			coder_lval.m_pstrVal = nullptr;
+		}
+		return CID;
+	}
+{int_mc}		{
+		
+		strhelper_t::toSnum(yytext, coder_lval.m_nVal);
+
+		return INTEGER;
+	}
+\r?\n
+[ \t]+
+.
+	
+%%
+
+
+Document: SetupSect MacroSect ProgSect %{
+
+			YYACCEPT();
+		%}
+		;
+
+SetupSect:	LBL_SETUPHEAD SetupItems '/' '>' %{
+			
+			if( ! coder.openStream(dmap)) {
+				YYABORT();
+			}
+		%}
+		;
+
+SetupItems: SetupItems CID '=' QUOTEDSTR %{
+			
+			if( ! coder.addSetupItem(*$2, *$4)) {
+				
+				string strMsg = " description: setting item `";
+				strMsg += *$2;
+				strMsg += "\' already exists, this setting is discarded.";
+				_WARNING(strMsg);
+			}
+			
+			delete $2;
+			delete $4;
+		%}
+		| CID '=' QUOTEDSTR %{
+
+			if( ! coder.addSetupItem(*$1, *$3)) {
+				
+				string strMsg = " description: setting item `";
+				strMsg += *$1;
+				strMsg += "\' already exists, this setting is discarded.";
+				_WARNING(strMsg);
+			}
+			
+			delete $1;
+			delete $3;
+		%}
+		;
+
+MacroSect: LBL_MSHEAD Macros LBL_MSTAIL;
+Macros: Macro | Macros Macro;
+
+Macro: MacroHead MacroBody MacroTail %{
+
+			$$ = cmmgr.newMacro(*$1);
+			for(int i = 0; i < (int)$2->size(); ++i) {
+			
+				$$->addTerms((*$2)[i]->first, (*$2)[i]->second);
+				delete (*$2)[i];
+			}
+			
+			delete $2;
+			delete $1;
+	%}
+	| MacroHead MIList MacroTail %{
+	
+		$$ = cmmgr.newMacro(*$1);
+		
+		$$->addTerms($2);
+		
+		delete $1;
+	%}
+	;
+
+MacroHead: '<' LBL_MACRO QUOTEDSTR '>' %{
+			
+			$$ = $3;
+		%};
+		
+MacroTail: '<' '/' LBL_MACRO '>';
+
+MacroBody: MacroItem %{
+			
+			$$ = new vmac2cond_t;
+			$$->push_back($1);
+		%}
+		| MacroBody MacroItem %{
+		
+			$$ = $1;
+			$$->push_back($2);
+		%};
+		
+MacroItem: LBL_DEFAULTHEAD MIList LBL_DEFAULTTAIL %{
+		
+			$$ = new mac2cond_pair_t;
+			$$->first = $2;
+			$$->second = nullptr;
+		%}
+		| CaseHead MIList LBL_CASETAIL %{
+		
+			$$ = new mac2cond_pair_t;
+			$$->first = $2;
+			$$->second = $1;
+		%}
+		;
+		
+CaseHead: LBL_CASEHEAD MCBody '>' %{
+
+			$$ = $2;
+		%}
+		;
+		
+MIList: MIAtom %{
+			
+			assert($1);
+			$$ = new vterm_t;
+			$$->push_back($1);
+		%}
+		| MIList MIAtom %{
+		
+			assert($1);
+			$$ = $1;
+			$$->push_back($2);			
+			
+		%};
+		
+MIAtom : PLAIN_TEXT %{
+			if($1 && $1->second) {
+				$$ = cmmgr.newTextTerm(*($1->second), $1->first);
+				delete $1->second;
+				delete $1;
+			}
+		%}
+		| MacroRef %{
+		
+			if($1->second) {
+				
+				$$ = cmmgr.newMacroTerm(*$1->first, *$1->second);
+				delete $1->second;
+			}
+			else {
+			
+				$$ = cmmgr.newMacroTerm(*$1->first);
+			}
+			delete $1->first;
+			delete $1;
+		%}
+		| '<' LBL_SCALAR CID '/' '>' %{
+			
+			string strVal;
+			if(dmap.getString(*$3, strVal)) {
+			
+				$$ = cmmgr.newTextTerm(strVal, 0);
+			}
+			else {
+			
+				$$ = cmmgr.newTextTerm("", 0);
+			}
+			delete $3;
+		%}
+		| '<' LBL_SCALAR QUOTEDSTR '/' '>' %{
+			
+			string strVal;
+			if(dmap.getString(*$3, strVal)) {
+			
+				$$ = cmmgr.newTextTerm(strVal, 0);
+			}
+			else {
+			
+				$$ = cmmgr.newTextTerm("", 0);
+			}
+			delete $3;
+		%};
+		
+MCBody:  MCItem %{
+
+			$$ = cmmgr.newCompoundCond();
+			$$->addCondItem($1);
+		%}
+		| MCBody MCItem %{
+		
+			$$ = $1;
+			$$->addCondItem($2);
+		%};
+		
+MCItem: CID '=' INTEGER %{
+
+			$$ = cmmgr.newOptCond(*$1, $3);
+			delete $1;
+		%}
+		| CID %{
+		
+			$$ = cmmgr.newOptCond(*$1, true);
+			delete $1;
+		%}
+		| CID '=' Boolean %{
+		
+			$$ = cmmgr.newOptCond(*$1, $3);
+			delete $1;
+		%}
+		| CID '=' QUOTEDSTR %{
+		
+			$$ = cmmgr.newOptCond(*$1, *$3);
+			delete $1;
+			delete $3;
+		%}
+		| LBL_EQUAL '?' INTEGER %{
+			
+			$$ = cmmgr.newERelCond(cond_elemrel_t::EOP_EQ, $3);
+		%}
+		| LBL_UNEQUAL '?' INTEGER %{
+
+			$$ = cmmgr.newERelCond(cond_elemrel_t::EOP_NE, $3);	
+		%}
+		| LBL_EQUAL '?' Boolean %{
+			
+			$$ = cmmgr.newERelCond(cond_elemrel_t::EOP_EQ, $3);
+		%}
+		| LBL_UNEQUAL '?' Boolean %{
+
+			$$ = cmmgr.newERelCond(cond_elemrel_t::EOP_NE, $3);	
+		%}
+		| LBL_EQUAL '?' QUOTEDSTR %{
+			
+			$$ = cmmgr.newERelCond(cond_elemrel_t::EOP_EQ, *$3);
+			delete $3;
+		%}
+		| LBL_UNEQUAL '?' QUOTEDSTR %{
+
+			$$ = cmmgr.newERelCond(cond_elemrel_t::EOP_NE, *$3);
+			delete $3;		
+		%}
+		| LBL_HAS	%{
+		
+			$$ = cmmgr.getHasCond();
+		%}
+		| LBL_EMPTY %{
+		
+			$$ = cmmgr.getEmptyCond();
+		%}
+		| LBL_END %{
+		
+			$$ = cmmgr.getEndCond();
+		%}
+		| LBL_LAST %{
+		
+			$$ = cmmgr.getLastCond();
+		%}
+		| LBL_MORE %{
+		
+			$$ = cmmgr.getMoreCond();
+		%}
+		| LBL_GROUP %{
+			
+			$$ = cmmgr.getGroupCond();
+		%}
+		| LBL_GROUPFIRST %{
+			$$ = cmmgr.getGroupFirstCond();
+		%}
+		| LBL_MOD '?' INTEGER %{
+		
+			$$ = cmmgr.newModCond($3);
+		%};
+		
+Boolean: LBL_TRUE %{
+		
+			$$ = true;
+		%}
+		| LBL_FALSE %{
+		
+			$$ = false;
+		%};
+		
+MacroRef: '<' CID '/' '>' %{
+			
+			$$ = new pstr2pvn_t;
+			$$->first = $2;
+			$$->second = nullptr;
+		%}
+		| '<' CID IndexList '/' '>' %{
+		
+			$$ = new pstr2pvn_t;
+			$$->first = $2;;
+			$$->second = $3;
+		%}
+		;
+		
+IndexList: '#' INTEGER %{
+
+			$$ = new vint_t;
+			$$->push_back($2);
+		%}
+		| IndexList '#' INTEGER %{
+		
+			$$ = $1;
+			$$->push_back($3);
+		%};
+		
+ParamList: QUOTEDSTR %{
+
+			if( ! coder.isThrowAway()) {
+				$$ = new vstr_t;
+				$$->push_back(*$1);
+			}
+			else {
+				$$ = nullptr;
+			}
+			
+			if($1) {
+				delete $1;
+			}
+		%}
+		| ParamList QUOTEDSTR %{
+		
+			$$ = $1;
+			if( ! coder.isThrowAway()) {
+				$$->push_back(*$2);
+			}
+			if($2) {
+				delete $2;
+			}
+		%}
+		;
+
+ProgSect: LBL_PHEAD %{
+
+			coder.switchToDef();
+		%} ProgBody LBL_PTAIL %{
+
+			coder.flush();
+		%}
+		;
+		
+ProgBody: ProgBlock | ProgBody ProgBlock
+		;
+
+ProgBlock: PLAIN_TEXT %{
+			
+			if($1 && $1->second) {
+				coder.getStream() << *($1->second);
+				dmap.addSrcLineNo($1->first);
+				
+				delete $1->second;
+				delete $1;
+			}
+		%}
+		| MacroCall
+		| ControlAction
+		| ExpandInPalce
+		;
+
+MacroCall: '<' CID ParamList '/' '>' %{
+
+			if( ! coder.isThrowAway()) {
+				cmmgr.expandWithStack(*$2, dmap, *$3, coder.getStream());
+			}
+			if($2) {
+				delete $2;
+			}
+			if($3) {
+				delete $3;
+			}
+		%}
+		| '<' CID '/' '>' %{
+			
+			if( ! coder.isThrowAway()) {
+				cmmgr.expandWithStack(*$2, dmap, cmmgr.getEmptyParam(), coder.getStream());
+			}
+			if($2) {
+				delete $2;
+			}
+		%}
+		;
+		
+ControlAction: LBL_DECLARE %{
+
+		if( ! coder.isThrowAway()) {
+				coder.switchToDecl();
+			}
+		%}
+		| LBL_DEFINE %{
+
+			if( coder.isCondTrue()) {
+				coder.switchToDef();
+			}
+		%}
+		;
+		
+ExpandInPalce: IfClause
+		| IfClause  LBL_ELSEHEAD %{
+			coder.addIPCond( ! $1);
+		%}
+		ProgBody LBL_ELSETAIL %{
+			coder.subIPCond( ! $1);
+		%}
+		;
+		
+IfClause: LBL_IFHEAD IfCond '>' %{
+
+			coder.addIPCond($2);
+		%}
+		ProgBody LBL_IFTAIL %{
+			coder.subIPCond($2);
+			$$ = $2;
+		%}
+		;
+	
+IfCond: IfcItem %{
+
+			$$ = $1;
+		%}
+		| IfCond IfcItem %{
+			$$ = $1 && $2;
+		%}
+		;
+
+IfcItem: CID %{
+		
+			if( coder.isThrowAway()) {
+				$$ = false;
+			}
+			else {
+				$$ = cmmgr.testCond(dmap, *$1, true);
+			}
+			if($1) {
+				delete $1;
+			}			
+		%}
+		| '!' CID %{
+		
+			if( coder.isThrowAway()) {
+				$$ = false;
+			}
+			else {
+				$$ = ! cmmgr.testCond(dmap, *$2, true);
+			}
+			
+			if($2) {
+				delete $2;
+			}
+		%}
+		| CID '=' INTEGER %{
+
+			if( coder.isThrowAway()) {
+				$$ = false;
+			}
+			else {
+				$$ = cmmgr.testCond(dmap, *$1, $3);
+			}
+			if($1) {
+				delete $1;
+			}
+		%}
+		| CID '=' Boolean %{
+		
+			if( coder.isThrowAway()) {
+				$$ = false;
+			}
+			else {
+				$$ = cmmgr.testCond(dmap, *$1, $3);			
+			}
+			if($1) {
+				delete $1;
+			}
+		%}
+		| CID '=' QUOTEDSTR %{
+		
+			if( coder.isThrowAway()) {
+				$$ = false;
+			}
+			else {
+				$$ = cmmgr.testCond(dmap, *$1, *$3);
+			}
+			if($1) {
+				delete $1;
+			}
+			if($3) {
+				delete $3;
+			}
+		%}
+		| LBL_HAS '?' QUOTEDSTR %{
+			if( coder.isThrowAway()) {
+				$$ = false;
+			}
+			else {
+				$$ = cmmgr.testHas(dmap, *$3);
+			}
+			
+			if($3) {
+				delete $3;
+			}
+		%}
+		| LBL_EMPTY '?' QUOTEDSTR %{
+			
+			if( coder.isThrowAway()) {
+				$$ = false;
+			}
+			else {
+				$$ = cmmgr.testEmpty(dmap, *$3);
+			}
+			
+			if($3) {
+				delete $3;
+			}
+		%}
+		;
+
+%%
+

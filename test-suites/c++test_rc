@@ -1,0 +1,170 @@
+#!/bin/sh
+
+let actiontype=2
+let suitetype=6
+
+
+if [ $# -gt 0 ] ; then
+
+	case $1 in
+	make):
+		let actiontype=0
+		;;
+	test):
+		let actiontype=1
+		;;
+	*):
+		let actiontype=2
+		;;
+	esac
+
+	if [ $# -gt 1 ] ; then
+		case $2 in
+			clean):
+				let suitetype=0
+				;;
+			file):
+				let suitetype=1
+				;;
+			stdin):
+				let suitetype=2
+				;;
+			buffer):
+				let suitetype=3
+				;;
+			cbuffer):
+				let suitetype=4
+				;;
+			all):
+				let suitetype=5
+				;;
+			*)
+				let suitetype=6
+				;;
+		esac
+	fi
+fi
+
+
+if [ $actiontype -lt 2 -a $suitetype -lt 6 ] ; then
+
+	CPPCOMPILE=g++
+	CPPMAKE=make
+
+	echo Preparing test
+
+	echo Set environmental variables
+	export UPGEN_BINDIR=/usr/bin
+
+#if [ $# -gt 0 ] ; then
+#	CPPCOMPILE=$1
+#fi
+#if [ $# -gt 1 ] ; then
+#	CPPMAKE=$2
+#fi
+
+	if [ -d upgen_test_log ] ; then
+		rm -f upgen_test_log/c++-*
+	fi
+
+	if [ -d suite-cpp ] ; then
+		rm -Rf suite-cpp
+	fi
+
+	if [ ! -f genscript ] ; then
+		echo Create tools for generating test suites
+		$UPGEN_BINDIR/upgen -clL -o genscript.cpp genscript.upg
+		g++ -o genscript genscript.cpp
+	fi
+
+	mkdir suite-cpp
+
+	if [ $suitetype -eq 1 -o $suitetype -eq 5 ] ; then
+
+		echo Creating file-stream suites
+		./genscript cpp-script suite-cpp/c++-file 0
+		cd suite-cpp/c++-file
+
+		echo Generating configure files
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure CXX=$CPPCOMPILE > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			eval $CPPMAKE test-suites > /dev/null 2>&1
+		fi
+
+		cd ../..
+	fi
+
+	if [ $suitetype -eq 2 -o $suitetype -eq 5 ] ; then
+		echo Creating standard-stream suites
+		./genscript cpp-script suite-cpp/c++-stdin 1
+		cd suite-cpp/c++-stdin
+
+		echo Generating configure files
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure CXX=$CPPCOMPILE > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			eval $CPPMAKE test-suites > /dev/null 2>&1
+		fi
+
+		cd ../..
+	fi
+
+
+	if [ $suitetype -eq 3 -o $suitetype -eq 5 ] ; then
+		echo Creating buffered suites
+		./genscript cpp-script suite-cpp/c++-buffer 2
+		cd suite-cpp/c++-buffer
+
+		echo Generating configure files
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure CXX=$CPPCOMPILE > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			eval $CPPMAKE test-suites > /dev/null 2>&1
+		fi
+
+		cd ../..
+	fi
+
+
+	if [ $suitetype -eq 4 -o $suitetype -eq 5 ] ; then
+		echo Creating copied-buffered suites
+		./genscript cpp-script suite-cpp/c++-cbuffer 3
+		cd suite-cpp/c++-cbuffer
+
+		echo Creating buffered suites
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure CXX=$CPPCOMPILE > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			eval $CPPMAKE test-suites > /dev/null 2>&1
+		fi
+
+		cd ../..
+
+	fi
+
+	echo Doing post-test
+	rm -f genscript.cpp genscript
+
+	echo Test over.
+	if [ $actiontype -eq 1 ] ; then
+		echo Go to ./upgen_test_log/*.log to test result.
+	fi
+fi
+

@@ -1,0 +1,43 @@
+#ifndef PARSER_INDEX_H__
+#define PARSER_INDEX_H__
+
+#define INTERNAL_END_TOKEN   "$end"
+#define INTERNAL_ERROR_TOKEN "$error"
+#define EXTERNAL_ERROR_TOKEN "error"
+#define INTERNAL_UNDEFINED_TOKEN "$undefined"
+#define INTERNAL_ACCEPT_TYPE "$accept"
+
+#define GRAMMAR_DEFAULT_SVT	"$untagged"
+#define FAKE_SYMBOL			"$FAKE_SYMBOL"
+
+#define HIGHEST_NICE		0x20
+
+enum {
+	INVALID_SYMBOL_INDEX2 = -3,
+    INVALID_SYMBOL_INDEX = -2,
+    EMPTY_SYMBOL_INDEX = -1,
+    END_SYMBOL_INDEX = 0,
+    ERROR_SYMBOL_INDEX = 1,
+    UNDEFINED_SYMBOL_INDEX = 2
+};
+enum {
+	DEFAULT_SVT_ID = -1,
+	DEFAULT_PREC = 0,
+    END_SYMBOL_ID = 0,
+    ERROR_SYMBOL_ID = 256,
+    UNDEFINED_SYMBOL_ID = 257,
+	INIT_TOKEN_ID = 258,
+};
+enum {
+    ASSOC_UNKNOWN = 0,
+    ASSOC_LEFT,
+    ASSOC_RIGHT,
+    ASSOC_NO
+};
+
+enum {
+	UNTAG_DSTRCT = -1,
+	OTHER_DSTRCT = 0,
+};
+
+#endif // PARSER_INDEX_H__

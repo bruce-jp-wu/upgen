@@ -1,0 +1,103 @@
+
+<<<----------case: /lex-alone/basic/charset/charset-posix-punct--->>>
+			<<case "charset-posix-punct" make="lex-only-makefile-template">>
+				<<script "lex-only-script-template">>
+					<<desc>>/*
+test posix charset - punct
+
+*/
+					<</desc>>
+					<<declare_section>>
+%formal-param%{ var ncnt, nchars: integer %}
+%actual-param%{ ncnt, nchars %}
+
+punct	[[:punct:]]
+
+					<</declare_section>>
+					<<lex_section>>
+
+{punct}		ncnt := ncnt + 1;
+			nchars := nchars + 1; 
+			writeln(yytext, ' +1');
+{punct}{2}	ncnt := ncnt + 4;
+			nchars := nchars + 2;
+			writeln(yytext, ' +4');
+{punct}+	ncnt := ncnt + 3 * yyleng;
+			nchars := nchars + yyleng;
+			writeln(yytext, ' +', yyleng * 3);
+.|\n
+					<</lex_section>>
+					<<local_decl_code>>
+var
+	ncnt: integer;
+	nret: integer;
+	nchars: integer;
+					<</local_decl_code>>
+					<<before_init>>
+	ncnt := 0;
+	nchars := 0;
+					<</before_init>>
+					<<after_init>>
+	nret := yylex(ncnt, nchars);
+	writeln(ncnt, ' ', nchars);
+
+	if nret <> 0 then begin
+		result := nret;
+		exit;
+	end;
+					<</after_init>>
+				<</script>>
+
+			<<ufile "testexe.pas" "testexe-lex-only-script-template">>
+			<</ufile>>
+
+				<<bytefile "test.input">>
+-58 59 -89 -123 -35 94 -40 -10 6 37 -55 84 125 26 96 103 
+-120 -127 -21 -99 -2 -78 95 117 -6 77 -25 -116 -12 -73 -106 107 
+56 -128 -76 1 -100 -43 -109 93 90 14 -80 126 -50 50 122 -125 
+-64 -30 31 62 -34 52 -54 -5 111 -62 87 65 -122 -98 64 106 
+86 48 -105 33 60 2 -74 -70 21 16 -47 -61 -39 20 -16 -45 
+127 108 40 81 -93 -88 -124 17 -85 80 -108 -86 -112 -95 -82 39 
+43 -11 67 -38 -83 22 74 -63 85 69 -57 -46 41 7 -37 -117 
+-107 99 98 -52 -90 -56 10 -97 -91 -65 104 36 101 -36 -66 71 
+70 -51 123 46 4 35 -8 -110 -71 -3 27 91 78 -115 -126 112 
+68 -94 -102 -44 15 -72 45 -32 -33 -31 -77 79 -81 -75 -69 -15 
+100 121 -14 83 120 25 24 -121 29 76 -9 8 -1 -79 -28 53 
+-20 105 -18 57 109 34 82 -23 -67 55 51 -119 -101 -4 11 116 
+0 61 -22 38 13 -48 -42 -53 -49 42 102 28 119 54 -60 110 
+3 44 -26 -111 -113 88 -7 -24 30 115 47 63 92 5 -59 -92 
+-103 9 -68 89 72 58 -84 97 -29 66 124 -41 12 118 18 19 
+-118 23 -27 32 49 113 73 -114 -13 114 -19 -17 -87 75 -96 -104 
+				<</bytefile>>
+				<<textfile "result.out">>
+; +1
+^ +1
+% +1
+} +1
+` +1
+_ +1
+] +1
+~ +1
+> +1
+@ +1
+!< +4
+( +1
+'+ +4
+) +1
+$ +1
+{. +4
+# +1
+[ +1
+- +1
+" +1
+= +1
+& +1
+* +1
+, +1
+/?\ +9
+: +1
+| +1
+44 32
+				<</textfile>>
+			<</case>>
+<<<----------case: /lex-alone/basic/charset/charset-posix-punct--->>>

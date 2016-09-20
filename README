@@ -1,0 +1,18 @@
+Welcome to Upgen.
+
+Upgen is a general-purpose scanner and parser generator that converts an Upgen script into a program in high-level
+ programming languages (currently, only C++ and Object Pascal available). The major purpose of Upgen is to merge
+ scanner generator and parser generator into a single tool, and generate programs in different programming languages.
+By merging scanner and parser, interfaces between them are hidden from users, and therefore make the tool easier
+ to use. Besides, Upgen can generate stand-alone scanner program or parser program by setting proper options.
+
+Project homepage: https://github.com/bruce-jp-wu/upgen
+
+Upgen is free software. Please see the file COPYING for details.
+
+For documentation, please see the files in the doc subdirectory.
+
+For building and installation instructions please see the INSTALL file.
+
+------------------------------------------------------------------------
+

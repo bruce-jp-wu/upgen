@@ -1,0 +1,181 @@
+#!/bin/sh
+
+let actiontype=2
+let suitetype=6
+
+
+if [ $# -gt 0 ] ; then
+
+	case $1 in
+	make):
+		let actiontype=0
+		;;
+	test):
+		let actiontype=1
+		;;
+	*):
+		let actiontype=2
+		;;
+	esac
+
+	if [ $# -gt 1 ] ; then
+		case $2 in
+			clean):
+				let suitetype=0
+				;;
+			file):
+				let suitetype=1
+				;;
+			stdin):
+				let suitetype=2
+				;;
+			buffer):
+				let suitetype=3
+				;;
+			cbuffer):
+				let suitetype=4
+				;;
+			all):
+				let suitetype=5
+				;;
+			*)
+				let suitetype=6
+				;;
+		esac
+	fi
+fi
+
+if [ $actiontype -lt 2 -a $suitetype -lt 6 ] ; then
+
+	echo Preparing test
+
+	echo Set environmental variables
+	
+	UPGEN_BINDIR="***"
+	LOCALPATH=`pwd`
+	EXPATH=$PATH:$LOCALPATH
+	IFS=':'
+	for j in $EXPATH ; do
+		p=$j/upgen
+		if [ -f $p ] ; then
+			UPGEN_BINDIR=$j
+			break
+		fi
+	done
+	
+	if [ "$UPGEN_BINDIR" == "***" ] ; then
+		echo "Error: failed to find upgen, please install upgen first"
+	else
+		echo $UPGEN_BINDIR/upgen "found"
+	fi
+	
+	export UPGEN_BINDIR
+	
+	export PASCC=fpc
+	export PASFLAG=-Mdelphi
+
+	if [ -d upgen_test_log ] ; then
+		rm -f upgen_test_log/pas-*
+	fi
+
+	if [ -d suite-pas ] ; then
+		rm -Rf suite-pas
+	fi
+
+	if [ ! -f genscript ] ; then
+		echo Create tools for generating test suites
+		$UPGEN_BINDIR/upgen -clL -o genscript.cpp genscript.upg
+		g++ -o genscript genscript.cpp
+	fi
+
+	mkdir suite-pas
+
+
+	if [ $suitetype -eq 1 -o $suitetype -eq 5 ] ; then
+
+		echo Creating file-stream suites
+		./genscript pas-script suite-pas/pas-file 0
+		cd suite-pas/pas-file
+
+		echo Generating configure files
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			make test-suites > /dev/null 2>&1
+		fi
+		cd ../..
+	fi
+
+
+	if [ $suitetype -eq 2 -o $suitetype -eq 5 ] ; then
+
+		echo Creating standard-stream suites
+		./genscript pas-script suite-pas/pas-stdin 1
+		cd suite-pas/pas-stdin
+
+		echo Generating configure files
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			make test-suites > /dev/null 2>&1
+		fi
+
+		cd ../..
+	fi
+
+	if [ $suitetype -eq 3 -o $suitetype -eq 5 ] ; then
+		echo Creating buffered suites
+		./genscript pas-script suite-pas/pas-buffer 2
+		cd suite-pas/pas-buffer
+
+		echo Generating configure files
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			make test-suites > /dev/null 2>&1
+		fi
+
+		cd ../..
+	fi
+
+
+	if [ $suitetype -eq 4 -o $suitetype -eq 5 ] ; then
+		echo Creating copied-buffered suites
+		./genscript pas-script suite-pas/pas-cbuffer 3
+		cd suite-pas/pas-cbuffer
+
+		echo Creating buffered suites
+		autoreconf --install > /dev/null 2>&1
+
+		echo Configuring test suites
+		./configure > /dev/null 2>&1
+
+		if [ $actiontype -eq 1 ] ; then
+			echo Performing tests
+			make test-suites > /dev/null 2>&1
+		fi
+
+		cd ../..
+	fi
+
+	echo Doing post-test
+	rm -f genscript.cpp genscript > /dev/null 2>&1
+
+	if [ $actiontype -eq 1 ] ; then
+		echo Test over.
+		echo Go to ./upgen_test_log/*.log to test result.
+	fi
+fi
+

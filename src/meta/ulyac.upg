@@ -1,0 +1,3178 @@
+%header%{
+/*
+    Upgen -- a scanner and parser generator.
+    Copyright (C) 2010  Bruce Wu
+    
+    This file is a part of Upgen program
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+#include "../main/upgmain.h"
+#include "../lexer/token.h"
+using lexer_ns::token_t;
+
+#include "../lexer/dtable.h"
+using lexer_ns::dtable_t;
+
+#include "../lexer/lexer.h"
+using lexer_ns::lexer_t;
+
+#include "../parser/defines.h"
+#include "../parser/grammar.h"
+using parser_ns::grammar_t;
+#include "../parser/ptable.h"
+using parser_ns::ptable_t;
+
+#include "../coder/dmmap.h"
+using coder_ns::dmmap_t;
+%}
+
+%{
+/*
+    Upgen -- a scanner and parser generator.
+    Copyright (C) 2016  Bruce Wu
+    
+    This file is a part of Upgen program
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+#ifdef UPGEN_TEST_VERSION
+#include <iostream>
+using std::cerr;
+using std::endl;
+#endif
+
+#include "../common/common.h"
+#include "../common/reporter.h"
+#include "../common/action.h"
+using common_ns::action_t;
+
+
+#include "../coder/metakeys.h"
+#include "../common/strhelper.h"
+using common_ns::strhelper_t;
+
+#include "../lexer/retree.h"
+using lexer_ns::renode_t;
+using lexer_ns::retree_t;
+using lexer_ns::rnpool_t;
+using lexer_ns::rtpool_t;
+
+#include "../parser/prod.h"
+using parser_ns::prod_t;
+#include "../parser/symbol.h"
+using parser_ns::symbol_t;
+
+#define CRET		{return yytext[0];}
+
+#define ESC2CHAR(text, y)		switch(text[1])	{	\
+		case '0': y = '\0';	break;		\
+		case 'a': y = '\a'; break;		\
+		case 'b': y = '\b'; break;		\
+		case 'f': y = '\f'; break;		\
+		case 'n': y = '\n'; break;		\
+		case 'r': y = '\r'; break;		\
+		case 't': y = '\t'; break;		\
+		case 'v': y = '\v'; break;		\
+		case '?': y = '\?'; break;		\
+		default: y = text[1]; break;	\
+		}
+
+#define NULL_ACTION(x)
+
+#define PROCESS_ACTION_1(C, CH1, CH2, ACT) {\
+	C = yyinput();\
+	while(C && C != END_OF_FILE){\
+		if(CH1 == C) {\
+			C = yyinput();\
+			if(CH2 == C) {\
+				break;\
+			}\
+			else {\
+				ACT(CH1);\
+			}\
+		}\
+		if(C != CH1) {\
+			ACT((char)C);\
+			C = yyinput();\
+		}\
+	}\
+}
+
+#define PROCESS_UNTIL(C, CH1, CH2, CE, ACT) {\
+	C = yyinput();\
+	while(C && C != END_OF_FILE){\
+		if(CE == C) {\
+			C = yyinput();\
+			if('$' == C) {\
+				C = yyinput();\
+				if('$' == C || '<' == C || (C >= '0' && C <= '9')) {\
+					ACT('$');\
+					ACT(C);\
+					C = yyinput();\
+				}\
+				else {\
+					ACT(CE);\
+					ACT('$');\
+				}\
+			}\
+			else if('@' == C) {\
+				C = yyinput();\
+				if('$' == C || (C >= '0' && C <= '9')) {\
+					ACT('@');\
+					ACT(C);\
+					C = yyinput();\
+				}\
+				else {\
+					ACT(CE);\
+					ACT('@');\
+				}\
+			}\
+			else if(CH1 == C) {\
+				C = yyinput();\
+				if(CH2 == C) {\
+					ACT(CH1);\
+					ACT(CH2);\
+					C = yyinput();\
+				}\
+				else {\
+					ACT(CE);\
+					ACT(CH1);\
+				}\
+			}\
+			else {\
+				ACT(CE);\
+			}\
+		}\
+		else {\
+			if(CH1 == C) {\
+				C = yyinput();\
+				if(CH2 == C) {\
+					break;\
+				}\
+				else {\
+					ACT(CH1);\
+				}\
+			}\
+			if(C != CH1 && C != CE) {\
+				ACT((char)C);\
+				C = yyinput();\
+			}\
+		}\
+	}\
+}
+
+#define LEX_PUSH_STATE(x)	yy_push_state(x)
+#define LEX_POP_STATE()		yy_pop_state()
+#define LEX_BEGIN(x)		YYBEGIN(x)
+
+#define FAKE_TYPE		"$FAKE_TYPE"
+
+static action_t *sn_pactDefHeader = nullptr;
+static action_t *sn_pactDeclHeader = nullptr;
+static int sn_nVarDeclInit = -1;
+
+%}
+
+%union token_t
+%formal-param%{lexer_ns::lexer_t& lexer, lexer_ns::dtable_t &dtbl,
+	parser_ns::grammar_t &grammar, parser_ns::ptable_t &ptbl,
+	dmmap_t &dmap, gsetting_t &gsetup%}
+%actual-param%{lexer, dtbl, grammar, ptbl, dmap, gsetup%}
+
+%lvar-decl%{
+	int c, i, j;
+	string strMsg;
+%}
+
+%pvar-decl%{
+	string strMsg;
+	
+	int s_nCurAssoc = ASSOC_UNKNOWN;
+	int s_nCurPrec = DEFAULT_PREC;
+	int s_nCounter = DEFAULT_PREC + 1;
+	int s_nCurSVTID = DEFAULT_SVT_ID;
+
+	s2i_map_t s_sname2Idx;
+	vstr_t s_vstrSName;
+	vint_t s_vnToken;
+	string s_strStartSymbol;
+	
+	int s_nCurLeftSymbol = INVALID_INDEX;
+%}
+
+num_mc		[1-9]
+int_mc		[0-9]+
+	//		// C-style identifier
+	//cid_mc		([_A-Za-z]([0-9_A-Za-z]*))
+cid_mc		[_A-Za-z\~\!\@\#\$\?][0-9\._A-Za-z\~\!\@\#\$\?]*
+
+	//optnam		[0-9A-Za-z_\~\!\@\#\$\%\^\&\*\+\`\-\?\.]+
+	// remove '%' from charset
+optnam		[0-9A-Za-z_\~\!\@\#\$\^\&\*\+\`\-\?\.]+
+			// octal value
+oct			(\\([0-3][0-7]{2}))
+
+			// hexadecimal value
+hex			(\\[Xx]([0-9A-Fa-f]{2}))
+
+			// meta characters
+meta_mc		[\%\(\)\[\]\{\}\<\>\|\:\$\^\/\*\+\,\;\.\?\-]
+
+			// C-style escape characters
+cesc_mc		(\\[0abfnrtv\'\"\?\\])
+		
+			// normal ansi graphic characters (compare with meta char) 
+achr_mc		([0-9A-Za-z_\#\&\=\@\`\~\!\x7f]|(\\[1-9A-Zc-eg-mopqsuw-z_\#\&\=\@\`\~\!]))
+		
+			// characters' value from 128 to 255
+uchr_mc		[\x80-\xff]
+
+			// escape characters
+esc_mc		((\\{meta_mc})|{hex}|{oct}|{cesc_mc})
+			// non-escape characters
+nec_mc		([1-9A-Zc-eg-mopqsuw-z]|[[:punct:]]|\x7f)
+
+			// call macro
+macll_mc	(\{{cid_mc}\})
+
+
+neq_mc		(\{{num_mc}\})
+nlt_mc		(\{\,{num_mc}\})
+ngt_mc		(\{({num_mc}|0)\,\})
+nbet_mc		(\{({num_mc}|0)\,{num_mc}\})
+
+
+%x		OPT_SC
+%x		MAC_SC
+%x		LEX_SC
+%x		SCR_SC
+%x		CSH_SC
+%x		XISC_SC
+%x		TOK_SC
+%x		TYP_SC
+%x		PRS_SC
+%x		PACT_SC
+%x		DSCRD_SC
+%x		PLVAR_SC
+
+
+%token ENDP
+%token SECT_DELIM 	KW_OFF	KW_ON	KW_INITIAL
+%token KW_EOF	KW_ALLSC ISCLABEL XSCLABEL NCS
+%token <m_nPosix> POSIX_SET
+%token <m_pchVal> OPT_KEY XISC CSTR	CID LFTID
+%token <m_nVal> INT	LEX_ACTION PACT_BEGIN
+%token PACT_END
+%token <m_nRange> RANGE_EQUAL	RANGE_LESS	RANGE_MORE	RANGE_BET
+%token <m_pchVal> MCALL
+%token <m_cVal> CCHAR QCHAR
+
+%token TOKEN_LABEL RIGHT_LABEL
+%token LEFT_LABEL NONASSOC_LABEL TYPE_LABEL
+%token DPRE_LABEL PREC_LABEL
+%token <m_pchVal> START_LABEL
+%token <m_pDstrct> DESTRUCTOR_LABEL
+
+%left '|'
+%left '*' '+' '?'
+
+%type <m_pvstrSymbs> SymbSet
+%type <m_nVal> LeftPart
+%type <m_pProd> PRBody
+%type <m_pProd> PRItems
+%type <m_pPItem> PRItem
+%type <m_nVal> PRSymb
+
+%type <m_pRENode> Macro
+%type <m_pIndices> Scond
+%type <m_pIndices> SCList
+%type <m_nVal> SCName
+%type <m_prTrees> MultiPattern
+%type <m_pRETree> Pattern
+%type <m_pRETree> RegExp
+%type <m_pRENode> Re1
+%type <m_pRENode> Re2
+%type <m_pRENode> Re
+%type <m_pRENode> RUnion
+%type <m_pRENode> RCat
+%type <m_pRENode> RItem
+%type <m_pRENode> RTrails
+%type <m_pRENode> RTrail
+%type <m_pRENode> RAtom
+%type <m_pRENode> RTAtom
+%type <m_pCS> CharSet
+%type <m_pCS> CSList
+%type <m_pCS> CSItem
+%type <m_nVal> Action
+
+%start Script
+
+%%
+
+<INITIAL,PRS_SC>"//"[^\r\n]*\r?\n	{
+
+		yy_set_bol(true);
+	}
+	
+<INITIAL,PRS_SC>"/*"	{
+		
+		PROCESS_ACTION_1(c, '*', '/', NULL_ACTION)
+	}
+	
+^"%%"		{
+
+		c = yyinput();
+		while(END_OF_FILE != c) {
+			if('\n' == c) {
+
+				c = yyinput();
+				
+				if((' ' != c && '\t' != c) && ('\r' != c && '\n' != c)) {
+					
+					yyunput((char)c);
+					yy_set_bol(true);
+					break;
+				}
+			}
+			else {
+				c = yyinput();
+			}
+		}
+		
+		if( sn_pactDefHeader) {
+			// definition header code, which is copied literally to generated source file
+			dmap.insert(CKEY_DEF_HEADER, sn_pactDefHeader);
+			sn_pactDefHeader = nullptr;
+		}
+		
+		if( sn_pactDeclHeader) {
+			// declaration header code, which is copied literally to generated header file
+			dmap.insert(CKEY_DECL_HEADER, sn_pactDeclHeader);
+			sn_pactDeclHeader = nullptr;
+		}
+		
+		LEX_BEGIN(LEX_SC);
+		return SECT_DELIM;
+	}
+
+<LEX_SC>^"%%"		{
+
+		LEX_BEGIN(PRS_SC);		
+		return SECT_DELIM;
+	}
+<PRS_SC>^"%%"		{
+		
+		// scanning code section comes here		
+		action_t *pact = new action_t(yylloc.firstLine);
+		
+		while(END_OF_FILE != (c = yyinput())) {
+			
+			pact->addText((char)c);
+		}
+		
+		// user code, all contents in fourth section of script
+		dmap.insert(CKEY_USER_CODE, pact);
+		
+		return SECT_DELIM;
+	}
+
+^"%option"[ \t]+{optnam}	{
+
+		int idx = 8;
+		while(' ' == yytext[idx] || '\t' == yytext[idx]) {
+		
+			++idx;
+		}
+		
+		yylval.m_pchVal = new char[yyleng + 1 - idx];
+		strncpy(yylval.m_pchVal, &yytext[idx], yyleng - idx);
+		yylval.m_pchVal[yyleng - idx] = '\0';
+
+		if(yylval.m_pchVal[0] >= 'a' && yylval.m_pchVal[0] <= 'z') {
+		
+			yylval.m_pchVal[0] -= 32;
+		}
+		
+		LEX_BEGIN(OPT_SC);
+		
+		return OPT_KEY;
+	}
+	
+<OPT_SC>"="				{
+
+		CRET
+	}
+	
+<OPT_SC>{int_mc}		{
+		if(!strhelper_t::toSnum(yytext, yylval.m_nVal)) {
+			
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: integer value `";
+			strMsg += yytext;
+			strMsg += "\' is out of range. ";
+			_ERROR(strMsg, ELEX(1));
+			
+			yylval.m_nVal = 1;
+		}
+		
+		return INT;
+	}
+	
+<OPT_SC>([Oo][nN])|([Yy][Ee][Ss])|([Tt][Rr][Uu][Ee])	{
+
+		return KW_ON;
+	}
+	
+<OPT_SC>([Oo]([fF]{2}))|([Nn][Oo][Tt])|([Ff][Aa][Ll][Ss][Ee])	{
+
+		return KW_OFF;
+	}
+
+<OPT_SC>\"([^\"\\\r\n]|(\\[\"\\]))*\" |
+<OPT_SC>([^\r\n \t\"\\\=]|(\\[\"\\]))+	{
+
+		char *tx = yytext;
+		int num = yyleng;
+		if(yytext[0] == '\"') {
+		
+			yylval.m_pchVal = new char[yyleng - 1];
+			++tx;
+			num -= 2;
+		}
+		else {
+			
+			yylval.m_pchVal = new char[yyleng + 1];
+		}
+		i = 0, j = 0;
+		for(; i < num; ++i, ++j) {
+		
+			if(i < num - 1 && tx[i] == '\\' && (tx[i + 1] == '\"' || tx[i + 1] == '\\')) {
+				
+				yylval.m_pchVal[j] = tx[i + 1];
+				++i;
+			}
+			else {
+			
+				yylval.m_pchVal[j] = tx[i];
+			}
+		}
+		yylval.m_pchVal[j] = '\0';
+		
+		return CSTR;
+	}
+<OPT_SC>[ \t]*\r?\n		{
+		
+		LEX_BEGIN(INITIAL);
+	}
+
+^\%[Xx]	|
+^\%[Ss]		{
+		
+		LEX_BEGIN(XISC_SC);
+		if(yytext[1] == 'x' || yytext[1] == 'X') {
+		
+			return XSCLABEL;
+		}
+		else {
+		
+			return ISCLABEL;
+		}
+	}
+
+<XISC_SC>{cid_mc}		{
+		
+		yylval.m_pchVal = new char[yyleng + 1];
+		strncpy(yylval.m_pchVal, yytext, yyleng);
+		yylval.m_pchVal[yyleng] = '\0';
+
+		LEX_BEGIN(INITIAL);
+		
+		return XISC;
+	}
+<XISC_SC>[ \t]+
+	
+<XISC_SC>\r?\n		{
+	
+		LEX_BEGIN(INITIAL);
+	}
+
+^"%start"[ \t]+{cid_mc}	{
+
+		i = 7;
+		for(; ' ' == yytext[i] || '\t' == yytext[i]; ++i) {}
+		
+		yylval.m_pchVal = new char[yyleng - i + 1];
+		strncpy(yylval.m_pchVal, &yytext[i], yyleng - i);
+		yylval.m_pchVal[yyleng - i] = '\0';
+		
+		// TODO: set start-symbol
+		return START_LABEL;
+	}
+
+^"%location"[ \t]+{cid_mc}		{
+
+		if(dmap.isAction(CKEY_LTYPE_DECLARE)) {
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: location type has already declared, ";
+			strMsg += "this statement is discarded.";
+			_WARNING(strMsg);
+		}
+		else {
+		
+			if(dmap.isAction(CKEY_LTYPE_NAME)) {
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: location type has already been assigned, ";
+				strMsg += "this statement is discarded.";
+				_WARNING(strMsg);			
+			}
+			else {
+					i = 10;
+					for(; ' ' == yytext[i] || '\t' == yytext[i]; ++i); {;}
+					action_t *pact = new action_t(yylloc.firstLine);
+					
+					pact->addText(&yytext[i]);
+					
+					bool b = dmap.insert(CKEY_LTYPE_NAME, pact);
+					assert(b);
+			}
+		}
+		
+		while((c = yyinput()) != END_OF_FILE && c != '\n');
+		yy_set_bol(true);
+		
+	}
+
+^"%union"[ \t]+{cid_mc}			{
+		
+		if(dmap.isAction(CKEY_STYPE_DECLARE)) {
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: semantic value type has already declared, ";
+			strMsg += "this statement is discarded.";
+			_WARNING(strMsg);
+		}
+		else {
+		
+			if( dmap.isAction(CKEY_STYPE_NAME)) {
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: semantic value type has already been assigned, ";
+				strMsg += "this statement is discarded.";
+				_WARNING(strMsg);		
+			}
+			else {
+			
+				i = 7;
+				for(; ' ' == yytext[i] || '\t' == yytext[i]; ++i); {;}
+				
+				action_t *pact = new action_t(yylloc.firstLine);
+				
+				pact->addText(&yytext[i]);
+				
+				bool b = dmap.insert(CKEY_STYPE_NAME, pact);
+				assert(b);
+				
+			}
+		}
+		
+		while((c = yyinput()) != END_OF_FILE && c != '\n');
+		yy_set_bol(true);
+			
+	}
+
+^"%location"[ \t]*"%"?"{" 		|
+^"%union"[ \t]*"%"?"{"			|
+^"%formal-param"[ \t]*"%"?"{"	|	
+^"%actual-param"[ \t]*"%"?"{"	{
+
+		string strKey;
+		int nlen = 0;
+		switch(yytext[1]) {
+		case 'a':
+			strKey = CKEY_ACTUAL_PARAMETERS;
+			nlen = 13;
+			break;
+		case 'f':
+			strKey = CKEY_FORMAL_PARAMETERS;
+			nlen = 13;
+			break;
+		case 'l':
+			if(dmap.isAction(CKEY_LTYPE_NAME)) {
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: location type has already been assigned, ";
+				strMsg += "this statement is discarded.";
+				_WARNING(strMsg);
+			}
+			else {
+				strKey = CKEY_LTYPE_DECLARE;
+				nlen = 9;
+			}
+			break;
+			
+		default:	// case 'u':
+			if(dmap.isAction(CKEY_STYPE_NAME)) {
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: semantic value type has already been assigned, ";
+				strMsg += "this statement is discarded.";
+				_WARNING(strMsg);
+			}
+			else {			
+				strKey = CKEY_STYPE_DECLARE;
+				nlen = 6;
+			}
+			break;
+		}
+		
+		if(nlen == 0 || dmap.isAction(strKey)) {
+		
+			if(nlen > 0) {
+				yytext[nlen] = '\0';
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: `";
+				strMsg += yytext;
+				strMsg += "\' duplicated and discarded";
+				_WARNING(strMsg);
+			}
+
+			PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, NULL_ACTION)
+		}
+		else {
+			
+			action_t *pact = new action_t(yylloc.firstLine);
+			
+			PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, pact->addText)
+			
+			if(c == END_OF_FILE) {
+				
+				_ERROR("description: lack of `%}\'.", ELEX(3));
+			}
+
+			bool b = dmap.insert(strKey, pact);
+			assert(b);
+		}
+	}
+
+	
+^"%lex-init"[ \t]*"%"?"{"	|
+^"%pre-match"[ \t]*"%"?"{"	|
+^"%yywrap"[ \t]*"%"?"{"		{
+
+		bool bret;
+		
+		switch(yytext[1]) {
+		case 'l':
+			bret = dtbl.beginLexInit(yylloc.firstLine);
+			yytext[9] = '\0';
+			break;
+		case 'p':
+			bret = dtbl.beginPrematch(yylloc.firstLine);
+			yytext[10] = '\0';
+			break;
+		default: // yytext[1] == 'y'
+			bret = dtbl.beginWrap(yylloc.firstLine);
+			yytext[7] = '\0';
+			break;
+		}
+
+		if( ! bret)  {
+		
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: `";
+			strMsg += yytext;
+			strMsg += "\' duplicated and discarded";
+			_WARNING(strMsg);
+			
+			PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, NULL_ACTION)
+		}
+		else {
+		
+			PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, dtbl.addActionText)
+			
+		}
+		
+		if(c == END_OF_FILE) {
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: lack of `%}\'.";
+			_ERROR(strMsg, ELEX(4));
+		}
+	}
+
+
+^"%header"[ \t]*"%"?"{"		{
+
+		if( ! sn_pactDeclHeader) {
+		
+			sn_pactDeclHeader = new action_t(yylloc.firstLine);
+		}
+
+		PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, sn_pactDeclHeader->addText)
+		
+		sn_pactDeclHeader->addText('\n');
+	}
+
+^"%token"			{
+		LEX_PUSH_STATE(TOK_SC);
+		return TOKEN_LABEL;
+	}
+^"%left"			{
+		LEX_PUSH_STATE(TOK_SC);
+		return LEFT_LABEL;
+	}
+^"%right"			{
+		LEX_PUSH_STATE(TOK_SC);
+		return RIGHT_LABEL;
+	}
+^"%nonassoc"		{
+		LEX_PUSH_STATE(TOK_SC);
+		return NONASSOC_LABEL;
+	}
+^"%type"			{
+		LEX_PUSH_STATE(TYP_SC);
+		return TYPE_LABEL;
+	}
+
+^"%destructor"[ \t]*"{"  |
+^"%destructor"[ \t]*"%{" {		
+		yylval.m_pDstrct = new action_t(yylloc.firstLine);
+		
+		c = yyinput();
+		while(c && c != END_OF_FILE) {
+			if(LEX_ESCAPE_CHAR == c) {
+				c = yyinput();
+				if(c && c != END_OF_FILE) {
+					yylval.m_pDstrct->addText(c);
+				}
+				else {
+					yylval.m_pDstrct->addText(LEX_ESCAPE_CHAR);
+					break;
+				}
+				c = yyinput();
+			}
+			else {
+				if('%' == c) {
+					c = yyinput();
+					if('}' == c) { break; }
+					else {	yylval.m_pDstrct->addText('%');	}
+				}
+				else if('$' == c) {
+					c = yyinput();
+					if('$' == c) {
+						yylval.m_pDstrct->addMacroPH(SKEY_SVNAME_DSTRCT);
+						c = yyinput();
+					}
+					else {
+						yylval.m_pDstrct->addText('$');
+					}
+				}
+				else if('@' == c) {
+					c = yyinput();
+					if('$' == c) {
+						yylval.m_pDstrct->addMacro(SKEY_SVLOC_DSTRCT);
+						c = yyinput();
+					}
+					else {
+						yylval.m_pDstrct->addText('@');
+					}
+				}
+				if(c && END_OF_FILE != c) {
+					if('%' != c && '@' != c && '$' != c && LEX_ESCAPE_CHAR != c) {
+						yylval.m_pDstrct->addText(c);
+						c = yyinput();
+					}
+				}
+			}
+		}
+
+		LEX_PUSH_STATE(DSCRD_SC);
+		
+		yylloc.lastLine = yyget_lineno();
+		yylloc.lastColumn = yyget_colno() - 1;
+
+		return DESTRUCTOR_LABEL;
+	}
+^"%lvar-decl"		{
+		sn_nVarDeclInit = 0;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+^"%lvar-init"		{
+		sn_nVarDeclInit = 1;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+^"%pvar-decl"		{
+		sn_nVarDeclInit = 2;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+^"%pvar-init"		{
+		sn_nVarDeclInit = 3;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+	
+^"%lexvar-decl"		{
+		sn_nVarDeclInit = 0;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+^"%lexvar-init"		{
+		sn_nVarDeclInit = 1;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+^"%parsevar-decl"		{
+		sn_nVarDeclInit = 2;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+^"%parsevar-init"		{
+		sn_nVarDeclInit = 3;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+	
+^"%parse-init"			{
+		sn_nVarDeclInit = 4;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+^"%parse-exit"			{
+		sn_nVarDeclInit = 5;
+		LEX_PUSH_STATE(PLVAR_SC);
+	}
+
+<PLVAR_SC>[ \t]*"%"?"{"		{
+
+		string strKey;
+		string strText;
+		switch(sn_nVarDeclInit) {
+		case 0:	// %lexvar-decl
+			strKey = CKEY_LEXVAR_DECL;
+			strText = "declaration block for yylex\'s local variables";
+			break;
+		case 1:	// %lexvar-init
+			strKey = CKEY_LEXVAR_INIT;
+			strText = "initialization block for yylex\'s local variables";
+			break;
+		case 2:	// %parsevar-decl
+			strKey = CKEY_PARSEVAR_DECL;
+			strText = "declaration block for yyparse\'s local variables";
+			break;
+
+		case 3:	// %parsevar-init
+			strKey = CKEY_PARSEVAR_INIT;
+			strText = "initialization block for yyparse\'s local variables";
+			break;
+		case 4: // %parse-init
+			strKey = CKEY_PARSEINIT_ACTION;
+			strText = "yyparse's entry action";
+			break;
+		case 5: 
+			strKey = CKEY_PARSEEXIT_ACTION;
+			strText = "yyparse's exit action";
+			break;
+		default:
+			assert(false);
+		}
+
+		if(dmap.isAction(strKey)) {
+		
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: ";
+			strMsg += strText;
+			strMsg += " duplicated and discarded";
+			_WARNING(strMsg);
+			
+			PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, NULL_ACTION)
+
+		}
+		else {
+		
+			action_t *pact = new action_t(yylloc.firstLine);
+			
+			PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, pact->addText)
+			
+			if(c == END_OF_FILE) {
+				_ERROR("description: lack of `%}\'.", ELEX(3));
+			}
+			
+			bool b = dmap.insert(strKey, pact);
+			assert(b);
+		}
+		LEX_POP_STATE();
+		
+	}
+
+^"%{"		{
+		
+		if(! sn_pactDefHeader) {
+		
+			sn_pactDefHeader = new action_t(yylloc.firstLine);
+		}
+		
+		PROCESS_UNTIL(c, '%', '}', LEX_ESCAPE_CHAR, sn_pactDefHeader->addText)
+		
+		sn_pactDefHeader->addText('\n');
+	}
+
+<PRS_SC>{cid_mc}[ \t]*":"	{
+
+		c = yyleng - 1;
+		while(yytext[--c] == ' ' || yytext[c] == '\t');
+		++c;
+		yytext[c] = '\0';
+		yylval.m_pchVal = new char[c + 1];
+		strncpy(yylval.m_pchVal, yytext, c);
+		yylval.m_pchVal[c] = '\0';
+		
+		return LFTID;
+	}
+
+<TOK_SC,TYP_SC,PRS_SC,DSCRD_SC>{cid_mc}	{
+
+		yylval.m_pchVal = new char[yyleng + 1];
+		strncpy(yylval.m_pchVal, yytext, yyleng);
+		yylval.m_pchVal[yyleng] = '\0';
+		
+		return CID;
+	}
+<TOK_SC,TYP_SC,DSCRD_SC>[\<\>]	{
+		CRET
+	}
+<TOK_SC,PRS_SC,DSCRD_SC>\'{cesc_mc}\'		{
+		ESC2CHAR((&yytext[1]), yylval.m_cVal);
+		return QCHAR;
+	}
+<TOK_SC,PRS_SC,DSCRD_SC>\'{oct}\'		{	
+		yylval.m_cVal = (char)strhelper_t::ostr2Num(&yytext[1]);
+		return QCHAR;
+	}
+<TOK_SC,PRS_SC,DSCRD_SC>\'{hex}\'		{
+		yylval.m_cVal = (char)strhelper_t::hstr2Num(&yytext[1]);
+		return QCHAR;
+	}
+<TOK_SC,PRS_SC,DSCRD_SC>\'([[:graph:]]|[[:blank:]])\'	{
+		yylval.m_cVal = yytext[1];
+		return QCHAR;
+	}
+<TOK_SC,PRS_SC,DSCRD_SC>\'\\{nec_mc}\'		{
+		yylval.m_cVal = yytext[2];
+		return QCHAR;
+	}
+<TOK_SC,PRS_SC>{int_mc}		{
+
+		if(!strhelper_t::toSnum(yytext, yylval.m_nVal)) {		
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: integer value `";
+			strMsg += yytext;
+			strMsg += "\' is out of range.";
+			_ERROR(strMsg, ELEX(2));
+			
+			yylval.m_nVal = 1;
+		}
+		return INT;
+	}
+<DSCRD_SC>"*"		{
+		return yytext[0];
+	}
+<TOK_SC,TYP_SC,DSCRD_SC>\r?\n	{
+		LEX_POP_STATE();
+		return '\n';
+	}
+	
+^"%"{optnam}		{
+
+		strMsg = strhelper_t::fromInt(yylloc.firstLine);
+		strMsg += ':';
+		strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+		strMsg += "; description: option `";
+		strMsg += yytext;
+		strMsg += "\' unsupported and discarded";
+		_WARNING(strMsg);
+		
+		while(0 != (c = yyinput())) {
+		
+			if('\n' == c || END_OF_FILE == c) {
+
+				break;
+			}
+		}
+		
+		yy_set_bol(true);
+	}
+
+<LEX_SC>^"<"		{
+
+		LEX_PUSH_STATE(SCR_SC);
+		
+		CRET
+	}
+<SCR_SC>"INITIAL"	{
+
+		return KW_INITIAL;
+	}
+	
+<SCR_SC>{cid_mc}		{
+
+		yylval.m_pchVal = new char[yyleng + 1];
+		strncpy(yylval.m_pchVal, yytext, yyleng);
+		yylval.m_pchVal[yyleng] = '\0';
+		return CID;
+	}
+	
+<SCR_SC>","			{
+
+		CRET
+	}
+	
+<SCR_SC>">"			{
+
+		LEX_POP_STATE();
+		
+		CRET
+	}
+	
+<LEX_SC>"<*>"			{
+		return KW_ALLSC;
+	}
+
+<LEX_SC>"<<EOF>>"		{
+		return KW_EOF;
+	}
+
+^{cid_mc}[ \t]+		{
+
+		i = yyleng - 1;
+		for(; i > 0 && (' ' == yytext[i] || '\t' == yytext[i]); --i) {
+		}
+		assert(i >= 0);
+		++i;
+		
+		yylval.m_pchVal = new char[i + 1];
+		strncpy(yylval.m_pchVal, yytext, i);
+		yylval.m_pchVal[i] = '\0';
+
+		
+		LEX_PUSH_STATE(MAC_SC);
+		
+		return CID;
+	}
+
+<MAC_SC>[ \t]*(\r)?\n	{
+
+		LEX_POP_STATE();
+		return '\n';
+	}
+
+<MAC_SC,LEX_SC,CSH_SC>"[:alnum:]"		{
+		
+		yylval.m_nPosix = charset_t::ALNUM;
+		
+		return POSIX_SET;
+	}
+
+<MAC_SC,LEX_SC,CSH_SC>"[:alpha:]"		{
+		
+		yylval.m_nPosix = charset_t::ALPHA;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:blank:]"		{
+
+		yylval.m_nPosix = charset_t::BLANK;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:cntrl:]"		{
+		
+		yylval.m_nPosix = charset_t::CNTRL;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:digit:]"		{
+		
+		yylval.m_nPosix = charset_t::DIGIT;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:graph:]"		{
+
+		yylval.m_nPosix = charset_t::GRAPH;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:lower:]"		{
+
+		yylval.m_nPosix = charset_t::LOWER;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:print:]"		{
+
+		yylval.m_nPosix = charset_t::PRINT;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:punct:]"		{
+
+		yylval.m_nPosix = charset_t::PUNCT;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:space:]"		{
+		
+		yylval.m_nPosix = charset_t::SPACE;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:upper:]"		{
+		
+		yylval.m_nPosix = charset_t::UPPER;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:xdigit:]"		{
+		
+		yylval.m_nPosix = charset_t::XDIGIT;
+		
+		return POSIX_SET;
+	}
+<MAC_SC,LEX_SC,CSH_SC>"[:cidf:]"			{
+		
+		yylval.m_nPosix = charset_t::CIDF;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC,CSH_SC>"[:cids:]"			{
+
+		yylval.m_nPosix = charset_t::CIDS;
+		
+		return POSIX_SET;
+	}
+	
+<MAC_SC,LEX_SC>"["		{
+
+		LEX_PUSH_STATE(CSH_SC);	
+		CRET
+	}
+	
+<MAC_SC,LEX_SC>"[^"		{
+
+		LEX_PUSH_STATE(CSH_SC);
+		return NCS;
+	}
+<CSH_SC,MAC_SC,LEX_SC>\\{meta_mc}	{
+		
+		yylval.m_cVal = yytext[1];
+		return CCHAR;
+	}
+<CSH_SC,MAC_SC,LEX_SC>{cesc_mc}		{
+
+		ESC2CHAR(yytext, yylval.m_cVal);
+		return CCHAR;
+	}
+	
+<CSH_SC,MAC_SC,LEX_SC>{oct}		{
+	
+		yylval.m_cVal = (char)strhelper_t::ostr2Num(yytext);
+		
+		return CCHAR;
+	}
+<CSH_SC,MAC_SC,LEX_SC>{hex}		{
+
+		yylval.m_cVal = (char)strhelper_t::hstr2Num(yytext);
+		
+		return CCHAR;
+	}
+<CSH_SC,MAC_SC,LEX_SC>{achr_mc}	{
+
+		if(yytext[0] == '\\') {
+		
+			assert(yyleng >= 2);
+			yylval.m_cVal = yytext[1];
+		}
+		else {
+		
+			yylval.m_cVal = yytext[0];
+		}
+		return CCHAR;
+	}
+	
+<CSH_SC>"-"			{
+		CRET
+	}
+
+<CSH_SC>"]"			{
+
+		LEX_POP_STATE();
+		
+		CRET
+	}
+<CSH_SC>.			{
+
+		yylval.m_cVal = yytext[0];
+		
+		return CCHAR;
+	}
+
+<MAC_SC,LEX_SC>{meta_mc}		{
+
+		CRET
+	}
+	
+<MAC_SC,LEX_SC>{macll_mc}		{
+
+		yylval.m_pchVal = new char[yyleng - 1];
+		strncpy(yylval.m_pchVal, &yytext[1], yyleng - 2);
+		yylval.m_pchVal[yyleng - 2] = '\0';
+		
+		return MCALL;
+	}
+	
+<MAC_SC,LEX_SC>{neq_mc}		{
+
+		char cc = yytext[yyleng - 1];
+		yytext[yyleng - 1] = '\0';
+		
+		int n;
+		
+		strhelper_t::toSnum(&yytext[1], n);
+		
+		yytext[yyleng - 1] = cc;	
+		
+		yylval.m_nRange.m_nLower = yylval.m_nRange.m_nUpper = (short)n;
+		
+		return RANGE_EQUAL;
+	}
+
+<MAC_SC,LEX_SC>{nlt_mc}		{
+
+		char cc = yytext[yyleng - 1];
+		yytext[yyleng - 1] = '\0';
+		
+		int n;
+		strhelper_t::toSnum(&yytext[2], n);		
+		
+		yytext[yyleng - 1] = cc;
+		yylval.m_nRange.m_nLower = 0;
+		yylval.m_nRange.m_nUpper = (short)n;
+		
+		return RANGE_LESS;
+	}
+	
+<MAC_SC,LEX_SC>{ngt_mc}		{
+		
+		char cc = yytext[yyleng - 2];
+		yytext[yyleng - 2] = '\0';
+		
+		int n;
+		strhelper_t::toSnum(&yytext[1], n);		
+		
+		yylval.m_nRange.m_nLower = (short)n;
+		yylval.m_nRange.m_nUpper = INF;
+
+		yytext[yyleng - 2] = cc;
+		
+		return RANGE_MORE;
+	}
+	
+<MAC_SC,LEX_SC>{nbet_mc}		{
+
+		int n;
+		char cc;
+		for(i = 2; isdigit(yytext[i]); ++i);
+		
+		cc = yytext[i];
+		yytext[i] = '\0';
+		
+		strhelper_t::toSnum(&yytext[1], n);		
+		yylval.m_nRange.m_nLower = (short)n;
+		yytext[i] = cc;
+		
+		for(; !isdigit(yytext[i]); ++i);
+		j = i;
+		for(; isdigit(yytext[i]); ++i);
+		
+		cc = yytext[i];
+		yytext[i] = '\0';
+		
+		strhelper_t::toSnum(&yytext[j], n);
+		yylval.m_nRange.m_nUpper = (short)n;
+		yytext[i] = cc;
+		
+		return RANGE_BET;
+	}
+<MAC_SC,LEX_SC>{uchr_mc}	{
+
+		yylval.m_cVal = yytext[0];
+		return CCHAR;
+	}
+	
+<MAC_SC,LEX_SC>\"({esc_mc}|{achr_mc}|[[:blank:]]|{uchr_mc}|{meta_mc})+\"	|
+<MAC_SC,LEX_SC>\'({esc_mc}|{achr_mc}|[[:blank:]]|{uchr_mc}|{meta_mc})+\'	{
+
+		yylval.m_pchVal = new char[yyleng - 1];
+		strncpy(yylval.m_pchVal, &yytext[1], yyleng - 2);
+		yylval.m_pchVal[yyleng - 2] = '\0';
+		
+		return CSTR;
+	}
+	
+<LEX_SC>[ \t]*"|"[ \t]*((\r)?\n)?	{
+
+		if('\n' != yytext[yyleng - 1]) {
+		
+			string strIgnored;
+		
+			c = yyinput();
+			while('\n' != c && END_OF_FILE != c) {
+			
+				if('\r' != c) {
+				
+					strIgnored += (char) c;
+				}
+				c = yyinput();
+			}
+			
+			if(strIgnored.size() > 0) {
+				
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: action `";
+				strMsg += strIgnored;
+				strMsg += "\' unsupported and discarded.";
+				_WARNING(strMsg);
+			}
+		}
+
+		return ENDP;
+	}
+
+<LEX_SC>[ \t]+			|	
+<LEX_SC>[ \t]*\r?\n		{
+
+		c = yytext[yyleng - 1];
+		
+		if(c != '\n') {
+
+			c = yyinput();
+		}
+		
+		yylval.m_nVal = dtbl.addEmptyAction(yylloc.firstLine);
+		
+		dtbl.addActionText(yytext);
+		
+		while(END_OF_FILE != c) {
+			
+			if('\n' == c) {
+				
+				dtbl.addActionText(c);
+				c = yyinput();
+				
+				if((' ' != c && '\t' != c) && ('\r' != c && '\n' != c)) {
+					
+					break;
+				}
+			}
+			else {
+			
+				dtbl.addActionText(c);
+				c = yyinput();
+			}
+		}
+		
+		yyunput((char)c);
+		yy_set_bol(true);
+		
+		yylloc.lastLine = yyget_lineno();
+		yylloc.lastColumn = yyget_colno() - 1;
+		
+		return LEX_ACTION;
+	}
+	
+<PRS_SC>[\:\;\|]		{
+		CRET
+	}
+
+<INITIAL,PRS_SC>"%dprec"	{
+
+		return DPRE_LABEL;
+	}
+<INITIAL,PRS_SC>"%prec"		{
+
+		return PREC_LABEL;
+	}
+<PRS_SC>"%{"				{
+
+		LEX_PUSH_STATE(PACT_SC);
+		yylval.m_nVal = ptbl.addEmptyAction(yylloc.firstLine);
+		
+		return PACT_BEGIN;
+	}
+<PACT_SC>"%}"		{
+
+		LEX_POP_STATE();
+		return PACT_END;
+	}
+	
+	/* ` is considered as escape char during action processing */
+<PACT_SC>"`"[\$\@]("$"|{int_mc}) |
+<PACT_SC>"`$<"{cid_mc}">"("$"|{int_mc})		{
+
+		ptbl.addActionText(&yytext[1]);
+	}
+<PACT_SC>[\$\@]"$"		{
+
+		int nRuleID = grammar.getLastProdIndex();
+		const prod_t *p = grammar.getProd(nRuleID);
+		assert(p);
+		
+		switch(yytext[0]) {
+		case '$': {
+				string strSVT;
+				bool bret = grammar.getSymbolSVT(nRuleID, -1, strSVT);
+				assert(bret);
+				if( ! strSVT.empty()) {
+					ptbl.addActionMacro(SKEY_SVNAME_LEFT, strSVT);
+				}
+				else {
+					strMsg = strhelper_t::fromInt(yylloc.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+					strMsg += "; description: semantic value type is needed.";
+					_ERROR(strMsg, ELEX(5));
+					
+					// TODO: add default semantic value
+				}
+			}
+			break;
+		case '@': {
+		
+				if( ! gsetup.m_bLocCompute) {
+					_ERROR("description: location computation disabled.", ELEX(5));
+				}
+				ptbl.addActionMacro(SKEY_SVLOC_LEFT);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+<PACT_SC>"$<"{cid_mc}">$"		{
+		yytext[yyleng - 2] = '\0';
+		ptbl.addActionMacro(SKEY_SVNAME_LEFT, &yytext[2]);
+		
+		if(!grammar.setMidSVT(&yytext[2])) {
+			yytext[yyleng - 2] = '>';
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: semantic value type set more than once, `";
+			strMsg += yytext;
+			strMsg += "\' will overwrite the former one.";
+			_WARNING(strMsg);
+		}
+	}
+<PACT_SC>[\$\@]{int_mc}		{
+
+		int nVal;
+		if(!strhelper_t::toSnum(&yytext[1], nVal)) {
+			
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: integer value `";
+			strMsg += &yytext[1];
+			strMsg += "\' is out of range.";
+			_ERROR(strMsg, ELEX(6));
+		}
+		else {
+		
+			int nRuleID = grammar.getLastProdIndex();
+			prod_t *pr = grammar.getProd(nRuleID);
+			if(nVal < 0 || nVal > pr->getRightSize()) {
+			
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: rule item index `";
+				strMsg += &yytext[1];
+				strMsg += "\' is out of range.";
+				_ERROR(strMsg, ELEX(7));
+			}
+			else {
+			
+				switch(yytext[0]) {
+				
+				case '$': {
+						string strSVT;
+						bool bret = grammar.getSymbolSVT(nRuleID, nVal - 1, strSVT);
+						assert(bret);
+						if( ! strSVT.empty()) {
+							ptbl.addActionMacro(SKEY_SVNAME_RIGHT,
+								strhelper_t::fromInt(pr->getRightSize() - nVal), strSVT);
+						}
+						else {
+							strMsg = strhelper_t::fromInt(yylloc.firstLine);
+							strMsg += ':';
+							strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+							strMsg += "; description: semantic value type is needed.";
+							_ERROR(strMsg, ELEX(8));
+						}
+					}
+					break;
+				case '@': {
+				
+						if( ! gsetup.m_bLocCompute) {
+							strMsg = strhelper_t::fromInt(yylloc.firstLine);
+							strMsg += ':';
+							strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+							strMsg += "; description: location computation disabled."; 
+							_ERROR(strMsg, ELEX(5));
+						}
+						ptbl.addActionMacro(SKEY_SVLOC_RIGHT, strhelper_t::fromInt(pr->getRightSize() - nVal));
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+<PACT_SC>"$<"{cid_mc}">"{int_mc}	{
+
+		i = yyleng - 1;
+		while(yytext[i] != '>') {--i;}
+		assert(i > 2);
+		
+		int nVal;
+		if(!strhelper_t::toSnum(&yytext[i + 1], nVal)) {
+			
+			strMsg = strhelper_t::fromInt(yylloc.firstLine);
+			strMsg += ':';
+			strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+			strMsg += "; description: rule item index `";
+			strMsg += &yytext[i + 1];
+			strMsg += "\' is out of range.";
+			_ERROR(strMsg, ELEX(9));
+		}
+		else {
+		
+			yytext[i] = '\0';
+			int nRuleID = grammar.getLastProdIndex();
+			prod_t *pr = grammar.getProd(nRuleID);
+			
+			if(nVal < 0 || nVal > pr->getRightSize()) {
+			
+				strMsg = strhelper_t::fromInt(yylloc.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+				strMsg += "; description: rule item index `";
+				strMsg += &yytext[i + 1];
+				strMsg += "\' is out of range.";
+				_ERROR(strMsg, ELEX(10));
+			}
+			else {
+			string strSVT;
+			bool bret = grammar.getSymbolSVT(nRuleID, nVal - 1, strSVT);
+			assert(bret);
+				
+				if(strSVT != string(&yytext[2])) {
+				
+					strMsg = strhelper_t::fromInt(yylloc.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+					strMsg += "; description: semantic value `";
+					strMsg += &yytext[2];
+					strMsg += "\' is different from it declaration.";
+					_WARNING(strMsg);
+				}
+						
+				ptbl.addActionMacro(SKEY_SVNAME_RIGHT,
+					strhelper_t::fromInt(pr->getRightSize() - nVal), &yytext[2]);
+			}
+		}
+	}
+<PACT_SC>.|\n			{
+		ptbl.addActionText(yytext[0]);
+	}
+	
+	/********* default pattern ******/
+	
+<*>[ \t\;]
+<*>(\r)?\n
+	
+<*>.		{
+		
+		strMsg = strhelper_t::fromInt(yylloc.firstLine);
+		strMsg += ':';
+		strMsg += strhelper_t::fromInt(yylloc.firstColumn);
+		strMsg += "; description: unknown symbol `";
+		strMsg += yytext[0];
+		strMsg += "\'";
+		
+		switch(YYSTART()) {
+		case INITIAL:
+			
+			while(0 != (c = yyinput()) && END_OF_FILE != c) {
+			
+				if('\n' == c) {
+				
+					break;
+				}
+			}
+			
+			yy_set_bol(true);
+			
+			strMsg += ".";
+			_ERROR(strMsg, ECMD(20));
+			
+			break;
+				
+		case OPT_SC:
+		
+			while(0 != (c = yyinput()) && END_OF_FILE != c) {
+			
+				if('\n' == c) {
+
+					break;
+				}
+			}
+			
+			yy_set_bol(true);
+			
+			strMsg += " in option.";
+			
+			_ERROR(strMsg, ECMD(20));
+			
+			return KW_ON;
+				
+		case MAC_SC:
+		
+			while(0 != (c = yyinput()) && END_OF_FILE != c) {
+			
+				if('\n' == c) {
+
+					break;
+				}
+			}
+			
+			yy_set_bol(true);
+			
+			strMsg += " in regular expression macro.";
+			_ERROR(strMsg, ECMD(20));
+			
+			yylval.m_cVal = yytext[0];
+			
+			return CCHAR;
+				
+		case LEX_SC:
+			
+			strMsg += " in sub regular expression.";
+			_ERROR(strMsg, ECMD(20));
+			
+			yylval.m_cVal = yytext[0];
+			
+			return CCHAR;
+
+		case SCR_SC:
+			
+			strMsg += " in start-condition referrence.";
+			_ERROR(strMsg, ECMD(20));
+			return KW_INITIAL;
+				
+		case CSH_SC:
+			strMsg += " in charset.";
+			_ERROR(strMsg, ESYN(20));
+			
+			yylval.m_cVal = yytext[0];
+			return CCHAR;
+				
+		case XISC_SC:
+			strMsg += " in start-condition declaration.";
+			_ERROR(strMsg, ECMD(20));
+			
+			yylval.m_pchVal = new char[2];
+			yylval.m_pchVal[0] = yytext[0];
+			yylval.m_pchVal[1] = '\0';
+			
+			return XISC;
+				
+		case TOK_SC:
+		
+			strMsg += " in token declaration.";
+			_ERROR(strMsg, ECMD(20));
+			
+			yylval.m_cVal = yytext[0];
+			return QCHAR;
+				
+		case TYP_SC:
+		
+			strMsg += " in type declaration.";
+			_ERROR(strMsg, ECMD(20));
+			
+			strMsg = grammar.getFakeSymbol();
+			yylval.m_pchVal = new char[strMsg.size() + 1];
+			strncpy(yylval.m_pchVal, strMsg.c_str(), strMsg.size());
+			yylval.m_pchVal[strMsg.size()] = '\0';
+			
+			return CID;
+				
+		case DSCRD_SC:
+			strMsg += " in destructor declaration.";
+			_ERROR(strMsg, ECMD(20));
+			
+			yylval.m_cVal = yytext[0];
+			return QCHAR;
+		
+		//case PACT_SC:
+		//case PRS_SC:
+		default:
+		
+			strMsg += ".";
+			_ERROR(strMsg, ECMD(20));
+			return yytext[0];
+		}
+	}
+
+%%
+
+Script: BeforeScan
+		DefineSect %{
+			if(_GETERR() >= ERRID_BASE) {
+				YYABORT();
+			}
+			else {
+			
+				grammar.setTypeBase();
+				for(s2i_cit_t cit = s_sname2Idx.begin();
+					cit != s_sname2Idx.end(); ++cit) {
+				
+					grammar.addType(cit->first, cit->second);
+				}
+				grammar.setStartSymbol(s_strStartSymbol);
+				s_sname2Idx.clear();
+				s_nCounter = 0;
+			}
+		%}
+		SECT_DELIM
+		LexSect %{
+			if(_GETERR() >= ERRID_BASE) {
+				YYABORT();
+			}
+		%}
+		SECT_DELIM
+		ParseSect %{
+
+			if(_GETERR() >= ERRID_BASE) {
+				YYABORT();
+			}
+		%}
+		LastSection %{
+			if(s_vstrSName.size() > 0) {
+				grammar.addTokens(s_vstrSName, s_vnToken);
+			}
+			
+#ifdef UPGEN_TEST_VERSION
+			cerr << "Before grammar adjusting" << endl;
+			cerr << grammar << endl;
+#endif
+			grammar.adjust(ptbl, gsetup);
+			if(grammar.isValid()) {
+
+				grammar.updateTID();
+				if( ! grammar.initDstrct(gsetup)) {
+					
+					YYABORT();
+				}
+				else {
+					YYACCEPT();
+				}
+			}
+			else {
+				YYACCEPT();
+			}
+		%}
+		;
+LastSection: | SECT_DELIM
+		;
+		
+BeforeScan: %{
+			grammar.reset();
+		%}
+		;
+DefineSect : DefineSect Definition
+			| /* empty */
+			;
+			
+Definition : Option
+			| Macro
+			| TokenDefine
+			| TypeDefine
+			| DestructorDefine
+			| XSCLABEL XISC		%{
+				
+				if(!lexer.addXSC($2)) {
+				
+					strMsg = strhelper_t::fromInt(@2.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(@2.firstColumn);
+					strMsg += "; description: start-condition `";
+					strMsg += $2;
+					strMsg += "\' duplicated and discarded.";
+					_WARNING(strMsg);
+				}
+				delete[] $2;
+			%}
+			| ISCLABEL XISC		%{
+				
+				if(!lexer.addISC($2))  {
+				
+					strMsg = strhelper_t::fromInt(@2.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(@2.firstColumn);
+					strMsg += "; description: start-condition `";
+					strMsg += $2;
+					strMsg += "\' duplicated and discarded.";
+					_WARNING(strMsg);
+				}
+				delete[] $2;
+			%}
+			| START_LABEL %{
+				if(s_strStartSymbol.empty()) {
+					s_strStartSymbol = $1;
+					s_sname2Idx.insert(s2i_pair_t(s_strStartSymbol, INVALID_INDEX));	
+				}
+				else {
+					strMsg = strhelper_t::fromInt(@1.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(@1.firstColumn);
+					strMsg += "; description: start symbol is already set as `";
+					strMsg += s_strStartSymbol;
+					strMsg += "\', this setting discarded.";
+					_WARNING(strMsg);
+				}
+				delete[] $1;
+			%}
+			;
+TokenDefine: TokenLabel TKDBody '\n'
+		| TokenLabel TKDBody error '\n' %{
+
+			strMsg = "token name expected.";
+			_ERROR(strMsg, ESYN(1));
+			
+			yyerrok();
+		%} 
+		| TokenLabel error '\n'  %{
+
+			strMsg = "semantic value type or token name expected.";
+			_ERROR(strMsg, ESYN(1));
+			
+			yyerrok();
+		%}
+		;
+TokenLabel: TOKEN_LABEL	%{
+			s_nCurAssoc = ASSOC_UNKNOWN;
+			s_nCurPrec = DEFAULT_PREC;
+			s_nCurSVTID = DEFAULT_SVT_ID;
+		%}
+		| LEFT_LABEL 	%{
+			s_nCurAssoc = ASSOC_LEFT;
+			s_nCurPrec = s_nCounter;
+			s_nCurSVTID = DEFAULT_SVT_ID;
+			++s_nCounter;
+		%}
+		| RIGHT_LABEL	%{
+			s_nCurAssoc = ASSOC_RIGHT;
+			s_nCurPrec = s_nCounter;
+			s_nCurSVTID = DEFAULT_SVT_ID;
+			++s_nCounter;
+		%}
+		| NONASSOC_LABEL %{
+			s_nCurAssoc = ASSOC_NO;
+			s_nCurPrec = DEFAULT_PREC;
+			s_nCurSVTID = DEFAULT_SVT_ID;
+		%}
+		;
+TKDBody: '<' CID %{
+			s_nCurSVTID = grammar.addSVT($2).first;
+			
+			delete[] $2;
+		%} 
+		'>' TKDSet
+		| TKDSet
+		;
+TKDSet: TKDSet TKDItem
+		| TKDItem
+       	;
+TKDItem: CID %{
+			if(s_sname2Idx.find($1) != s_sname2Idx.end()) {
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: identifier `";
+				strMsg += $1;
+				strMsg += "\' already be name of a symbol, this definition discarded.";
+				_WARNING(strMsg);			
+			}
+			else {
+				i2b_pair_t pairRet = grammar.addToken($1, s_nCurSVTID, s_nCurPrec, s_nCurAssoc);
+				if(!pairRet.second) {
+					strMsg = strhelper_t::fromInt(@1.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(@1.firstColumn);
+					strMsg += "; description: identifier `";
+					strMsg += $1;
+					strMsg += "\' already be name of a token, this definition discarded.";
+					_WARNING(strMsg);
+				}
+			}
+			delete[] $1;		
+		%}
+		| QCHAR %{
+			i2b_pair_t pairRet = grammar.addToken(strhelper_t::quotedChar($1), (int)$1,
+				s_nCurSVTID, s_nCurPrec, s_nCurAssoc, false);
+			if(!pairRet.second) {
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: character `";
+				strMsg += $1;
+				strMsg += "\' already be name of a token, this definition discarded.";
+				_WARNING(strMsg);
+			}
+		%}
+		;
+TypeDefine: TYPE_LABEL '<' CID %{
+			s_nCurSVTID = grammar.addSVT($3).first;
+			delete[] $3;
+		%} '>' TYDSet '\n'
+		| TYPE_LABEL error TYDSet '\n'	%{
+		
+			strMsg = "semantic value type expected.";
+			
+			_ERROR(strMsg, ESYN(1));
+			yyerrok();		
+		%}
+		| TYPE_LABEL error '\n'	%{
+		
+			strMsg = "semantic value type or type name expected.";
+			
+			_ERROR(strMsg, ESYN(1));
+			yyerrok();		
+		%}
+		;
+TYDSet: TYDSet CID %{
+			if(grammar.isToken($2)) {
+				strMsg = strhelper_t::fromInt(@2.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@2.firstColumn);
+				strMsg += "; description: identifier `";
+				strMsg += $2;
+				strMsg += "\' is already name of a token, this definition discarded.";
+				_WARNING(strMsg);
+			}
+			else {
+				if(s_strStartSymbol == string($2)) {
+					s2i_it_t it = s_sname2Idx.find(s_strStartSymbol);
+					assert(it != s_sname2Idx.end());
+					if(it->second == INVALID_INDEX) {
+						it->second = s_nCurSVTID;
+					}
+					else {
+						strMsg = strhelper_t::fromInt(@2.firstLine);
+						strMsg += ':';
+						strMsg += strhelper_t::fromInt(@2.firstColumn);
+						strMsg += "; description: identifier `";
+						strMsg += $2;
+						strMsg += "\' is already name of a type, this definition discarded.";
+						_WARNING(strMsg);					
+					}
+				}
+				else if( ! s_sname2Idx.insert(s2i_pair_t(string($2), s_nCurSVTID)).second) {
+					strMsg = strhelper_t::fromInt(@2.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(@2.firstColumn);
+					strMsg += "; description: identifier `";
+					strMsg += $2;
+					strMsg += "\' is already name of a type, this definition discarded.";
+					_WARNING(strMsg);
+				}
+			}
+			delete[] $2;
+		%}
+		| CID %{
+			if(grammar.isToken($1)) {
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: identifier `";
+				strMsg += $1;
+				strMsg += "\' is already name of a token, this definition discarded.";
+				_WARNING(strMsg);
+			}
+			else {
+				if(s_strStartSymbol == string($1)) {
+					s2i_it_t it = s_sname2Idx.find(s_strStartSymbol);
+					assert(it != s_sname2Idx.end());
+					if(it->second == INVALID_INDEX) {
+						it->second = s_nCurSVTID;
+					}
+					else {
+						strMsg = strhelper_t::fromInt(@1.firstLine);
+						strMsg += ':';
+						strMsg += strhelper_t::fromInt(@1.firstColumn);
+						strMsg += "; description: identifier `";
+						strMsg += $1;
+						strMsg += "\' is already name of a type, this definition discarded.";
+						_WARNING(strMsg);					
+					}
+				}
+				else if( !s_sname2Idx.insert(s2i_pair_t(string($1), s_nCurSVTID)).second) {
+					strMsg = strhelper_t::fromInt(@1.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(@1.firstColumn);
+					strMsg += "; description: identifier `";
+					strMsg += $1;
+					strMsg += "\' is already name of a type, this definition discarded.";
+					_WARNING(strMsg);			
+				}
+			}
+			delete[] $1;
+		%}
+		;
+		
+DestructorDefine: DESTRUCTOR_LABEL '<' '>' '\n' %{
+		if( ! grammar.setUntagDstrct($1)) {
+			delete $1;
+		}
+	%}
+	| DESTRUCTOR_LABEL '<' '*' '>' '\n' %{
+		if( ! grammar.setOtherDstrct($1)) {
+			delete $1;
+		}
+	%}
+	| DESTRUCTOR_LABEL '<' CID '>'  '\n' %{
+	
+		if( ! grammar.addDstrctBySVT($1, $3)) {
+			delete $1;
+		}
+		else {
+		
+			for(int i = 0; i < $1->getPHCount(); ++i) {
+				$1->updateMacroPH(i, $3);
+			}
+		}
+		delete[] $3;
+	%}
+	| DESTRUCTOR_LABEL SymbSet  '\n' %{
+		assert($2);
+		if( ! grammar.addDstrctBySymbs($1, *$2)) {
+			delete $1;
+		}
+
+		delete $2;
+	%}
+	| DESTRUCTOR_LABEL error  '\n' %{
+		
+		strMsg = "semantic value type or symbol name expected.";
+		_ERROR(strMsg, ESYN(1));
+		
+		delete $1;
+		
+		yyerrok();
+	%}
+	| DESTRUCTOR_LABEL SymbSet error  '\n' %{
+	
+		strMsg = "semantic value type or symbol name expected.";
+		_ERROR(strMsg, ESYN(1));
+		
+		delete $1;
+		delete $2;
+		yyerrok();	
+	%}
+	;
+	
+SymbSet: SymbSet CID %{
+		$$ = $1;
+		assert($$);
+		$$->push_back($2);
+		delete[] $2;
+	%}
+	| SymbSet QCHAR %{
+		$$ = $1;
+		assert($$);
+		$$->push_back(strhelper_t::quotedChar($2));
+	%}
+	| CID %{
+		$$ = new vstr_t;
+		$$->push_back($1);
+		
+		delete[] $1;
+	%}
+	| QCHAR %{
+		$$ = new vstr_t;
+		$$->push_back(strhelper_t::quotedChar($1));
+	%}
+	;
+		
+Option : OPT_KEY '=' CSTR %{
+			
+			if(! dmap.insert($1, $3)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+			
+			delete[] $1;
+			delete[] $3;
+		%}
+		| OPT_KEY '=' INT %{
+		
+			if( ! dmap.insert($1, $3)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete[] $1;
+		%}
+		| OPT_KEY '=' KW_OFF %{
+		
+			if( ! dmap.insert($1, false)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete[] $1;
+		%}
+		| OPT_KEY '=' KW_ON	%{
+		
+			if( ! dmap.insert($1, true)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete[] $1;
+		%}
+		| OPT_KEY CSTR	%{
+			
+			if( ! dmap.insert($1, $2)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete[] $1;
+			delete[] $2;
+		%}
+		| OPT_KEY INT		%{
+		
+			if( ! dmap.insert($1, $2)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete[] $1;
+		%}
+		| OPT_KEY KW_OFF	%{
+		
+			if( ! dmap.insert($1, false)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete[] $1;
+		%}
+		| OPT_KEY KW_ON	%{
+		
+			if( ! dmap.insert($1, true)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete[] $1;
+		%}
+		| OPT_KEY		%{
+		
+			if( ! dmap.insert($1, true)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: option `";
+				strMsg += $1;
+				strMsg += "\' duplicated and discarded.";
+				_WARNING(strMsg);
+			}
+
+			delete $1;
+		%}
+		;
+		
+Macro : CID Re '\n' %{
+
+			if(!lexer.addMacro($1, $2)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: macro is duplicated and ignored `";
+				strMsg += $1;
+				strMsg += "\'";
+				
+				_ERROR(strMsg, ESYN(1));
+			}
+				
+			delete[] $1;
+		%}
+		| CID Re error '\n' %{
+
+			lexer.addMacro($1, $2);
+			
+			strMsg = "invalid symbol.";
+			
+			_ERROR(strMsg, ESYN(1));
+
+			delete[] $1;
+			
+			yyerrok();
+		%}
+		| CID error '\n' %{
+			
+			strMsg = "invalid symbol.";
+			
+			_ERROR(strMsg, ESYN(1));
+
+			delete[] $1;
+			yyerrok();
+		%}
+		;
+
+LexSect : /* empty */
+		| LexSect LexRule
+		;
+
+LexRule:	MultiPattern Action %{
+		
+			assert($1);
+			assert($2 >= 0);
+			
+			for(unsigned int i = 0; i < $1->size(); ++i) {
+				
+				lexer.attachAction((*$1)[i], $2);
+				dtbl.mapRule2Action(lexer.tree2Rule((*$1)[i]->getID()), $2);
+			}
+			
+			delete $1;
+		%}
+		| MultiPattern error Action %{
+		
+			assert($1);
+			
+			strMsg = "invalid symbol.";
+			
+			_ERROR(strMsg, ESYN(2));
+			
+			delete $1;
+			
+			yyerrok();
+		%}
+		;
+
+MultiPattern: Pattern			%{
+
+			assert($1);
+			$$ = new rtpool_t;
+			$$->push_back($1);
+		%}
+		| MultiPattern ENDP Pattern 	%{
+			
+			assert($1 && $3);
+			$$ = $1;
+			$$->push_back($3);
+		%}
+		;
+		
+Pattern : Scond RegExp %{
+
+			assert($2);
+			
+			if( ! $1) {
+			
+				lexer.addSCTree($2->getID());
+			}
+			else {
+				
+				for(unsigned int i = 0; i < $1->size(); ++i) {
+
+					lexer.addSCTree((*$1)[i], $2->getID());
+				}
+				
+				delete $1;
+			}
+
+			$$ = $2;
+			
+			dtbl.mapRule2Line(lexer.tree2Rule($2->getID()), @2.firstLine); 
+		%}
+		;
+
+Action: LEX_ACTION				%{
+
+			$$ = $1;
+		%}
+		| Action LEX_ACTION		%{
+		
+			assert($1 == $2);
+			$$ = $1;
+		%}
+		;
+				
+Scond : '<' SCList '>'		%{
+			
+			$$ = $2;
+		%}
+		| KW_ALLSC			%{
+		
+			$$ = nullptr;
+		%}
+		| 					%{
+		
+			$$ = new vint_t;
+			$$->push_back(0);
+		%}
+		;
+		
+SCList : SCName		%{
+
+			$$ = new vint_t;
+			$$->push_back($1);
+		%}
+		| SCList ',' SCName	%{
+		
+			assert($1);
+			$1->push_back($3);
+			$$ = $1;
+		%}
+		;
+		
+SCName : CID			%{
+
+			$$ = lexer.getSCIdx($1);
+			if(_EQ(INVALID_INDEX, $$)) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: invalid start condition `";
+				strMsg += $1;
+				strMsg += "\'";
+				
+				$$ = 0;
+				_ERROR(strMsg, ESYN(2));
+			}
+			
+			delete[] $1;
+		%}
+		| KW_INITIAL	%{
+		
+			$$ = 0;
+		%}
+		;
+		
+RegExp : Re1		%{
+
+			$1 = lexer.addConcatNode($1, lexer.addEorNode(false));
+			$$ = lexer.addTree(dtbl.addRule(), $1, false);
+			lexer.setLookaheadFlag(false);
+		%}
+		| '^' Re1	%{
+		
+			$2 = lexer.addConcatNode($2, lexer.addEorNode(false));
+			$$ = lexer.addTree(dtbl.addRule(), $2, true);
+			lexer.setLookaheadFlag(false);
+		%}
+		| KW_EOF		%{
+		
+			$$ = lexer.addTree(dtbl.addRule(), lexer.addEofNode(), false, true);
+		%}
+		;
+		
+Re1 : 	Re			%{
+			
+			$$ = $1;
+		%}
+		| Re '$'	%{
+			lexer.setLookaheadFlag(true);
+			$$ = lexer.addLeafNode(new charset_t('\n'), false);
+			$$ = lexer.addConcatNode($1, $$);
+		%}
+		| Re2 RTrails	%{		
+			
+			$$ = lexer.addConcatNode($1, $2);
+		%}
+		;
+		
+Re2 :	Re '/'	%{
+		
+			lexer.setLookaheadFlag(true);
+			$$ = $1;
+		%}
+		;
+
+Re : Re '|' RUnion	%{
+
+			$$ = lexer.addUnionNode($1, $3);
+		%}
+		| RUnion	%{
+		
+			$$ = $1;
+		%}/*
+		| error RUnion	%{
+			$$ = $2;
+			
+			strMsg = "invalid symbol in regular expression.";
+			_ERROR(strMsg, ESYN(5));
+			
+			yyerrok();
+		%}
+		| Re error RUnion	%{
+			$$ = $1;
+			
+			strMsg = "invalid symbol in regular expression.";
+			_ERROR(strMsg, ESYN(5));
+			
+			yyerrok();
+		%}*/
+		;
+		
+RUnion : RUnion RCat	%{
+			
+			$$ = lexer.addConcatNode($1, $2);
+		%}
+		| RCat			%{
+			
+			$$ = $1;
+		%}
+		;
+		
+RCat : RCat RANGE_EQUAL	%{
+			
+			$$ = $1;
+			
+			for(; $2.m_nLower > 1; --($2.m_nLower)) {
+			
+				$$ = lexer.addConcatNode($$, lexer.copySubtree($1));
+			}			
+		%}
+		| RCat RANGE_LESS	%{
+		
+			$1->setNullable(true);
+			$$ = $1;
+			
+			for(; $2.m_nUpper > 1; --($2.m_nUpper)) {
+			
+				$$ = lexer.addConcatNode($$, lexer.copySubtree($1));
+			}
+		%}
+		| RCat RANGE_MORE	%{
+			
+			$$ = $1;
+			
+			for(; $2.m_nLower > 1; --($2.m_nLower)) {
+			
+				$$ = lexer.addConcatNode($$, lexer.copySubtree($1));
+			}
+			
+			$$ = lexer.addConcatNode($$, lexer.addStarNode(lexer.copySubtree($1)));
+		%}
+		| RCat RANGE_BET	%{
+		
+			if($2.m_nLower > $2.m_nUpper || _EQ(0, $2.m_nUpper)) {
+			
+				strMsg = strhelper_t::fromInt(@2.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@2.firstColumn);
+				strMsg += "; description: invalid range `{";
+				strMsg += strhelper_t::fromInt($2.m_nLower);
+				strMsg += ",";
+				strMsg += strhelper_t::fromInt($2.m_nUpper);
+				strMsg += "}\'";
+				
+				$2.m_nLower = $2.m_nUpper = 1;
+				_ERROR(strMsg, ESYN(3));
+			}
+			
+			$$ = $1;
+			int i = 1;
+			
+			if($2.m_nLower <= 0) {
+				$1->setNullable(true);
+			}
+			else {
+				for(; i < $2.m_nLower; ++i) {
+				
+					$$ = lexer.addConcatNode($$, lexer.copySubtree($1));
+				}
+			}
+			
+			for(; i < $2.m_nUpper; ++i) {
+			
+				renode_t *pNode = lexer.copySubtree($1);
+				pNode->setNullable(true);
+				
+				$$ = lexer.addConcatNode($$, pNode);
+			}
+		%}
+		| RCat '*'		%{
+			
+			$$ = lexer.addStarNode($1);
+		%}
+		| RCat '+'		%{
+			
+			renode_t *pNode = lexer.copySubtree($1);
+			
+			assert(pNode);
+			
+			$$ = lexer.addConcatNode($1, lexer.addStarNode(pNode));			
+		%}
+		| RCat '?'		%{
+			
+			$$ = $1;
+			$1->setNullable(true);
+		%}
+		| RItem			%{
+			
+			$$ = $1;
+		%}
+		;
+		
+RItem : '(' Re ')'	%{
+
+			$$ = $2;
+		%}
+		| RAtom		%{
+			
+			$$ = $1;
+		%}
+		;
+		
+RAtom : RTAtom %{
+			
+			$$ = $1;
+		%}
+		| MCALL	%{		
+			
+			$$ = lexer.copyMacrotree($1);
+			if(_EQ(nullptr, $$)) {
+				
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: undefined regular expression macro `";
+				strMsg += $1;
+				strMsg += "\'";	
+				
+				$$ = lexer.addLeafNode('a');			
+				_ERROR(strMsg, ESYN(4));
+			}
+			
+			delete[] $1;
+		%}
+		;
+RTrails: RTrails RTrail %{
+
+			$$ = lexer.addConcatNode($1, $2);
+		%}
+		| RTrail %{
+		
+			$$ = $1;
+		%}
+		;		
+RTrail:	RTrail RANGE_EQUAL	%{
+			
+			$$ = $1;
+			
+			for(; $2.m_nLower > 1; --($2.m_nLower)) {
+			
+				$$ = lexer.addConcatNode($$, lexer.copySubtree($1));
+			}			
+		%}
+		| '(' RTrail ')' %{
+
+			$$ = $2;
+		%}
+		| RTAtom %{
+		
+			$$ = $1;
+		%}
+		;
+		
+RTAtom:	CharSet		%{
+			$$ = lexer.addLeafNode($1);
+		%}
+		| CCHAR	%{
+			charset_t *pcs = new charset_t($1);	
+			if( ! gsetup.m_bCaseSensitive) {
+				if($1 >= 65 && $1 <= 90) {
+					pcs->set($1 + 32);
+				}
+				else if($1 >= 97 && $1 <= 122) {
+					pcs->set($1 - 32);
+				}
+			}
+			$$ = lexer.addLeafNode(pcs);
+		%}
+		| POSIX_SET	%{
+			if( ! gsetup.m_bCaseSensitive && (charset_t::LOWER == $1 || charset_t::UPPER == $1)) {
+			
+				$1 = charset_t::ALPHA;
+			}
+			$$ = lexer.addLeafNode($1);
+		%}
+		| CSTR	%{
+		
+			string str;
+			
+			bool bret =
+				strhelper_t::ustr2Str($1, str);
+			assert(bret);
+			
+			charset_t *pcs = nullptr;
+			if(str.size() > 0) {
+				
+				pcs = new charset_t(str[0]);
+				if( ! gsetup.m_bCaseSensitive) {
+					if(str[0] >= 65 && str[0] <= 90) {
+						pcs->set(str[0] + 32);
+					}
+					else if(str[0] >= 97 && str[0] <= 122) {
+						pcs->set(str[0] - 32);
+					}
+				}
+				$$ = lexer.addLeafNode(pcs);
+			}
+			
+			for(unsigned int i = 1; i < str.size(); ++i) {
+			
+				pcs = new charset_t(str[i]);
+				if( ! gsetup.m_bCaseSensitive) {
+					if(str[i] >= 65 && str[i] <= 90) {
+						pcs->set(str[i] + 32);
+					}
+					else if(str[i] >= 97 && str[i] <= 122) {
+						pcs->set(str[i] - 32);
+					}
+				}
+				$$ = lexer.addConcatNode($$, lexer.addLeafNode(pcs));
+			}
+			delete $1;
+		%}
+		| '.'	%{
+			
+			const char cc[2] = {'\n', '\0'};
+			$$ = lexer.addLeafNode(cc, true);
+		%}
+		;
+		
+CharSet : '[' CSList ']'	%{
+
+			$$ = $2;
+		%}
+		| NCS CSList ']'	%{
+
+			$$ = $2;
+			$2->flip();			
+		%}	
+		;
+		
+CSList : CSItem	%{
+		
+			$$ = $1;
+		%}
+		| CSList CSItem %{
+			
+			*($1) |= *($2);
+			$$ = $1;
+
+			delete $2;
+		%}
+		;
+		
+CSItem : '.'	%{
+			
+			$$ = new charset_t('\n', true);			
+		%}
+		| CCHAR	%{
+		
+			$$ = new charset_t($1);
+			
+			if( ! gsetup.m_bCaseSensitive) {
+				if($1 >= 65 && $1 <= 90) {
+					$$->set($1 + 32);
+				}
+				else if($1 >= 97 && $1 <= 122) {
+					$$->set($1 - 32);
+				}
+			}
+		%}
+		| CCHAR '-' CCHAR %{
+		
+			if((unsigned char)$1 > (unsigned char)$3) {
+			
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: char range `";
+				strMsg += $1;
+				strMsg += "-";
+				strMsg += $3;
+				strMsg += "\' empty and ignored.";
+				_ERROR(strMsg, ESYN(5));
+
+				$1 = $3;
+			}
+			
+			$$ = new charset_t($1, $3);
+			if( ! gsetup.m_bCaseSensitive) {
+				for(unsigned char c = (unsigned char)$1; c <= 122 && c <= (unsigned char)$3; ++c ) {
+					
+					if(c >= 65 && c <= 90) {
+					
+						$$->set(c + 32);
+					}
+					else if(c >= 97 && c <= 122) {
+					
+						$$->set(c - 32);
+					}
+				}
+			} 
+		%}
+		| POSIX_SET	%{
+		
+			if( ! gsetup.m_bCaseSensitive && (charset_t::LOWER == $1 || charset_t::UPPER == $1)) {
+			
+				$1 = charset_t::ALPHA;
+			}
+			$$ = new charset_t($1);
+		%}
+		;
+		
+ParseSect: ParseSect ParseRule
+	   	| /* empty */
+	   	;
+ParseRule: LeftPart RightPart ';'
+		| LeftPart RightPart %{
+				strMsg = strhelper_t::fromInt(@2.lastLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@2.lastColumn);
+				strMsg += "; description: lack of `;\'.";
+				_WARNING(strMsg);
+		%}
+		| error ';' %{
+				strMsg = "invalid syntactic rule.";
+				_ERROR(strMsg, ESYN(5));
+				yyerrok();
+		%}
+	   	;
+LeftPart: LFTID	%{
+			
+			if( grammar.isToken($1)) {
+				strMsg = strhelper_t::fromInt(@1.firstLine);
+				strMsg += ':';
+				strMsg += strhelper_t::fromInt(@1.firstColumn);
+				strMsg += "; description: declaration of type `";
+				strMsg += $1;
+				strMsg += "\' expected.";
+				_ERROR(strMsg, ESYN(5));
+
+				
+				strMsg = grammar.getFakeSymbol();
+				$$ = grammar.addType(strMsg, DEFAULT_SVT_ID).first;
+			}
+			else {
+			
+				$$ = grammar.getSymbolIndex($1);
+				if(INVALID_INDEX == $$) {
+					$$ = grammar.addType($1, DEFAULT_SVT_ID).first;
+					++s_nCounter;
+				}
+				else {
+					$$ = grammar.getSymbolIndex($1);
+				}
+			}
+				
+			s_nCurLeftSymbol = $$;
+			assert(s_nCurLeftSymbol != INVALID_INDEX);
+			
+			if(grammar.getRuleCount() == 0) {
+				if(grammar.getStartSymbol() == INVALID_INDEX) {
+					grammar.setStartSymbol(s_nCurLeftSymbol);
+				}
+				
+				i2b_pair_t pairRet = grammar.addType(INTERNAL_ACCEPT_TYPE, DEFAULT_SVT_ID, false);
+				++s_nCounter;
+				assert(pairRet.second);
+				grammar.setAcceptSymbol(pairRet.first);
+				parser_ns::prod_t *pr = grammar.addEmptyRule(grammar.getAcceptSymbol());
+				assert(pr);
+				pr->addRight(grammar.getStartSymbol());
+				pr->addRight(END_SYMBOL_INDEX);
+				grammar.setAcceptRule(pr->getID());
+				
+				int nActID = ptbl.addEmptyAction(@1.firstLine);
+				ptbl.mapRule2Action(pr->getID(), nActID);			
+				ptbl.mapRule2Line(pr->getID(), @1.firstLine);
+			}
+			
+			delete[] $1;
+		%}
+	  	;
+	  	
+RightPart: RightPart '|' %{
+
+			grammar.addEmptyRule(s_nCurLeftSymbol);
+		%}
+		PRBody  
+		| %{
+			grammar.addEmptyRule(s_nCurLeftSymbol);
+		%}
+		PRBody
+	   	;
+PRBody: PRItems DPRE_LABEL INT PACT_BEGIN PACT_END	%{
+			
+			$$ = $1;
+			$$->setPrec($3);
+			$$->setActionIndex($4);
+			ptbl.mapRule2Action($$->getID(), $4);			
+			ptbl.mapRule2Line($$->getID(), @1.firstLine);
+			
+//			string strMidSVT = grammar.getMidSVT();
+//			if(!strMidSVT.empty()) {
+//				strMsg = strhelper_t::fromInt(@4.firstLine);
+//				strMsg += ':';
+//				strMsg += strhelper_t::fromInt(@4.firstColumn);
+//				strMsg += "; description: semantic value type declaration `";
+//				strMsg += strMidSVT;
+//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
+//				_WARNING(strMsg);
+//			}
+			
+			grammar.clearMidSVT();
+		%}
+		| PRItems DPRE_LABEL INT	%{
+			
+			$$ = $1;
+			$$->setPrec($3);
+			int nActID = ptbl.addEmptyAction(@1.firstLine);
+			ptbl.mapRule2Action($$->getID(), nActID);
+			ptbl.mapRule2Line($$->getID(), @1.firstLine);
+			$$->setActionIndex(nActID);
+		%}
+		| DPRE_LABEL INT PACT_BEGIN PACT_END	%{
+		
+			$$ = grammar.getProd(grammar.getLastProdIndex());
+			$$->setPrec($2);
+			$$->setActionIndex($3);
+			ptbl.mapRule2Action($$->getID(), $3);
+			ptbl.mapRule2Line($$->getID(), @1.firstLine);
+//			string strMidSVT = grammar.getMidSVT();
+//			if(!strMidSVT.empty()) {
+//				strMsg = strhelper_t::fromInt(@3.firstLine);
+//				strMsg += ':';
+//				strMsg += strhelper_t::fromInt(@3.firstColumn);
+//				strMsg += "; description: semantic value type declaration `";
+//				strMsg += strMidSVT;
+//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
+//				_WARNING(strMsg);
+//			}
+			
+			grammar.clearMidSVT();
+		%}
+		| DPRE_LABEL INT	%{
+		
+			$$ = grammar.getProd(grammar.getLastProdIndex());
+			$$->setPrec($2);
+			int nActID = ptbl.addEmptyAction(@1.firstLine);
+			ptbl.mapRule2Action($$->getID(), nActID);
+			ptbl.mapRule2Line($$->getID(), @1.firstLine);
+			$$->setActionIndex(nActID);
+		%}
+		| PRItems PACT_BEGIN PACT_END	%{
+			
+			$$ = $1;
+			$$->setActionIndex($2);
+			ptbl.mapRule2Action($$->getID(), $2);
+			ptbl.mapRule2Line($$->getID(), @1.firstLine);
+//			string strMidSVT = grammar.getMidSVT();
+//			if(!strMidSVT.empty()) {
+//				strMsg = strhelper_t::fromInt(@2.firstLine);
+//				strMsg += ':';
+//				strMsg += strhelper_t::fromInt(@2.firstColumn);
+//				strMsg += "; description: semantic value type declaration `";
+//				strMsg += strMidSVT;
+//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
+//				_WARNING(strMsg);
+//			}
+			
+			grammar.clearMidSVT();
+		%}
+		| PRItems %{
+			$$ = $1;
+			int nActID = ptbl.addEmptyAction(@1.firstLine);
+			ptbl.mapRule2Action($$->getID(), nActID);
+			ptbl.mapRule2Line($$->getID(), @1.firstLine);
+			$$->setActionIndex(nActID);
+		%}
+		| PACT_BEGIN PACT_END	%{
+			
+			$$ = grammar.getProd(grammar.getLastProdIndex());
+			$$->setActionIndex($1);
+			ptbl.mapRule2Action($$->getID(), $1);
+			ptbl.mapRule2Line($$->getID(), @1.firstLine);
+//			string strMidSVT = grammar.getMidSVT();
+//			if(!strMidSVT.empty()) {
+//				strMsg = strhelper_t::fromInt(@1.firstLine);
+//				strMsg += ':';
+//				strMsg += strhelper_t::fromInt(@1.firstColumn);
+//				strMsg += "; description: semantic value type declaration `";
+//				strMsg += strMidSVT;
+//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
+//				_WARNING(strMsg);
+//			}
+			
+			grammar.clearMidSVT();
+		%}
+		| %{
+			$$ = grammar.getProd(grammar.getLastProdIndex());
+			int nActID = ptbl.addEmptyAction(@0.firstLine);
+			ptbl.mapRule2Action($$->getID(), nActID);
+			ptbl.mapRule2Line(nActID, @0.firstLine);
+			$$->setActionIndex(nActID);			
+		%}
+		;
+PRItems: PRItems PACT_BEGIN  PACT_END PRItem	%{
+			$$ = $1;
+			prod_t* pr = grammar.addMidRule($2);
+			assert(pr);
+			$$->addRight(pr->getLeft());
+			$$->addRight($4->m_nSymbol, $4->m_nPrec, $4->m_nAssoc);
+			
+			ptbl.mapRule2Action(pr->getID(), $2);
+			ptbl.mapRule2Line(pr->getID(), @2.firstLine);
+			pr->setActionIndex($2);
+			
+			delete $4;
+		%}
+		| PRItems PRItem	%{
+			$$ = $1;
+			$$->addRight($2->m_nSymbol, $2->m_nPrec, $2->m_nAssoc);
+			
+			delete $2;
+		%}
+		| PACT_BEGIN PACT_END PRItem		%{
+			prod_t* pr = grammar.addMidRule($1);
+			assert(pr);
+			
+			$$ = grammar.getProd(grammar.getLastProdIndex());
+			$$->addRight(pr->getLeft());
+			$$->addRight($3->m_nSymbol, $3->m_nPrec, $3->m_nAssoc);
+			
+			ptbl.mapRule2Action(pr->getID(), $1);
+			ptbl.mapRule2Line(pr->getID(), @1.firstLine);
+			pr->setActionIndex($1);
+			
+			delete $3;
+		%}
+		| PRItem		%{
+			$$ = grammar.getProd(grammar.getLastProdIndex());
+			$$->addRight($1->m_nSymbol, $1->m_nPrec, $1->m_nAssoc);
+			
+			delete $1;
+		%}
+		;
+PRItem: PRSymb PREC_LABEL CID	%{
+			if($1 >= grammar.getTypeBase()) {
+				strMsg = "at line ";
+				strMsg += strhelper_t::fromInt(@1.firstLine);
+				strMsg += "; description: %prec can not apply to types, ignored.";
+				_WARNING(strMsg);
+				
+				$$ = new prod_item_t($1);
+			}
+			else {
+				const symbol_t* psym = grammar.getSymbolObj($3);
+				if( ! psym) {
+					strMsg = strhelper_t::fromInt(@3.firstLine);
+					strMsg += ':';
+					strMsg += strhelper_t::fromInt(@3.firstColumn);
+					strMsg += "; description: declaration of token `";
+					strMsg += $3;
+					strMsg += "\' expected.";
+					_ERROR(strMsg, ESYN(6));
+					
+					psym = grammar.getSymbolObj(1);
+				}
+				assert(psym->isToken());
+				(const_cast<symbol_t*>(psym))->setUsed(true);
+				$$ = new prod_item_t($1, psym->getPrec(), psym->getAssoc());
+			}
+			delete[] $3;
+		%}
+		| PRSymb				%{
+		
+			if($1 >= grammar.getTypeBase()) {				
+				$$ = new prod_item_t($1);
+			}
+			else {
+				if($1 < 0) {
+					$$ = new prod_item_t($1);
+				}
+				else {
+					const symbol_t* psym = grammar.getSymbolObj($1);
+					assert(psym && psym->isToken());
+					$$ = new prod_item_t($1, psym->getPrec(), psym->getAssoc());					
+				}
+			}
+		%}
+		;
+PRSymb: CID		%{
+			$$ = grammar.getSymbolIndex($1);
+			if(INVALID_INDEX == $$) {
+				$$ = grammar.addType($1, DEFAULT_SVT_ID).first;
+				++s_nCounter;
+			}
+			delete[] $1;
+		%}
+		| QCHAR	%{
+				string strSName = strhelper_t::quotedChar($1);
+				$$ = grammar.getSymbolIndex(strSName);
+				if(INVALID_INDEX == $$) {
+				
+						s2i_cit_t cit = s_sname2Idx.find(strSName);
+						if(cit == s_sname2Idx.end()) {
+							
+							s_vstrSName.push_back(strSName);
+							s_vnToken.push_back((int)$1);
+							
+							$$ = (int)s_vstrSName.size();
+							$$ = - $$;
+							s_sname2Idx.insert(s2i_pair_t(strSName, $$));
+						}
+						else {
+							$$ = cit->second;
+						}
+				}
+		%}
+		;
+
+
+%%
+
+int debug_yyparse(lexer_ns::lexer_t &lexer, lexer_ns::dtable_t &dtbl,
+	parser_ns::grammar_t &grammar, parser_ns::ptable_t &ptbl,
+	dmmap_t &dmap, gsetting_t &gsetup) {
+
+	int nRet = yyparse(lexer, dtbl, grammar, ptbl, dmap, gsetup);
+	
+	return nRet;
+}
