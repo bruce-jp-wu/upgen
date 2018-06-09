@@ -3105,7 +3105,8 @@ PRItem: PRSymb PREC_LABEL CID	%{
 			}
 			else {
 				const symbol_t* psym = grammar.getSymbolObj($3);
-				if( ! psym) {
+		// update 18/06/09
+                if( ! psym || !psym->isToken()) {
 					strMsg = strhelper_t::fromInt(@3.firstLine);
 					strMsg += ':';
 					strMsg += strhelper_t::fromInt(@3.firstColumn);
@@ -3114,11 +3115,11 @@ PRItem: PRSymb PREC_LABEL CID	%{
 					strMsg += "\' expected.";
 					_ERROR(strMsg, ESYN(6));
 					
-					psym = grammar.getSymbolObj(1);
-				}
-				assert(psym->isToken());
-				(const_cast<symbol_t*>(psym))->setUsed(true);
-				$$ = new prod_item_t($1, psym->getPrec(), psym->getAssoc());
+                    psym = grammar.getSymbolObj(ERROR_SYMBOL_INDEX);
+                }
+                (const_cast<symbol_t*>(psym))->setUsed(true);
+                $$ = new prod_item_t($1, psym->getPrec(), psym->getAssoc());
+
 			}
 			delete[] $3;
 		%}
