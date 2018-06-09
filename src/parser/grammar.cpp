@@ -1510,9 +1510,13 @@ void grammar_t::initPTable(ptable_t & a_ptbl) {
 	
 	// useless symbols
 	for(i = 0; i < (int)m_vstrULSymb.size(); ++i) {
-		a_ptbl.m_vstrTokenDef.push_back(m_vstrULSymb[i]);
-		a_ptbl.m_tTokenDef.push_back(UNDEFINED_SYMBOL_INDEX);
+        // update 18/06/09
+        if(m_vstrULSymb[i][0] != '\"') {
+            a_ptbl.m_vstrTokenDef.push_back(m_vstrULSymb[i]);
+            a_ptbl.m_tTokenDef.push_back(UNDEFINED_SYMBOL_INDEX);
+        }
 	}
+
 	
 	// productions
 	for(i = 0; i < (int)m_vrRule.size(); ++i) {
