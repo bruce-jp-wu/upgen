@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -29,9 +29,10 @@
 // number of minor version
 #define VERSION_MINOR	5
 // build number
-#define VERSION_RELEASE	1
+#define VERSION_RELEASE	3
 
-#define VERSION_DESC	"0.5.2"
+// update 14/12/17
+//#define VERSION_DESC	"0.5.2"
 
 #define UPGEN_TEST_VERSION	1
 #undef UPGEN_TEST_VERSION

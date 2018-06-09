@@ -74,7 +74,7 @@ if [ $actiontype -lt 2 -a $suitetype -lt 6 ] ; then
 	if [ ! -f genscript ] ; then
 		echo Create tools for generating test suites
 		$UPGEN_BINDIR/upgen -clL -o genscript.cpp genscript.upg
-		g++ -o genscript genscript.cpp
+		g++ -std=c++11 -o genscript genscript.cpp
 	fi
 
 	mkdir suite-cpp

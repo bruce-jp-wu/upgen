@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    CCopyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 

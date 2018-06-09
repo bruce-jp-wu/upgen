@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -25,7 +25,7 @@
 namespace spec_ns {
 
 #define SPEC_NUM			2
-#define	CPP_SPEC_SIZE		57344
+#define	CPP_SPEC_SIZE		61750
 #define PAS_SPEC_SIZE		71680
 
 // array of language SPEC names

@@ -1,7 +1,7 @@
 %header%{
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2010  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -43,7 +43,7 @@ using coder_ns::dmmap_t;
 %{
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -90,19 +90,6 @@ using parser_ns::prod_t;
 using parser_ns::symbol_t;
 
 #define CRET		{return yytext[0];}
-
-#define ESC2CHAR(text, y)		switch(text[1])	{	\
-		case '0': y = '\0';	break;		\
-		case 'a': y = '\a'; break;		\
-		case 'b': y = '\b'; break;		\
-		case 'f': y = '\f'; break;		\
-		case 'n': y = '\n'; break;		\
-		case 'r': y = '\r'; break;		\
-		case 't': y = '\t'; break;		\
-		case 'v': y = '\v'; break;		\
-		case '?': y = '\?'; break;		\
-		default: y = text[1]; break;	\
-		}
 
 #define NULL_ACTION(x)
 
@@ -268,6 +255,11 @@ nlt_mc		(\{\,{num_mc}\})
 ngt_mc		(\{({num_mc}|0)\,\})
 nbet_mc		(\{({num_mc}|0)\,{num_mc}\})
 
+unquot_mc   [\!\#\$\%\&\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\]\^\_\`\{\|\}\~\']
+qchr_mc     (\\?({unquot_mc}|[[:alnum:]])|{cesc_mc}|{oct}|{hex})
+    //qchr_mc     ({cesc_mc}|{oct}|{hex}|(\\?{nec_mc}))
+qstr_mc     (\"{qchr_mc}+\")
+
 
 %x		OPT_SC
 %x		MAC_SC
@@ -293,6 +285,8 @@ nbet_mc		(\{({num_mc}|0)\,{num_mc}\})
 %token <m_nRange> RANGE_EQUAL	RANGE_LESS	RANGE_MORE	RANGE_BET
 %token <m_pchVal> MCALL
 %token <m_cVal> CCHAR QCHAR
+// update 15/12/17
+%token <m_pchVal> QSTR_TOKEN
 
 %token TOKEN_LABEL RIGHT_LABEL
 %token LEFT_LABEL NONASSOC_LABEL TYPE_LABEL
@@ -979,7 +973,7 @@ nbet_mc		(\{({num_mc}|0)\,{num_mc}\})
 		CRET
 	}
 <TOK_SC,PRS_SC,DSCRD_SC>\'{cesc_mc}\'		{
-		ESC2CHAR((&yytext[1]), yylval.m_cVal);
+        yylval.m_cVal = strhelper_t::toEsc(&yytext[1]);
 		return QCHAR;
 	}
 <TOK_SC,PRS_SC,DSCRD_SC>\'{oct}\'		{	
@@ -998,6 +992,47 @@ nbet_mc		(\{({num_mc}|0)\,{num_mc}\})
 		yylval.m_cVal = yytext[2];
 		return QCHAR;
 	}
+<TOK_SC,PRS_SC,DSCRD_SC>{qstr_mc}           {
+        std::string tstr;
+        for(auto i = 0; i < yyleng; ) {
+            if(yytext[i] == '\\') {
+
+                int ncnt = 0;
+                switch(yytext[i + 1]) {
+                case 'x':
+                case 'X':
+                    tstr += (char)strhelper_t::hstr2Num(&yytext[i], &ncnt);
+                    i += ncnt;
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                    tstr += (char)strhelper_t::ostr2Num(&yytext[i], &ncnt);
+                    i += ncnt;
+                    break;
+                default:
+                    tstr += strhelper_t::toEsc(&yytext[i]);
+                    i += 2;
+                }
+            } else {
+                tstr += yytext[i];
+                i++;
+            }
+        }
+
+        if(tstr.size() == 3) {
+            yylval.m_cVal = tstr[1];
+            return QCHAR;
+        }
+
+        yylval.m_pchVal = new char[tstr.size() + 1];
+        yylval.m_pchVal[tstr.size()] = '\0';
+        strncpy(yylval.m_pchVal, tstr.data(), tstr.size());
+
+        return QSTR_TOKEN;
+
+    }
 <TOK_SC,PRS_SC>{int_mc}		{
 
 		if(!strhelper_t::toSnum(yytext, yylval.m_nVal)) {		
@@ -1220,7 +1255,7 @@ nbet_mc		(\{({num_mc}|0)\,{num_mc}\})
 	}
 <CSH_SC,MAC_SC,LEX_SC>{cesc_mc}		{
 
-		ESC2CHAR(yytext, yylval.m_cVal);
+        yylval.m_cVal = strhelper_t::toEsc(yytext);
 		return CCHAR;
 	}
 	
@@ -1995,7 +2030,23 @@ TKDItem: CID %{
 				_WARNING(strMsg);
 			}
 		%}
+        | QSTR_TOKEN %{
+            std::string tokenText($1);
+            delete[] $1;
+
+            auto pairRet = grammar.addToken(tokenText, s_nCurSVTID, s_nCurPrec, s_nCurAssoc);
+            if(!pairRet.second) {
+                strMsg = strhelper_t::fromInt(@1.firstLine);
+                strMsg += ':';
+                strMsg += strhelper_t::fromInt(@1.firstColumn);
+                strMsg += "; description: character `";
+                strMsg += tokenText;
+                strMsg += "\' already be name of a token, this definition discarded.";
+                _WARNING(strMsg);
+            }
+        %}
 		;
+
 TypeDefine: TYPE_LABEL '<' CID %{
 			s_nCurSVTID = grammar.addSVT($3).first;
 			delete[] $3;
@@ -2015,6 +2066,7 @@ TypeDefine: TYPE_LABEL '<' CID %{
 			yyerrok();		
 		%}
 		;
+
 TYDSet: TYDSet CID %{
 			if(grammar.isToken($2)) {
 				strMsg = strhelper_t::fromInt(@2.firstLine);
@@ -2148,15 +2200,18 @@ DestructorDefine: DESTRUCTOR_LABEL '<' '>' '\n' %{
 	
 SymbSet: SymbSet CID %{
 		$$ = $1;
-		assert($$);
 		$$->push_back($2);
 		delete[] $2;
 	%}
 	| SymbSet QCHAR %{
 		$$ = $1;
-		assert($$);
 		$$->push_back(strhelper_t::quotedChar($2));
 	%}
+    | SymbSet QSTR_TOKEN %{
+        $$ = $1;
+        $$->push_back($2);
+        delete[] $2;
+    %}
 	| CID %{
 		$$ = new vstr_t;
 		$$->push_back($1);
@@ -2167,6 +2222,12 @@ SymbSet: SymbSet CID %{
 		$$ = new vstr_t;
 		$$->push_back(strhelper_t::quotedChar($1));
 	%}
+    | QSTR_TOKEN %{
+        $$ = new vstr_t;
+        $$->push_back($1);
+
+        delete[] $1;
+    %}
 	;
 		
 Option : OPT_KEY '=' CSTR %{
@@ -2526,23 +2587,7 @@ Re : Re '|' RUnion	%{
 		| RUnion	%{
 		
 			$$ = $1;
-		%}/*
-		| error RUnion	%{
-			$$ = $2;
-			
-			strMsg = "invalid symbol in regular expression.";
-			_ERROR(strMsg, ESYN(5));
-			
-			yyerrok();
-		%}
-		| Re error RUnion	%{
-			$$ = $1;
-			
-			strMsg = "invalid symbol in regular expression.";
-			_ERROR(strMsg, ESYN(5));
-			
-			yyerrok();
-		%}*/
+        %}
 		;
 		
 RUnion : RUnion RCat	%{
@@ -2946,17 +2991,6 @@ PRBody: PRItems DPRE_LABEL INT PACT_BEGIN PACT_END	%{
 			ptbl.mapRule2Action($$->getID(), $4);			
 			ptbl.mapRule2Line($$->getID(), @1.firstLine);
 			
-//			string strMidSVT = grammar.getMidSVT();
-//			if(!strMidSVT.empty()) {
-//				strMsg = strhelper_t::fromInt(@4.firstLine);
-//				strMsg += ':';
-//				strMsg += strhelper_t::fromInt(@4.firstColumn);
-//				strMsg += "; description: semantic value type declaration `";
-//				strMsg += strMidSVT;
-//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
-//				_WARNING(strMsg);
-//			}
-			
 			grammar.clearMidSVT();
 		%}
 		| PRItems DPRE_LABEL INT	%{
@@ -2975,16 +3009,6 @@ PRBody: PRItems DPRE_LABEL INT PACT_BEGIN PACT_END	%{
 			$$->setActionIndex($3);
 			ptbl.mapRule2Action($$->getID(), $3);
 			ptbl.mapRule2Line($$->getID(), @1.firstLine);
-//			string strMidSVT = grammar.getMidSVT();
-//			if(!strMidSVT.empty()) {
-//				strMsg = strhelper_t::fromInt(@3.firstLine);
-//				strMsg += ':';
-//				strMsg += strhelper_t::fromInt(@3.firstColumn);
-//				strMsg += "; description: semantic value type declaration `";
-//				strMsg += strMidSVT;
-//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
-//				_WARNING(strMsg);
-//			}
 			
 			grammar.clearMidSVT();
 		%}
@@ -3003,16 +3027,6 @@ PRBody: PRItems DPRE_LABEL INT PACT_BEGIN PACT_END	%{
 			$$->setActionIndex($2);
 			ptbl.mapRule2Action($$->getID(), $2);
 			ptbl.mapRule2Line($$->getID(), @1.firstLine);
-//			string strMidSVT = grammar.getMidSVT();
-//			if(!strMidSVT.empty()) {
-//				strMsg = strhelper_t::fromInt(@2.firstLine);
-//				strMsg += ':';
-//				strMsg += strhelper_t::fromInt(@2.firstColumn);
-//				strMsg += "; description: semantic value type declaration `";
-//				strMsg += strMidSVT;
-//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
-//				_WARNING(strMsg);
-//			}
 			
 			grammar.clearMidSVT();
 		%}
@@ -3029,16 +3043,6 @@ PRBody: PRItems DPRE_LABEL INT PACT_BEGIN PACT_END	%{
 			$$->setActionIndex($1);
 			ptbl.mapRule2Action($$->getID(), $1);
 			ptbl.mapRule2Line($$->getID(), @1.firstLine);
-//			string strMidSVT = grammar.getMidSVT();
-//			if(!strMidSVT.empty()) {
-//				strMsg = strhelper_t::fromInt(@1.firstLine);
-//				strMsg += ':';
-//				strMsg += strhelper_t::fromInt(@1.firstColumn);
-//				strMsg += "; description: semantic value type declaration `";
-//				strMsg += strMidSVT;
-//				strMsg += "\' unexpected, this may contribute problem of type incompatible.";
-//				_WARNING(strMsg);
-//			}
 			
 			grammar.clearMidSVT();
 		%}
@@ -3163,6 +3167,28 @@ PRSymb: CID		%{
 						}
 				}
 		%}
+        | QSTR_TOKEN %{
+            std::string strSName{$1};
+            delete[] $1;
+
+            $$ = grammar.getSymbolIndex(strSName);
+            if(INVALID_INDEX == $$) {
+
+                s2i_cit_t cit = s_sname2Idx.find(strSName);
+                if(cit == s_sname2Idx.end()) {
+
+                    s_vstrSName.push_back(strSName);
+                    s_vnToken.push_back(INVALID_INDEX);
+
+                    $$ = (int)s_vstrSName.size();
+                    $$ = - $$;
+                    s_sname2Idx.insert(s2i_pair_t(strSName, $$));
+                }
+                else {
+                    $$ = cit->second;
+                }
+            }
+        %}
 		;
 
 
@@ -3172,7 +3198,7 @@ int debug_yyparse(lexer_ns::lexer_t &lexer, lexer_ns::dtable_t &dtbl,
 	parser_ns::grammar_t &grammar, parser_ns::ptable_t &ptbl,
 	dmmap_t &dmap, gsetting_t &gsetup) {
 
-	int nRet = yyparse(lexer, dtbl, grammar, ptbl, dmap, gsetup);
+    int nRet = yynsx::yyparse(lexer, dtbl, grammar, ptbl, dmap, gsetup);
 	
 	return nRet;
 }

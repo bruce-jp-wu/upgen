@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -20,6 +20,7 @@
 */
 
 #include <cstring>
+#include <string>
 #include "./strhelper.h"
 #include "./reporter.h"
 
@@ -68,48 +69,43 @@ string strhelper_t::toLower(const string &str) {
 
 
 // convert \xHH string to number
-short strhelper_t::hstr2Num(const char *a_pch) {
+int strhelper_t::hstr2Num(const char *a_pch, int* pcount) {
 		
-	assert(a_pch && strlen(a_pch) >= 4);
-	short n;
-			
-	if(a_pch[2] >= '0' && a_pch[2] <= '9') {
-		
-		n = ((short)(a_pch[2] - '0')) * 16;
-	}
-	else if(a_pch[2] >= 'A' && a_pch[2] <= 'F') {
-	
-		n = (((short)(a_pch[2] - 'A')) + 10) * 16;
-	}
-	else {
-	
-		n = (((short)(a_pch[2] - 'a')) + 10) * 16;
-	}
-	
-	if(a_pch[3] >= '0' && a_pch[3] <= '9') {
-		
-		n += (short)(a_pch[3] - '0');
-	}
-	else if(a_pch[3] >= 'A' && a_pch[3] <= 'F') {
-	
-		n += ((short)(a_pch[3] - 'A')) + 10;
-	}
-	else {
-	
-		n += ((short)(a_pch[3] - 'a')) + 10;
-	}
-	
-	return n;
+    auto charToInt = [](char c) {
+        if(std::isdigit(c)) {
+            return (int)(c - '0');
+        } else if(c <= 'F') {
+            return 10 + (c - 'A');
+        } else {
+            return 10 + (c - 'a');
+        }
+    };
+
+    auto n = 0;
+    auto i = 2;
+    for(; std::isxdigit(a_pch[i]); i++) {
+        n *= 16;
+        n += charToInt(a_pch[i]);
+    }
+
+    if(pcount) {
+        *pcount = i;
+    }
+    return n;
 }
 	
 // convert \ooo string to number
-short strhelper_t::ostr2Num(const char *a_pch) {
-	
-	assert(a_pch && strlen(a_pch) >= 4);
-	
-	short n = ((short)(a_pch[1] - '0')) * 64;
-	n += ((short)(a_pch[2] - '0')) * 8;
-	n += ((short)(a_pch[3] - '0'));
+int strhelper_t::ostr2Num(const char *a_pch, int *pcount) {
+    auto n = 0;
+    auto i = 1;
+    for(; a_pch[i] >= '0' && a_pch[i] < '8'; i++) {
+        n *= 8;
+        n += (int)(a_pch[i] - '0');
+    }
+
+    if(pcount) {
+        *pcount = i;
+    }
 	
 	return n;
 }

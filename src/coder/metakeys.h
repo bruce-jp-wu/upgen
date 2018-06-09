@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -150,6 +150,10 @@
 
 #define CKEY_PARSE_TOKENNAME			"ParseTokenNames"
 #define CKEY_PARSE_TOKENVALUE			"ParseTokenValues"
+
+// update 16/12/17
+#define CKEY_PARSE_STRTOKENNAME         "ParseStrTokenNames"
+#define CKEY_PARSE_STRTOKENVALUE        "ParseStrTokenValues"
 
 #define CKEY_PARSE_TYPEBASE				"ParseTypeBase"
 #define CKEY_PARSE_SYMBOLNUM			"ParseSymbolNum"

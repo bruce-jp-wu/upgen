@@ -1,21 +1,21 @@
 /*
-    Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
-    
-    This file is a part of Upgen program
+Upgen -- a scanner and parser generator.
+Copyright (C) 2009-2018 Bruce Wu
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This file is a part of Upgen program
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -119,8 +119,13 @@ case ]]><Integer #0/><![[:]]><$UserDiscardActions/></Default>\n\
 \n\
 	<Macro \"$ConstsDefine\">\n\
 <Case End><GoFirst/></Case>\n\
-<Default><![[#define ]]><String #0/><![[ ]]><Integer #1/><![[\n\
+<Default><String #0/><![[ = ]]><Integer #1/><![[,\n\
 ]]><$ConstsDefine/></Default>\n\
+	</Macro>\n\
+	\n\
+	<Macro \"$StrIntMapDefine\">\n\
+<Case End><GoFirst/></Case>\n\
+<Default><![[{\"]]><String #0/><![[\", ]]><Integer #1/><![[},]]><$StrIntMapDefine/></Default>\n\
 	</Macro>\n\
 \n\
 	<Macro \"$SVNAME_LEFT\"><![[(yyval.]]><Text #0/><![[)]]></Macro>\n\
@@ -149,11 +154,21 @@ case ]]><Integer #0/><![[:]]><$UserDiscardActions/></Default>\n\
 #include <errno.h>\n\
 #include <string.h>\n\
 #include <sys/stat.h>\n\
-typedef unsigned char by_te_t;\n\
+// update 14/12/17\n\
+#include <vector>\n\
+#include <unordered_map>\n\
+#include <string>\n\
 ]]>\n\
+<![[\n\
+namespace ]]><$YY \"nsx\"/><![[ {\n\
+typedef unsigned char by_te_t;\n\
+}]]>\n\
 <If EnableScanner><![[\n\
+namespace ]]><$YY \"nsx\"/><![[ {\n\
+]]><![[\n\
 class bufbase_t;\n\
 typedef bufbase_t *YYPBUFFER;\n\
+}\n\
 ]]></If>\n\
 <If EnableDeclare><![[\n\
 #include \"./]]><String \"DeclareFileName\"/><![[\"\n\
@@ -164,108 +179,99 @@ typedef bufbase_t *YYPBUFFER;\n\
 #define CLASS_]]><$YY \"PARSE_T_FILE_\"/><String \"FileBaseName\"/><![[_H__\n\
 ]]>\n\
 <$DeclareAction \"DeclareHeader\"/>\n\
+<![[namespace ]]><$YY \"nsx\"/><![[ {\n\
+]]>\n\
 </If>\n\
 <Else>\n\
 <$DeclareAction \"DeclareHeader\"/>\n\
 </Else>\n\
-\n\
 <If EnableParser><![[\n\
 // token ID definition\n\
-]]><$ConstsDefine \"ParseTokenNames\" \"ParseTokenValues\"/></If>\n\
+enum {\n\
+]]><$ConstsDefine \"ParseTokenNames\" \"ParseTokenValues\"/>\n\
+<![[\n\
+__UPGEN_GENERATED_PARSE_TOKEN_VALUE = 0\n\
+};\n\
+]]></If>\n\
 \n\
 <Define/>\n\
 <$SingleAction \"DefineHeader\"/>\n\
+<![[namespace ]]><$YY \"nsx\"/><![[ {\n\
+enum {]]>\n\
 <If EnableScanner>\n\
 <![[\n\
-#define	INC_YYTEXT_SIZE		4096\n\
-#define LINESIZE_STACK_LENG	32\n\
-#define TABSIZE_STACK_LENG	64\n\
-#define END_OF_FILE			256\n\
-#define END_OF_ALLFILE		257\n\
+INC_YYTEXT_SIZE = 4096,\n\
+END_OF_FILE = 256,\n\
+END_OF_ALLFILE = 257,\n\
 \n\
 // start-condition names\n\
 ]]><$ConstsDefine \"LexStartLabels\" \"LexStartIndexes\"/><![[\n\
 // number of DFA states of scanner\n\
-#define LEX_STATE_COUNT   ]]><Integer \"LexDefaultState\"/>\n\
-<![[\n\
+LEX_STATE_COUNT = ]]><Integer \"LexDefaultState\"/><![[,\n\
 \n\
 // DFA trap-state of scanner\n\
-#define LEX_ERROR_STATE    ]]><Integer \"LexErrorState\"/>\n\
-<![[\n\
+LEX_ERROR_STATE = ]]><Integer \"LexErrorState\"/><![[,\n\
 \n\
 // ID of invalid rule for scanner,\n\
 // indicating current string can not be matched by any pattern\n\
-#define LEX_ERROR_RULE    ]]><Integer \"LexErrorRule\"/>\n\
-<![[\n\
+LEX_ERROR_RULE = ]]><Integer \"LexErrorRule\"/><![[,\n\
 \n\
 // this constant used by computing index of a rule that matches EOF\n\
 // for example, in start-condition INITIAL, index of the rule that\n\
 // matches EOF is \n\
 //	LEX_EOFRULE_BASE + INITIAL\n\
-#define LEX_EOFRULE_BASE   ]]><Integer \"LexEOFRuleBase\"/>\n\
-<![[\n\
+LEX_EOFRULE_BASE = ]]><Integer \"LexEOFRuleBase\"/><![[,\n\
 \n\
 // index of the rule that matches EOAF (end of all files, or end of input)\n\
-#define LEX_EOAF_RULE   ]]><Integer \"LexEOFARuleIndex\"/><![[\n\
+LEX_EOAF_RULE = ]]><Integer \"LexEOFARuleIndex\"/><![[,\n\
 \n\
 ]]>\n\
 </If>\n\
 <![[\n\
 // index of symbol `$end\' in symbol table\n\
-#define PARSE_ENDSYMB_INDEX   ]]><Integer \"ParseEndSymbIdx\"/>\n\
-<![[\n\
+PARSE_ENDSYMB_INDEX = ]]><Integer \"ParseEndSymbIdx\"/><![[,\n\
 // index of symbol `error\' in symbol table\n\
-#define PARSE_ERRORSYMB_INDEX   ]]><Integer \"ParseErrorSymbIdx\"/>\n\
-<![[\n\
+PARSE_ERRORSYMB_INDEX = ]]><Integer \"ParseErrorSymbIdx\"/><![[,\n\
 // index of symbol `$undef\' in symbol table\n\
-#define PARSE_UNDEFSYMB_INDEX   ]]><Integer \"ParseUndefSymbIdx\"/>\n\
-<![[\n\
+PARSE_UNDEFSYMB_INDEX = ]]><Integer \"ParseUndefSymbIdx\"/><![[,\n\
 \n\
 // ID of symbol `$end\'\n\
-#define PARSE_ENDSYMB_ID   ]]><Integer \"ParseEndSymbID\"/>\n\
-<![[\n\
+PARSE_ENDSYMB_ID = ]]><Integer \"ParseEndSymbID\"/><![[,\n\
 // ID of symbol `error\'\n\
-#define PARSE_ERRORSYMB_ID   ]]><Integer \"ParseErrorSymbID\"/>\n\
-<![[\n\
+PARSE_ERRORSYMB_ID = ]]><Integer \"ParseErrorSymbID\"/><![[,\n\
 // ID of symbol \'$undef\'\n\
-#define PARSE_UNDEFSYMB_ID   ]]><Integer \"ParseUndefSymbID\"/><![[\n\
+PARSE_UNDEFSYMB_ID = ]]><Integer \"ParseUndefSymbID\"/><![[,\n\
 ]]>\n\
 \n\
 <If EnableParser>\n\
 <![[\n\
 // row size(in byte) of non-error bitmap of parse table\n\
-#define PARSE_BMAP_ROWSIZE	]]><Integer \"ParseBMapRowSize\"/>\n\
-<![[\n\
+PARSE_BMAP_ROWSIZE = ]]><Integer \"ParseBMapRowSize\"/><![[,\n\
 // base address of indexes of types (aka non-terminals or variables)\n\
-#define PARSE_TYPE_BASE   ]]><Integer \"ParseTypeBase\"/>\n\
-<![[\n\
+PARSE_TYPE_BASE = ]]><Integer \"ParseTypeBase\"/><![[,\n\
 // number of symbols in parser\n\
-#define PARSE_SYMBOL_COUNT   ]]><Integer \"ParseSymbolNum\"/>\n\
-<![[\n\
+PARSE_SYMBOL_COUNT = ]]><Integer \"ParseSymbolNum\"/><![[,\n\
 \n\
 // number of symbols in parser\n\
-#define PARSE_TOKENMAP_SIZE   ]]><Size \"ParseTokenMap\"/>\n\
-<![[\n\
+PARSE_TOKENMAP_SIZE = ]]><Size \"ParseTokenMap\"/><![[,\n\
 \n\
 // start state of parser\n\
-#define PARSE_START_STATE   ]]><Integer \"ParseStartState\"/>\n\
-<![[\n\
+PARSE_START_STATE = ]]><Integer \"ParseStartState\"/><![[,\n\
 \n\
 // accept state of parser\n\
-#define PARSE_ACCEPT_STATE   ]]><Integer \"ParseAcceptState\"/>\n\
-<![[\n\
+PARSE_ACCEPT_STATE = ]]><Integer \"ParseAcceptState\"/><![[,\n\
 \n\
 // illegal state for parser\n\
-#define PARSE_ERROR_STATE   ]]><Integer \"ParseErrorState\"/>\n\
-<![[\n\
+PARSE_ERROR_STATE  = ]]><Integer \"ParseErrorState\"/><![[,\n\
 \n\
 // special ID of invalid rule for parser, indicating current lookahead\n\
 // symbol can not be shifted\n\
-#define PERROR_RULE   ]]><Integer \"ParseErrorRule\"/>\n\
-</If>\n\
+PERROR_RULE = ]]><Integer \"ParseErrorRule\"/><![[,\n\
+]]></If>\n\
 <![[\n\
 \n\
-#define	MAX_MSG_LENG 		128\n\
+MAX_MSG_LENG = 128,\n\
+};\n\
 \n\
 // macros for wrapped new operator\n\
 #define MYNEW(var, type) {\\\n\
@@ -320,43 +326,10 @@ enum {\n\
 	YYE_NOINPUT =	-5,\n\
 };\n\
 ]]>\n\
-<If EnableScanner>\n\
-	<If EnableLocation>\n\
-		<If EnableColumn><![[\n\
-\n\
-template<class INT_TYPE, int STACK_SIZE>\n\
-class cycstack_t {\n\
-\n\
-public:\n\
-	inline cycstack_t(void)\n\
-	: m_nBase(0)\n\
-	, m_nTop(0) {\n\
-	}\n\
-	inline void push(INT_TYPE a_nSize) {\n\
-		m_nTop = (m_nTop + 1) % STACK_SIZE;\n\
-		m_nElem[m_nTop] = a_nSize;\n\
-		if(m_nTop == m_nBase) {\n\
-			m_nBase = (m_nTop + 1) % STACK_SIZE;\n\
-		}\n\
-	}\n\
-	inline INT_TYPE pop(void) {\n\
-		if(m_nTop != m_nBase) {\n\
-			INT_TYPE sz = m_nElem[m_nTop];\n\
-			m_nTop = (m_nTop + STACK_SIZE - 1) % STACK_SIZE;\n\
-			return sz;\n\
-		}\n\
-		return 0;\n\
-	}\n\
-	inline void clear(void) {\n\
-		m_nTop = m_nBase;\n\
-	}	\n\
-private:\n\
-	INT_TYPE m_nElem[STACK_SIZE];\n\
-	short m_nBase, m_nTop;\n\
-};\n\
-]]>\n\
-		</If>\n\
-	</If><![[\n\
+<If EnableScanner><![[\n\
+class bufbase_t;\n\
+typedef bufbase_t *YYPBUFFER;\n\
+]]><![[\n\
 class bufbase_t {\n\
 \n\
 public:\n\
@@ -407,21 +380,35 @@ protected:\n\
 	<If EnableLocation>\n\
 		<If EnableColumn><![[\n\
 public:\n\
-	inline void pushlsz(int nlsize) {\n\
-		stlsz.push((short)nlsize);\n\
-	}\n\
-	inline int poplsz(void) {\n\
-		return stlsz.pop();\n\
-	}\n\
-	inline void pushtsz(int ntsize) {\n\
-		sttsz.push((by_te_t)ntsize);\n\
-	}\n\
-	inline int poptsz(void) {\n\
-		return sttsz.pop();\n\
-	}\n\
+    // update 14/12/17\n\
+    inline void pushlsz(int nlsize) {\n\
+        stlsz.push_back(nlsize);\n\
+    }\n\
+    inline int poplsz(void) {\n\
+        if(stlsz.empty()) {\n\
+            return 0;\n\
+        }\n\
+        auto n = stlsz.back();\n\
+        stlsz.pop_back();\n\
+        return n;\n\
+    }\n\
+\n\
+    inline void pushtsz(int ntsize) {\n\
+        // update 14/12/17\n\
+        sttsz.push_back(ntsize);\n\
+    }\n\
+    inline int poptsz(void) {\n\
+        if(sttsz.empty()) {\n\
+            return 0;\n\
+        }\n\
+        auto n = sttsz.back();\n\
+        sttsz.pop_back();\n\
+        return n;\n\
+    }\n\
 protected:\n\
-	cycstack_t<short, LINESIZE_STACK_LENG> stlsz;\n\
-	cycstack_t<by_te_t, TABSIZE_STACK_LENG> sttsz;\n\
+    // update 14/12/17\n\
+    std::vector<int> stlsz;\n\
+    std::vector<int> sttsz;\n\
 ]]>\n\
 		</If>\n\
 	</If><![[\n\
@@ -502,6 +489,7 @@ extern xstype_t ]]><$YY \"lval\"/><![[;\n\
 extern xltype_t ]]><$YY \"lloc\"/><![[;\n\
 ]]></If>\n\
 <If EnableDeclare><![[\n\
+} // namespace\n\
 #endif\n\
 ]]></If>\n\
 \n\
@@ -582,7 +570,7 @@ private:\n\
 				line = 1;\n\
 				col = 1;\n\
 				tab = 4;\n\
-				pvoid = nullptr;\n\
+				pvoid = NULL;\n\
 				init();\n\
 			}\n\
 \n\
@@ -729,7 +717,7 @@ private:\n\
 			friend class bufmgr_t;\n\
 		public:\n\
 \n\
-			// nSize is length of string including terminating nullptr\n\
+			// nSize is length of string including terminating NULL\n\
 			strbuf_t(const char *pchBuf, int nSize)\n\
 			: bowner(true) {\n\
 \n\
@@ -743,7 +731,7 @@ private:\n\
 				line = 1;\n\
 				col = 1;\n\
 				tab = 4;\n\
-				pvoid = nullptr;\n\
+				pvoid = NULL;\n\
 			}\n\
 \n\
 			strbuf_t(char *pchBuf, int nSize)\n\
@@ -757,7 +745,7 @@ private:\n\
 				line = 1;\n\
 				col = 1;\n\
 				tab = 4;\n\
-				pvoid = nullptr;\n\
+				pvoid = NULL;\n\
 			}\n\
 \n\
 			virtual ~strbuf_t(void) {\n\
@@ -830,7 +818,7 @@ private:\n\
 \n\
 		struct link_t {\n\
 \n\
-			link_t(bufbase_t *pxb, link_t *plnk = nullptr)\n\
+			link_t(bufbase_t *pxb, link_t *plnk = NULL)\n\
 			: pxbuf(pxb)\n\
 			, plink(plnk){}\n\
 \n\
@@ -841,10 +829,10 @@ private:\n\
 	public:\n\
 \n\
 		bufmgr_t(void)\n\
-		: phead(nullptr) {\n\
+		: phead(NULL) {\n\
 \n\
 			MYNEW(pstdin, filebuf_t);\n\
-			MYNEW(pavail, link_t(pstdin, nullptr));\n\
+			MYNEW(pavail, link_t(pstdin, NULL));\n\
 		}\n\
 		~bufmgr_t(void) {\n\
 \n\
@@ -943,7 +931,7 @@ private:\n\
 	</If><![[\n\
 \n\
 		inline bufbase_t* current(void) const {\n\
-			return phead \? phead->pxbuf : nullptr;\n\
+			return phead \? phead->pxbuf : NULL;\n\
 		}\n\
 \n\
 		inline bool empty(void) const {\n\
@@ -985,7 +973,7 @@ private:\n\
 		\n\
 		inline bufbase_t* switchto(bufbase_t* pbuf) {\n\
 \n\
-			bufbase_t *pold = phead \? phead->pxbuf : nullptr;\n\
+			bufbase_t *pold = phead \? phead->pxbuf : NULL;\n\
 			link_t* p = rmwork(pbuf);\n\
 			if( ! p) {\n\
 				MYNEW(phead, link_t(pbuf, phead));\n\
@@ -1001,7 +989,7 @@ private:\n\
 		inline bufbase_t* pop(void) {\n\
 			\n\
 			if(! phead) {\n\
-				return nullptr;\n\
+				return NULL;\n\
 			}\n\
 			\n\
 			link_t *p = phead;\n\
@@ -1044,7 +1032,7 @@ private:\n\
 				delete p;\n\
 			}\n\
 			\n\
-			phead = nullptr;\n\
+			phead = NULL;\n\
 		}\n\
 \n\
 	private:\n\
@@ -1071,7 +1059,7 @@ private:\n\
 				}\n\
 			}\n\
 \n\
-			return nullptr;\n\
+			return NULL;\n\
 		}\n\
 \n\
 	private:\n\
@@ -1085,68 +1073,54 @@ private:\n\
 	};\n\
 \n\
 ]]></If><![[\n\
-	template<class ElemType, int INIT_SIZE = 4096, int INC_SIZE = 1024>\n\
-	class sstack_t {\n\
-	private:\n\
-		ElemType *pbase;\n\
-		int size;\n\
-		int ntop;\n\
+    template<class ElemType, int INIT_SIZE = 4096>\n\
+    class sstack_t {\n\
+    public:\n\
+        inline sstack_t(void) {\n\
 \n\
-	public:\n\
-		inline sstack_t(void)\n\
-		: pbase(nullptr)\n\
-		, size(INIT_SIZE)\n\
-		, ntop(-1) {\n\
-			MYNEWS(pbase, ElemType, INIT_SIZE);\n\
-		}\n\
-		inline ~sstack_t(void) {\n\
-			if(pbase) {\n\
-				delete[] pbase;\n\
-			}\n\
-		}\n\
+        }\n\
 \n\
-		inline void push(void) {\n\
-			if(ntop == size - 1) {\n\
-				MYRENEW(pbase, ElemType, INC_SIZE + size, size);\n\
-				size += INC_SIZE;\n\
-			}\n\
-			++ntop;\n\
-		}\n\
-		inline void push(const ElemType &e) {\n\
-			if(ntop == size - 1) {\n\
-				MYRENEW(pbase, ElemType, INC_SIZE + size, size);\n\
-				size += INC_SIZE;\n\
-			}\n\
-			pbase[++ntop] = e;\n\
-		}\n\
-		inline ElemType& top(void) {\n\
-			return pbase[ntop];\n\
-		}\n\
-		inline const ElemType& top(void) const {\n\
-			return pbase[ntop];\n\
-		}\n\
-		inline void pop(int n) {\n\
-			ntop -= n;\n\
-		}\n\
-		inline ElemType& operator[](int down) {\n\
-			return pbase[ntop - down];\n\
-		}\n\
-		inline const ElemType& operator[](int down) const {\n\
-			return pbase[ntop - down];\n\
-		}\n\
+        inline void push(void) {\n\
+            mStk.push_back(ElemType());\n\
+        }\n\
+        inline void push(const ElemType &e) {\n\
+            mStk.push_back(e);\n\
+        }\n\
+        inline ElemType& top(void) {\n\
+            return mStk.back();\n\
+        }\n\
+        inline const ElemType& top(void) const {\n\
+            return mStk.back();\n\
+        }\n\
+        inline void pop(int n) {\n\
+            while(n > 0 && !mStk.empty()) {\n\
+                mStk.pop_back();\n\
+                n--;\n\
+            }\n\
+        }\n\
+        inline ElemType& operator[](int down) {\n\
+            const auto sz = (int) mStk.size();\n\
+            return mStk[sz - 1 - down];\n\
+        }\n\
+        inline const ElemType& operator[](int down) const {\n\
+            const auto sz = (int) mStk.size();\n\
+            return mStk[sz - 1 - down];\n\
+        }\n\
 \n\
-		inline bool empty(void) const {\n\
-			return ntop < 0;\n\
-		}\n\
+        inline bool empty(void) const {\n\
+            return mStk.empty();\n\
+        }\n\
 \n\
-		inline int count(void) const {\n\
-			return ntop + 1;\n\
-		}\n\
+        inline int count(void) const {\n\
+            return (int)mStk.size();\n\
+        }\n\
 \n\
-		inline void clear(void) {\n\
-			ntop = -1;\n\
-		}\n\
-	};\n\
+        inline void clear(void) {\n\
+            mStk.clear();\n\
+        }\n\
+    private:\n\
+        std::vector<ElemType> mStk;\n\
+    };\n\
 ]]><If EnableScanner><![[\n\
 \n\
 private:\n\
@@ -1184,6 +1158,17 @@ private:\n\
 	friend void yyemit_error__(const char *s]]><If Has\?\"FormalParams\"><![[, ]]><Action \"FormalParams\"/></If><![[);\n\
 ]]><If EnableParser><![[\n\
 private:\n\
+	// update 16/12/17\n\
+    int YYSTOKEN(const std::string& lexeme) const {\n\
+		if(lexeme.size() == 1) {\n\
+			return (int)lexeme[0];\n\
+		}\n\
+        auto cit = yyslexemID.find(lexeme);\n\
+        if(cit == yyslexemID.cend()) {\n\
+			return PARSE_UNDEFSYMB_ID;\n\
+		}\n\
+        return cit->second;\n\
+	}\n\
 \n\
 	inline void YYACCEPT(void) {\n\
 		yyecode__ = YYE_ACCEPT;\n\
@@ -1248,7 +1233,7 @@ private:\n\
 public:\n\
 \n\
 	inline ]]><$YY \"parser_t\"/><![[(]]>\n\
-<If EnableParser><$YY \"lex_t\"/><![[ plex = nullptr]]></If>\n\
+<If EnableParser><$YY \"lex_t\"/><![[ plex = NULL]]></If>\n\
 <Else><![[void]]></Else><![[)\n\
 	: yyecode__(YYE_ALIVE)]]>\n\
 <If EnableScanner><![[\n\
@@ -1256,7 +1241,7 @@ public:\n\
 	, yystart__(INITIAL)\n\
 	, yymore_flag__(false)\n\
 	, yyat_bol__(true)\n\
-	, yytext(nullptr)\n\
+	, yytext(NULL)\n\
 	, yyleng(0)\n\
 	, yylaleng(0)]]>\n\
 </If>\n\
@@ -1710,15 +1695,17 @@ if(yylogger){\n\
 						yys_symb__.pop(yyrplen__);\n\
 						yys_sv__.pop(yyrplen__);\n\
 ]]><If EnableLocation><![[\n\
-						if(yyrplen__ == 0) {\n\
-							yyloc.firstLine = yyloc.lastLine = yys_loc__[0].lastLine;\n\
-							yyloc.firstColumn = yyloc.lastColumn = yys_loc__[0].lastColumn;\n\
-						}\n\
-						else {\n\
-							yyloc.firstLine = yys_loc__[yyrplen__ - 1].firstLine;\n\
-							yyloc.lastLine = yys_loc__[0].lastLine;\n\
-							yyloc.firstColumn = yys_loc__[yyrplen__ - 1].firstColumn;\n\
-							yyloc.lastColumn = yys_loc__[0].lastColumn;\n\
+						if(!yys_loc__.empty()) {\n\
+							if(yyrplen__ == 0) {\n\
+								yyloc.firstLine = yyloc.lastLine = yys_loc__[0].lastLine;\n\
+								yyloc.firstColumn = yyloc.lastColumn = yys_loc__[0].lastColumn;\n\
+							}\n\
+							else {\n\
+								yyloc.firstLine = yys_loc__[yyrplen__ - 1].firstLine;\n\
+								yyloc.lastLine = yys_loc__[0].lastLine;\n\
+								yyloc.firstColumn = yys_loc__[yyrplen__ - 1].firstColumn;\n\
+								yyloc.lastColumn = yys_loc__[0].lastColumn;\n\
+							}\n\
 						}\n\
 						yys_loc__.pop(yyrplen__);\n\
 						yys_loc__.push(yyloc);\n\
@@ -1858,19 +1845,19 @@ private:\n\
 		}\n\
 \n\
 	 	FILE *pfile = fopen(strfile, \"r\");\n\
-	 	if( !pfile) return nullptr;\n\
+	 	if( !pfile) return NULL;\n\
 		return yybufmgr__.newbuf(pfile);\n\
 	}\n\
 \n\
 	inline YYPBUFFER yy_new_cstrbuf(const char *cstrbuffer, int size) {\n\
 		if( ! cstrbuffer || size < 1) {\n\
-			return nullptr;\n\
+			return NULL;\n\
 		}\n\
 		return yybufmgr__.newbuf(cstrbuffer, size);\n\
 	}\n\
 	inline YYPBUFFER yy_new_strbuf(char *strbuffer, int size) {\n\
 		if( ! strbuffer || size < 1) {\n\
-			return nullptr;\n\
+			return NULL;\n\
 		}\n\
 		return yybufmgr__.newbuf(strbuffer, size);\n\
 	}\n\
@@ -2032,7 +2019,7 @@ private:\n\
 	// buffer manager\n\
 	bufmgr_t yybufmgr__;\n\
 	// start-condition stack\n\
-	sstack_t<int, 32, 16> yyscstk__;\n\
+    sstack_t<int, 32> yyscstk__;\n\
 	int yysize__;\n\
 	int yystart__;\n\
 \n\
@@ -2110,6 +2097,7 @@ private:\n\
 	static const int yypcn[]]><Size \"ParseColNice\"/><![[];\n\
 	static const int yypgrv[]]><Size \"ParseGotoRowVal\"/><![[];\n\
 	static const int yypgrn[]]><Size \"ParseGotoRowNice\"/><![[];\n\
+	static const std::unordered_map<std::string, int> yyslexemID;\n\
 ]]></If><![[\n\
 ///////////////////////////////////////////////////////////////////////////////////\n\
 	// optional tables, they are available only under certain conditions\n\
@@ -2280,6 +2268,12 @@ const int ]]><$YY \"parser_t\"/><![[::yypgrn[]]><Size \"ParseGotoRowNice\"/><![[
 <$IntArray \"ParseGotoRowNice\"/>\n\
 <![[\n\
 };\n\
+\n\
+const std::unordered_map<std::string, int> ]]><$YY \"parser_t\"/><![[::yyslexemID{\n\
+]]>\n\
+<$StrIntMapDefine \"ParseStrTokenNames\" \"ParseStrTokenValues\"/>\n\
+<![[\n\
+};\n\
 ]]></If>\n\
 <If EnableScanner>\n\
 <If Has\?\"LexDFALookaheads\"><![[\n\
@@ -2392,11 +2386,13 @@ int ]]><$YY \"lex\"/><![[(]]><If Has\?\"FormalParams\"><Action \"FormalParams\"/
 int ]]><$YY \"parse\"/><![[(]]><If Has\?\"FormalParams\"><Action \"FormalParams\"/></If><![[) {\n\
 	return getTheParser().yyparse__(]]><If Has\?\"ActualParams\"><Action \"ActualParams\"/></If><![[);\n\
 }]]></If>\n\
+<![[\n\
+} // namspace\n\
+]]>\n\
 <$SingleAction \"UserCode\"/><![[\n\
 \n\
 ]]>\n\
 </Program>\n\
 \0\0";
-
 
 }

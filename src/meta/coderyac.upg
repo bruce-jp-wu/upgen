@@ -1,7 +1,7 @@
 %header%{
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2010  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -33,7 +33,7 @@ using coder_ns::dmmap_t;
 %{
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2010  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 

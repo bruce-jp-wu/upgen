@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -92,9 +92,9 @@ public:
 	}
 	
 	// convert string(in hexidecimal form: \XHH) to short number
-	static short hstr2Num(const char *a_pch);
+    static int hstr2Num(const char *a_pch, int *pcount = nullptr);
 	// convert string(in octal form: \OOO) to short number
-	static short ostr2Num(const char *a_pch);
+    static int ostr2Num(const char *a_pch, int *pcount = nullptr);
 	// transform to escape char
 	// for example, "\\t" will be '\t'
 	static char toEsc(const char* a_pch);

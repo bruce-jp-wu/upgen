@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -187,7 +187,15 @@ void dmmap_t::buildMap(const dtable_t &a_dTbl, const ptable_t &a_pTbl, const gse
 	insert(CKEY_ENABLE_PARSER, a_gsetup.m_bNoParser ? FALSE : TRUE);
 
 	insert(CKEY_SOFTWARE_NAME, CVAL_SOFTWARE_NAME);
-	insert(CKEY_SOFTWARE_VERSION, VERSION_DESC);
+
+    // update 14/12/17
+    std::string versionDesc;
+    versionDesc += std::to_string(VERSION_MAJOR);
+    versionDesc += ".";
+    versionDesc += std::to_string(VERSION_MINOR);
+    versionDesc += ".";
+    versionDesc += std::to_string(VERSION_RELEASE);
+    insert(CKEY_SOFTWARE_VERSION, versionDesc);
 
 	// settings for scanner
 	if( ! a_gsetup.m_bNoScanner) {
@@ -293,6 +301,12 @@ void dmmap_t::buildMap(const dtable_t &a_dTbl, const ptable_t &a_pTbl, const gse
 		if(a_pTbl.getTokenDefValues().size() > 0) {
 			insert(CKEY_PARSE_TOKENVALUE, a_pTbl.getTokenDefValues());
 		}
+
+        // update 16/12/17
+        if(a_pTbl.getStrTokenDefNames().size()) {
+            insert(CKEY_PARSE_STRTOKENNAME, a_pTbl.getStrTokenDefNames());
+            insert(CKEY_PARSE_STRTOKENVALUE, a_pTbl.getStrTokenDefValues());
+        }
 		// start state of LALR
 		insert(CKEY_PARSE_STARTSTATE, a_pTbl.getStartState());
 		// accept state of LALR

@@ -94,8 +94,13 @@ case ]]><Integer #0/><![[:]]><$UserDiscardActions/></Default>
 
 	<Macro "$ConstsDefine">
 <Case End><GoFirst/></Case>
-<Default><![[#define ]]><String #0/><![[ ]]><Integer #1/><![[
+<Default><String #0/><![[ = ]]><Integer #1/><![[,
 ]]><$ConstsDefine/></Default>
+	</Macro>
+	
+	<Macro "$StrIntMapDefine">
+<Case End><GoFirst/></Case>
+<Default><![[{"]]><String #0/><![[", ]]><Integer #1/><![[},]]><$StrIntMapDefine/></Default>
 	</Macro>
 
 	<Macro "$SVNAME_LEFT"><![[(yyval.]]><Text #0/><![[)]]></Macro>
@@ -124,11 +129,21 @@ case ]]><Integer #0/><![[:]]><$UserDiscardActions/></Default>
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
-typedef unsigned char by_te_t;
+// update 14/12/17
+#include <vector>
+#include <unordered_map>
+#include <string>
 ]]>
+<![[
+namespace ]]><$YY "nsx"/><![[ {
+typedef unsigned char by_te_t;
+}]]>
 <If EnableScanner><![[
+namespace ]]><$YY "nsx"/><![[ {
+]]><![[
 class bufbase_t;
 typedef bufbase_t *YYPBUFFER;
+}
 ]]></If>
 <If EnableDeclare><![[
 #include "./]]><String "DeclareFileName"/><![["
@@ -139,108 +154,99 @@ typedef bufbase_t *YYPBUFFER;
 #define CLASS_]]><$YY "PARSE_T_FILE_"/><String "FileBaseName"/><![[_H__
 ]]>
 <$DeclareAction "DeclareHeader"/>
+<![[namespace ]]><$YY "nsx"/><![[ {
+]]>
 </If>
 <Else>
 <$DeclareAction "DeclareHeader"/>
 </Else>
-
 <If EnableParser><![[
 // token ID definition
-]]><$ConstsDefine "ParseTokenNames" "ParseTokenValues"/></If>
+enum {
+]]><$ConstsDefine "ParseTokenNames" "ParseTokenValues"/>
+<![[
+__UPGEN_GENERATED_PARSE_TOKEN_VALUE = 0
+};
+]]></If>
 
 <Define/>
 <$SingleAction "DefineHeader"/>
+<![[namespace ]]><$YY "nsx"/><![[ {
+enum {]]>
 <If EnableScanner>
 <![[
-#define	INC_YYTEXT_SIZE		4096
-#define LINESIZE_STACK_LENG	32
-#define TABSIZE_STACK_LENG	64
-#define END_OF_FILE			256
-#define END_OF_ALLFILE		257
+INC_YYTEXT_SIZE = 4096,
+END_OF_FILE = 256,
+END_OF_ALLFILE = 257,
 
 // start-condition names
 ]]><$ConstsDefine "LexStartLabels" "LexStartIndexes"/><![[
 // number of DFA states of scanner
-#define LEX_STATE_COUNT   ]]><Integer "LexDefaultState"/>
-<![[
+LEX_STATE_COUNT = ]]><Integer "LexDefaultState"/><![[,
 
 // DFA trap-state of scanner
-#define LEX_ERROR_STATE    ]]><Integer "LexErrorState"/>
-<![[
+LEX_ERROR_STATE = ]]><Integer "LexErrorState"/><![[,
 
 // ID of invalid rule for scanner,
 // indicating current string can not be matched by any pattern
-#define LEX_ERROR_RULE    ]]><Integer "LexErrorRule"/>
-<![[
+LEX_ERROR_RULE = ]]><Integer "LexErrorRule"/><![[,
 
 // this constant used by computing index of a rule that matches EOF
 // for example, in start-condition INITIAL, index of the rule that
 // matches EOF is 
 //	LEX_EOFRULE_BASE + INITIAL
-#define LEX_EOFRULE_BASE   ]]><Integer "LexEOFRuleBase"/>
-<![[
+LEX_EOFRULE_BASE = ]]><Integer "LexEOFRuleBase"/><![[,
 
 // index of the rule that matches EOAF (end of all files, or end of input)
-#define LEX_EOAF_RULE   ]]><Integer "LexEOFARuleIndex"/><![[
+LEX_EOAF_RULE = ]]><Integer "LexEOFARuleIndex"/><![[,
 
 ]]>
 </If>
 <![[
 // index of symbol `$end' in symbol table
-#define PARSE_ENDSYMB_INDEX   ]]><Integer "ParseEndSymbIdx"/>
-<![[
+PARSE_ENDSYMB_INDEX = ]]><Integer "ParseEndSymbIdx"/><![[,
 // index of symbol `error' in symbol table
-#define PARSE_ERRORSYMB_INDEX   ]]><Integer "ParseErrorSymbIdx"/>
-<![[
+PARSE_ERRORSYMB_INDEX = ]]><Integer "ParseErrorSymbIdx"/><![[,
 // index of symbol `$undef' in symbol table
-#define PARSE_UNDEFSYMB_INDEX   ]]><Integer "ParseUndefSymbIdx"/>
-<![[
+PARSE_UNDEFSYMB_INDEX = ]]><Integer "ParseUndefSymbIdx"/><![[,
 
 // ID of symbol `$end'
-#define PARSE_ENDSYMB_ID   ]]><Integer "ParseEndSymbID"/>
-<![[
+PARSE_ENDSYMB_ID = ]]><Integer "ParseEndSymbID"/><![[,
 // ID of symbol `error'
-#define PARSE_ERRORSYMB_ID   ]]><Integer "ParseErrorSymbID"/>
-<![[
+PARSE_ERRORSYMB_ID = ]]><Integer "ParseErrorSymbID"/><![[,
 // ID of symbol '$undef'
-#define PARSE_UNDEFSYMB_ID   ]]><Integer "ParseUndefSymbID"/><![[
+PARSE_UNDEFSYMB_ID = ]]><Integer "ParseUndefSymbID"/><![[,
 ]]>
 
 <If EnableParser>
 <![[
 // row size(in byte) of non-error bitmap of parse table
-#define PARSE_BMAP_ROWSIZE	]]><Integer "ParseBMapRowSize"/>
-<![[
+PARSE_BMAP_ROWSIZE = ]]><Integer "ParseBMapRowSize"/><![[,
 // base address of indexes of types (aka non-terminals or variables)
-#define PARSE_TYPE_BASE   ]]><Integer "ParseTypeBase"/>
-<![[
+PARSE_TYPE_BASE = ]]><Integer "ParseTypeBase"/><![[,
 // number of symbols in parser
-#define PARSE_SYMBOL_COUNT   ]]><Integer "ParseSymbolNum"/>
-<![[
+PARSE_SYMBOL_COUNT = ]]><Integer "ParseSymbolNum"/><![[,
 
 // number of symbols in parser
-#define PARSE_TOKENMAP_SIZE   ]]><Size "ParseTokenMap"/>
-<![[
+PARSE_TOKENMAP_SIZE = ]]><Size "ParseTokenMap"/><![[,
 
 // start state of parser
-#define PARSE_START_STATE   ]]><Integer "ParseStartState"/>
-<![[
+PARSE_START_STATE = ]]><Integer "ParseStartState"/><![[,
 
 // accept state of parser
-#define PARSE_ACCEPT_STATE   ]]><Integer "ParseAcceptState"/>
-<![[
+PARSE_ACCEPT_STATE = ]]><Integer "ParseAcceptState"/><![[,
 
 // illegal state for parser
-#define PARSE_ERROR_STATE   ]]><Integer "ParseErrorState"/>
-<![[
+PARSE_ERROR_STATE  = ]]><Integer "ParseErrorState"/><![[,
 
 // special ID of invalid rule for parser, indicating current lookahead
 // symbol can not be shifted
-#define PERROR_RULE   ]]><Integer "ParseErrorRule"/>
-</If>
+PERROR_RULE = ]]><Integer "ParseErrorRule"/><![[,
+]]></If>
 <![[
 
-#define	MAX_MSG_LENG 		128
+MAX_MSG_LENG = 128,
+};
 
 // macros for wrapped new operator
 #define MYNEW(var, type) {\
@@ -295,43 +301,10 @@ enum {
 	YYE_NOINPUT =	-5,
 };
 ]]>
-<If EnableScanner>
-	<If EnableLocation>
-		<If EnableColumn><![[
-
-template<class INT_TYPE, int STACK_SIZE>
-class cycstack_t {
-
-public:
-	inline cycstack_t(void)
-	: m_nBase(0)
-	, m_nTop(0) {
-	}
-	inline void push(INT_TYPE a_nSize) {
-		m_nTop = (m_nTop + 1) % STACK_SIZE;
-		m_nElem[m_nTop] = a_nSize;
-		if(m_nTop == m_nBase) {
-			m_nBase = (m_nTop + 1) % STACK_SIZE;
-		}
-	}
-	inline INT_TYPE pop(void) {
-		if(m_nTop != m_nBase) {
-			INT_TYPE sz = m_nElem[m_nTop];
-			m_nTop = (m_nTop + STACK_SIZE - 1) % STACK_SIZE;
-			return sz;
-		}
-		return 0;
-	}
-	inline void clear(void) {
-		m_nTop = m_nBase;
-	}	
-private:
-	INT_TYPE m_nElem[STACK_SIZE];
-	short m_nBase, m_nTop;
-};
-]]>
-		</If>
-	</If><![[
+<If EnableScanner><![[
+class bufbase_t;
+typedef bufbase_t *YYPBUFFER;
+]]><![[
 class bufbase_t {
 
 public:
@@ -382,21 +355,35 @@ protected:
 	<If EnableLocation>
 		<If EnableColumn><![[
 public:
-	inline void pushlsz(int nlsize) {
-		stlsz.push((short)nlsize);
-	}
-	inline int poplsz(void) {
-		return stlsz.pop();
-	}
-	inline void pushtsz(int ntsize) {
-		sttsz.push((by_te_t)ntsize);
-	}
-	inline int poptsz(void) {
-		return sttsz.pop();
-	}
+    // update 14/12/17
+    inline void pushlsz(int nlsize) {
+        stlsz.push_back(nlsize);
+    }
+    inline int poplsz(void) {
+        if(stlsz.empty()) {
+            return 0;
+        }
+        auto n = stlsz.back();
+        stlsz.pop_back();
+        return n;
+    }
+
+    inline void pushtsz(int ntsize) {
+        // update 14/12/17
+        sttsz.push_back(ntsize);
+    }
+    inline int poptsz(void) {
+        if(sttsz.empty()) {
+            return 0;
+        }
+        auto n = sttsz.back();
+        sttsz.pop_back();
+        return n;
+    }
 protected:
-	cycstack_t<short, LINESIZE_STACK_LENG> stlsz;
-	cycstack_t<by_te_t, TABSIZE_STACK_LENG> sttsz;
+    // update 14/12/17
+    std::vector<int> stlsz;
+    std::vector<int> sttsz;
 ]]>
 		</If>
 	</If><![[
@@ -477,6 +464,7 @@ extern xstype_t ]]><$YY "lval"/><![[;
 extern xltype_t ]]><$YY "lloc"/><![[;
 ]]></If>
 <If EnableDeclare><![[
+} // namespace
 #endif
 ]]></If>
 
@@ -1060,68 +1048,54 @@ private:
 	};
 
 ]]></If><![[
-	template<class ElemType, int INIT_SIZE = 4096, int INC_SIZE = 1024>
-	class sstack_t {
-	private:
-		ElemType *pbase;
-		int size;
-		int ntop;
+    template<class ElemType, int INIT_SIZE = 4096>
+    class sstack_t {
+    public:
+        inline sstack_t(void) {
 
-	public:
-		inline sstack_t(void)
-		: pbase(NULL)
-		, size(INIT_SIZE)
-		, ntop(-1) {
-			MYNEWS(pbase, ElemType, INIT_SIZE);
-		}
-		inline ~sstack_t(void) {
-			if(pbase) {
-				delete[] pbase;
-			}
-		}
+        }
 
-		inline void push(void) {
-			if(ntop == size - 1) {
-				MYRENEW(pbase, ElemType, INC_SIZE + size, size);
-				size += INC_SIZE;
-			}
-			++ntop;
-		}
-		inline void push(const ElemType &e) {
-			if(ntop == size - 1) {
-				MYRENEW(pbase, ElemType, INC_SIZE + size, size);
-				size += INC_SIZE;
-			}
-			pbase[++ntop] = e;
-		}
-		inline ElemType& top(void) {
-			return pbase[ntop];
-		}
-		inline const ElemType& top(void) const {
-			return pbase[ntop];
-		}
-		inline void pop(int n) {
-			ntop -= n;
-		}
-		inline ElemType& operator[](int down) {
-			return pbase[ntop - down];
-		}
-		inline const ElemType& operator[](int down) const {
-			return pbase[ntop - down];
-		}
+        inline void push(void) {
+            mStk.push_back(ElemType());
+        }
+        inline void push(const ElemType &e) {
+            mStk.push_back(e);
+        }
+        inline ElemType& top(void) {
+            return mStk.back();
+        }
+        inline const ElemType& top(void) const {
+            return mStk.back();
+        }
+        inline void pop(int n) {
+            while(n > 0 && !mStk.empty()) {
+                mStk.pop_back();
+                n--;
+            }
+        }
+        inline ElemType& operator[](int down) {
+            const auto sz = (int) mStk.size();
+            return mStk[sz - 1 - down];
+        }
+        inline const ElemType& operator[](int down) const {
+            const auto sz = (int) mStk.size();
+            return mStk[sz - 1 - down];
+        }
 
-		inline bool empty(void) const {
-			return ntop < 0;
-		}
+        inline bool empty(void) const {
+            return mStk.empty();
+        }
 
-		inline int count(void) const {
-			return ntop + 1;
-		}
+        inline int count(void) const {
+            return (int)mStk.size();
+        }
 
-		inline void clear(void) {
-			ntop = -1;
-		}
-	};
+        inline void clear(void) {
+            mStk.clear();
+        }
+    private:
+        std::vector<ElemType> mStk;
+    };
 ]]><If EnableScanner><![[
 
 private:
@@ -1159,6 +1133,17 @@ private:
 	friend void yyemit_error__(const char *s]]><If Has?"FormalParams"><![[, ]]><Action "FormalParams"/></If><![[);
 ]]><If EnableParser><![[
 private:
+	// update 16/12/17
+    int YYSTOKEN(const std::string& lexeme) const {
+		if(lexeme.size() == 1) {
+			return (int)lexeme[0];
+		}
+        auto cit = yyslexemID.find(lexeme);
+        if(cit == yyslexemID.cend()) {
+			return PARSE_UNDEFSYMB_ID;
+		}
+        return cit->second;
+	}
 
 	inline void YYACCEPT(void) {
 		yyecode__ = YYE_ACCEPT;
@@ -1685,15 +1670,17 @@ if(yylogger){
 						yys_symb__.pop(yyrplen__);
 						yys_sv__.pop(yyrplen__);
 ]]><If EnableLocation><![[
-						if(yyrplen__ == 0) {
-							yyloc.firstLine = yyloc.lastLine = yys_loc__[0].lastLine;
-							yyloc.firstColumn = yyloc.lastColumn = yys_loc__[0].lastColumn;
-						}
-						else {
-							yyloc.firstLine = yys_loc__[yyrplen__ - 1].firstLine;
-							yyloc.lastLine = yys_loc__[0].lastLine;
-							yyloc.firstColumn = yys_loc__[yyrplen__ - 1].firstColumn;
-							yyloc.lastColumn = yys_loc__[0].lastColumn;
+						if(!yys_loc__.empty()) {
+							if(yyrplen__ == 0) {
+								yyloc.firstLine = yyloc.lastLine = yys_loc__[0].lastLine;
+								yyloc.firstColumn = yyloc.lastColumn = yys_loc__[0].lastColumn;
+							}
+							else {
+								yyloc.firstLine = yys_loc__[yyrplen__ - 1].firstLine;
+								yyloc.lastLine = yys_loc__[0].lastLine;
+								yyloc.firstColumn = yys_loc__[yyrplen__ - 1].firstColumn;
+								yyloc.lastColumn = yys_loc__[0].lastColumn;
+							}
 						}
 						yys_loc__.pop(yyrplen__);
 						yys_loc__.push(yyloc);
@@ -2007,7 +1994,7 @@ private:
 	// buffer manager
 	bufmgr_t yybufmgr__;
 	// start-condition stack
-	sstack_t<int, 32, 16> yyscstk__;
+    sstack_t<int, 32> yyscstk__;
 	int yysize__;
 	int yystart__;
 
@@ -2085,6 +2072,7 @@ private:
 	static const int yypcn[]]><Size "ParseColNice"/><![[];
 	static const int yypgrv[]]><Size "ParseGotoRowVal"/><![[];
 	static const int yypgrn[]]><Size "ParseGotoRowNice"/><![[];
+	static const std::unordered_map<std::string, int> yyslexemID;
 ]]></If><![[
 ///////////////////////////////////////////////////////////////////////////////////
 	// optional tables, they are available only under certain conditions
@@ -2255,6 +2243,12 @@ const int ]]><$YY "parser_t"/><![[::yypgrn[]]><Size "ParseGotoRowNice"/><![[] = 
 <$IntArray "ParseGotoRowNice"/>
 <![[
 };
+
+const std::unordered_map<std::string, int> ]]><$YY "parser_t"/><![[::yyslexemID{
+]]>
+<$StrIntMapDefine "ParseStrTokenNames" "ParseStrTokenValues"/>
+<![[
+};
 ]]></If>
 <If EnableScanner>
 <If Has?"LexDFALookaheads"><![[
@@ -2367,6 +2361,9 @@ int ]]><$YY "lex"/><![[(]]><If Has?"FormalParams"><Action "FormalParams"/></If><
 int ]]><$YY "parse"/><![[(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[) {
 	return getTheParser().yyparse__(]]><If Has?"ActualParams"><Action "ActualParams"/></If><![[);
 }]]></If>
+<![[
+} // namspace
+]]>
 <$SingleAction "UserCode"/><![[
 
 ]]>

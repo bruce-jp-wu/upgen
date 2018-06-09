@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -28,6 +28,9 @@ using std::ofstream;
 
 #include <sys/stat.h>
 #include <cstring>
+// update 14/12/17
+#include <ctime>
+#include <cctype>
 
 #include "./upgmain.h"
 
@@ -60,6 +63,7 @@ using parser_ns::ptable_t;
 using namespace spec_ns;
 
 #include "../gcode/ulyac.h"
+using namespace yynsx;
 
 enum {
 	
@@ -590,7 +594,22 @@ int upgmain(int argc, char **argv) {
 	string strPrefix, strSuffix;
 	filehelper_t::extractDir(vstrIn[0], strPrefix, str);
 	filehelper_t::extractExt(str, strPrefix, strSuffix);
-	dmap.insert(CKEY_FILE_BASENAME, strPrefix);
+
+    // update 14/12/17
+    string strFileBase;
+    {
+        for(auto c: strPrefix) {
+            if(std::isalnum(c)) {
+                strFileBase += std::toupper(c);
+            } else {
+                strFileBase += '_';
+            }
+        }
+
+        strFileBase += "_";
+        strFileBase += std::to_string(std::time(nullptr));
+    }
+    dmap.insert(CKEY_FILE_BASENAME, strFileBase);
 	
 	strSpec = strhelper_t::toUpper(strSpec);
 	

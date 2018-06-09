@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -34,6 +34,7 @@ using common_ns::filehelper_t;
 #include "./dmmap.h"
 #include "./cmmgr.h"
 #include "../gcode/coderyac.h"
+using namespace coder_nsx;
 
 namespace coder_ns {
 

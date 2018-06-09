@@ -1035,6 +1035,8 @@ conf_sect: HCNF LMAKE %{
 
 %%
 
+using namespace yynsx;
+
 bool try_mkdir(const string &strDir) {
 
 	struct stat stbuf;

@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -70,6 +70,13 @@ private:
 	// and value 258 in correspoding entry in @m_tTokenDef
 	vstr_t m_vstrTokenDef;
 	table_t m_tTokenDef;
+
+    // update 16/12/17
+    // to define string tokens as string->int map
+    // e.g.
+    // yyslexemID{{"==", 300}, {">=", 301}}
+    vstr_t m_vstrStrTokenDef;
+    table_t m_tStrTokenDef;
 	
 	// array of token IDs
 	table_t m_tTokenID;
@@ -268,13 +275,20 @@ public:
 	inline const vint_t& getRule2LineNos(void) const {
 		return m_ruleMgr.getRule2LineNos();
 	}
-	
+
 	inline const vstr_t& getTokenDefNames(void) const {
 		return 	m_vstrTokenDef;
 	}
 	inline const table_t& getTokenDefValues(void) const {
 		return m_tTokenDef;
 	}
+    // update 16/12/17
+    inline const vstr_t& getStrTokenDefNames(void) const {
+        return m_vstrStrTokenDef;
+    }
+    inline const table_t& getStrTokenDefValues(void) const {
+        return m_tStrTokenDef;
+    }
 	
 	inline const vaction_t& getDstrctActions(void) const {
 		return m_vaDstrct;

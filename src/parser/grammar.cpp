@@ -1,6 +1,6 @@
 /*
     Upgen -- a scanner and parser generator.
-    Copyright (C) 2016  Bruce Wu
+    Copyright (C) 2009-2018 Bruce Wu
     
     This file is a part of Upgen program
 
@@ -1450,11 +1450,56 @@ void grammar_t::initPTable(ptable_t & a_ptbl) {
 			a_ptbl.m_vstrSName.push_back(m_vstrSName[i].substr(1, m_vstrSName[i].size() - 2));
 		}
 		else {
-			a_ptbl.m_vstrSName.push_back(m_vstrSName[i]);
-			if(i > UNDEFINED_SYMBOL_INDEX) {
-				a_ptbl.m_vstrTokenDef.push_back(m_vstrSName[i]);
-				a_ptbl.m_tTokenDef.push_back(a_ptbl.m_tTokenID[i]);
-			}
+            if(m_vstrSName[i][0] == '\"') {
+
+                std::string tokenText;
+                auto& str = m_vstrSName[i];
+                for(auto j = 1, e = (int)str.size(); j < e - 1; j++) {
+                    auto packEscapeChar = [](char c) {
+                        switch(c) {
+                        case '\0':
+                            return string("\\0");
+                        case '\a':
+                            return string("\\a");
+                        case '\b':
+                            return string("\\b");
+                        case '\f':
+                            return string("\\f");
+                        case '\n':
+                            return string("\\n");
+                        case '\r':
+                            return string("\\r");
+                        case '\t':
+                            return string("\\t");
+                        case '\v':
+                            return string("\\v");
+                        case '\'':
+                            return string("\\\'");
+                        case '\"':
+                            return string("\\\"");
+                        case '?':
+                            return string("\\?");
+                        case '\\':
+                            return string("\\\\");
+                        }
+                        std::string s;
+                        s += c;
+                        return s;
+                    };
+
+                    tokenText += packEscapeChar(str[j]);
+                }
+
+                a_ptbl.m_vstrSName.push_back(tokenText);
+                a_ptbl.m_vstrStrTokenDef.push_back(tokenText);
+                a_ptbl.m_tStrTokenDef.push_back(a_ptbl.m_tTokenID[i]);
+            } else {
+                a_ptbl.m_vstrSName.push_back(m_vstrSName[i]);
+                if(i > UNDEFINED_SYMBOL_INDEX) {
+                    a_ptbl.m_vstrTokenDef.push_back(m_vstrSName[i]);
+                    a_ptbl.m_tTokenDef.push_back(a_ptbl.m_tTokenID[i]);
+                }
+            }
 		}
 	}
 	

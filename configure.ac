@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([the pattern-matching and parsing program generator], [0.5.2], [bruce.jp.wu@gmail.com], [upgen])
+AC_INIT([the pattern-matching and parsing program generator], [0.5.3], [bruce.jp.wu@gmail.com], [upgen])
 AC_PREREQ([2.12])
 #AM_INIT_AUTOMAKE([])
 AM_INIT_AUTOMAKE([subdir-objects])
