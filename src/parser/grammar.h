@@ -132,6 +132,15 @@ private:
 	void initPTable(ptable_t & a_ptbl);
 	// convert from grammar object to parse graph
 	void gram2PGraph(pgraph_t &a_pgrp);
+
+
+    // calculate LR(1) closure
+    void calcLR1Closure(LALRGraphNode &curNode);
+    // calculate LR(1) Items
+    void calcLR1Items(LALRGraph &lalrGraph);
+    // merge LR(1) Items into LALR Items group by Core Items
+    // convert from grammar object to parse graph
+    void gram2PGraph2(pgraph_t &a_pgrp);
 	
 public:
 	

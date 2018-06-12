@@ -23,7 +23,7 @@ typedef bufbase_t *YYPBUFFER;
 
 #include "./ulyac.h"
 
-#line 43 "../upgen/src/meta/ulyac.upg"
+#line 43 "meta/ulyac.upg"
 
 /*
     Upgen -- a scanner and parser generator.
@@ -171,7 +171,7 @@ static int sn_nVarDeclInit = -1;
 
 
 
-#line 174 "../upgen/src/gcode/ulyac.cpp"
+#line 174 "gcode/ulyac.cpp"
 namespace yynsx {
 enum {
 INC_YYTEXT_SIZE = 4096,
@@ -1202,12 +1202,12 @@ public:
 		bool yylast_at_bol__ = yyat_bol__;
 		bool bwrap__ = false;
 		
-#line 196 "../upgen/src/meta/ulyac.upg"
+#line 196 "meta/ulyac.upg"
 
 	int c, i, j;
 	string strMsg;
 
-#line 1210 "../upgen/src/gcode/ulyac.cpp"
+#line 1210 "gcode/ulyac.cpp"
 
 		yymore_flag__ = false;
 		yyecode__ = YYE_ALIVE;
@@ -1308,14 +1308,14 @@ public:
 case 0:
 {
 	
-#line 333 "../upgen/src/meta/ulyac.upg"
+#line 333 "meta/ulyac.upg"
 	{
 
 		yy_set_bol(true);
 	}
 	
 
-#line 1318 "../upgen/src/gcode/ulyac.cpp"
+#line 1318 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1323,14 +1323,14 @@ case 0:
 case 1:
 {
 	
-#line 338 "../upgen/src/meta/ulyac.upg"
+#line 338 "meta/ulyac.upg"
 	{
 		
 		PROCESS_ACTION_1(c, '*', '/', NULL_ACTION)
 	}
 	
 
-#line 1333 "../upgen/src/gcode/ulyac.cpp"
+#line 1333 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1338,7 +1338,7 @@ case 1:
 case 2:
 {
 	
-#line 343 "../upgen/src/meta/ulyac.upg"
+#line 343 "meta/ulyac.upg"
 		{
 
 		c = yyinput();
@@ -1376,7 +1376,7 @@ case 2:
 	}
 
 
-#line 1379 "../upgen/src/gcode/ulyac.cpp"
+#line 1379 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1384,14 +1384,14 @@ case 2:
 case 3:
 {
 	
-#line 379 "../upgen/src/meta/ulyac.upg"
+#line 379 "meta/ulyac.upg"
 		{
 
 		LEX_BEGIN(PRS_SC);		
 		return SECT_DELIM;
 	}
 
-#line 1394 "../upgen/src/gcode/ulyac.cpp"
+#line 1394 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1399,7 +1399,7 @@ case 3:
 case 4:
 {
 	
-#line 384 "../upgen/src/meta/ulyac.upg"
+#line 384 "meta/ulyac.upg"
 		{
 		
 		// scanning code section comes here		
@@ -1417,7 +1417,7 @@ case 4:
 	}
 
 
-#line 1420 "../upgen/src/gcode/ulyac.cpp"
+#line 1420 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1425,7 +1425,7 @@ case 4:
 case 5:
 {
 	
-#line 400 "../upgen/src/meta/ulyac.upg"
+#line 400 "meta/ulyac.upg"
 	{
 
 		int idx = 8;
@@ -1449,7 +1449,7 @@ case 5:
 	}
 	
 
-#line 1452 "../upgen/src/gcode/ulyac.cpp"
+#line 1452 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1457,14 +1457,14 @@ case 5:
 case 6:
 {
 	
-#line 422 "../upgen/src/meta/ulyac.upg"
+#line 422 "meta/ulyac.upg"
 				{
 
 		CRET
 	}
 	
 
-#line 1467 "../upgen/src/gcode/ulyac.cpp"
+#line 1467 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1472,7 +1472,7 @@ case 6:
 case 7:
 {
 	
-#line 427 "../upgen/src/meta/ulyac.upg"
+#line 427 "meta/ulyac.upg"
 		{
 		if(!strhelper_t::toSnum(yytext, yylval.m_nVal)) {
 			
@@ -1491,7 +1491,7 @@ case 7:
 	}
 	
 
-#line 1494 "../upgen/src/gcode/ulyac.cpp"
+#line 1494 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1499,14 +1499,14 @@ case 7:
 case 8:
 {
 	
-#line 444 "../upgen/src/meta/ulyac.upg"
+#line 444 "meta/ulyac.upg"
 	{
 
 		return KW_ON;
 	}
 	
 
-#line 1509 "../upgen/src/gcode/ulyac.cpp"
+#line 1509 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1514,14 +1514,14 @@ case 8:
 case 9:
 {
 	
-#line 449 "../upgen/src/meta/ulyac.upg"
+#line 449 "meta/ulyac.upg"
 	{
 
 		return KW_OFF;
 	}
 
 
-#line 1524 "../upgen/src/gcode/ulyac.cpp"
+#line 1524 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1531,7 +1531,7 @@ case 10:
 case 11:
 {
 	
-#line 455 "../upgen/src/meta/ulyac.upg"
+#line 455 "meta/ulyac.upg"
 	{
 
 		char *tx = yytext;
@@ -1564,7 +1564,7 @@ case 11:
 		return CSTR;
 	}
 
-#line 1567 "../upgen/src/gcode/ulyac.cpp"
+#line 1567 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1572,14 +1572,14 @@ case 11:
 case 12:
 {
 	
-#line 486 "../upgen/src/meta/ulyac.upg"
+#line 486 "meta/ulyac.upg"
 		{
 		
 		LEX_BEGIN(INITIAL);
 	}
 
 
-#line 1582 "../upgen/src/gcode/ulyac.cpp"
+#line 1582 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1589,7 +1589,7 @@ case 13:
 case 14:
 {
 	
-#line 492 "../upgen/src/meta/ulyac.upg"
+#line 492 "meta/ulyac.upg"
 		{
 		
 		LEX_BEGIN(XISC_SC);
@@ -1604,7 +1604,7 @@ case 14:
 	}
 
 
-#line 1607 "../upgen/src/gcode/ulyac.cpp"
+#line 1607 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1612,7 +1612,7 @@ case 14:
 case 15:
 {
 	
-#line 505 "../upgen/src/meta/ulyac.upg"
+#line 505 "meta/ulyac.upg"
 		{
 		
 		yylval.m_pchVal = new char[yyleng + 1];
@@ -1624,7 +1624,7 @@ case 15:
 		return XISC;
 	}
 
-#line 1627 "../upgen/src/gcode/ulyac.cpp"
+#line 1627 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1632,12 +1632,12 @@ case 15:
 case 16:
 {
 	
-#line 515 "../upgen/src/meta/ulyac.upg"
+#line 515 "meta/ulyac.upg"
 
 
 	
 
-#line 1640 "../upgen/src/gcode/ulyac.cpp"
+#line 1640 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1645,14 +1645,14 @@ case 16:
 case 17:
 {
 	
-#line 517 "../upgen/src/meta/ulyac.upg"
+#line 517 "meta/ulyac.upg"
 		{
 	
 		LEX_BEGIN(INITIAL);
 	}
 
 
-#line 1655 "../upgen/src/gcode/ulyac.cpp"
+#line 1655 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1660,7 +1660,7 @@ case 17:
 case 18:
 {
 	
-#line 522 "../upgen/src/meta/ulyac.upg"
+#line 522 "meta/ulyac.upg"
 	{
 
 		i = 7;
@@ -1675,7 +1675,7 @@ case 18:
 	}
 
 
-#line 1678 "../upgen/src/gcode/ulyac.cpp"
+#line 1678 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1683,7 +1683,7 @@ case 18:
 case 19:
 {
 	
-#line 535 "../upgen/src/meta/ulyac.upg"
+#line 535 "meta/ulyac.upg"
 		{
 
 		if(dmap.isAction(CKEY_LTYPE_DECLARE)) {
@@ -1722,7 +1722,7 @@ case 19:
 	}
 
 
-#line 1725 "../upgen/src/gcode/ulyac.cpp"
+#line 1725 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1730,7 +1730,7 @@ case 19:
 case 20:
 {
 	
-#line 572 "../upgen/src/meta/ulyac.upg"
+#line 572 "meta/ulyac.upg"
 			{
 		
 		if(dmap.isAction(CKEY_STYPE_DECLARE)) {
@@ -1772,7 +1772,7 @@ case 20:
 	}
 
 
-#line 1775 "../upgen/src/gcode/ulyac.cpp"
+#line 1775 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1786,7 +1786,7 @@ case 23:
 case 24:
 {
 	
-#line 615 "../upgen/src/meta/ulyac.upg"
+#line 615 "meta/ulyac.upg"
 	{
 
 		string strKey;
@@ -1864,7 +1864,7 @@ case 24:
 
 	
 
-#line 1867 "../upgen/src/gcode/ulyac.cpp"
+#line 1867 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1876,7 +1876,7 @@ case 26:
 case 27:
 {
 	
-#line 693 "../upgen/src/meta/ulyac.upg"
+#line 693 "meta/ulyac.upg"
 		{
 
 		bool bret;
@@ -1925,7 +1925,7 @@ case 27:
 
 
 
-#line 1928 "../upgen/src/gcode/ulyac.cpp"
+#line 1928 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1933,7 +1933,7 @@ case 27:
 case 28:
 {
 	
-#line 740 "../upgen/src/meta/ulyac.upg"
+#line 740 "meta/ulyac.upg"
 		{
 
 		if( ! sn_pactDeclHeader) {
@@ -1947,7 +1947,7 @@ case 28:
 	}
 
 
-#line 1950 "../upgen/src/gcode/ulyac.cpp"
+#line 1950 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1955,13 +1955,13 @@ case 28:
 case 29:
 {
 	
-#line 752 "../upgen/src/meta/ulyac.upg"
+#line 752 "meta/ulyac.upg"
 			{
 		LEX_PUSH_STATE(TOK_SC);
 		return TOKEN_LABEL;
 	}
 
-#line 1964 "../upgen/src/gcode/ulyac.cpp"
+#line 1964 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1969,13 +1969,13 @@ case 29:
 case 30:
 {
 	
-#line 756 "../upgen/src/meta/ulyac.upg"
+#line 756 "meta/ulyac.upg"
 			{
 		LEX_PUSH_STATE(TOK_SC);
 		return LEFT_LABEL;
 	}
 
-#line 1978 "../upgen/src/gcode/ulyac.cpp"
+#line 1978 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1983,13 +1983,13 @@ case 30:
 case 31:
 {
 	
-#line 760 "../upgen/src/meta/ulyac.upg"
+#line 760 "meta/ulyac.upg"
 			{
 		LEX_PUSH_STATE(TOK_SC);
 		return RIGHT_LABEL;
 	}
 
-#line 1992 "../upgen/src/gcode/ulyac.cpp"
+#line 1992 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -1997,13 +1997,13 @@ case 31:
 case 32:
 {
 	
-#line 764 "../upgen/src/meta/ulyac.upg"
+#line 764 "meta/ulyac.upg"
 		{
 		LEX_PUSH_STATE(TOK_SC);
 		return NONASSOC_LABEL;
 	}
 
-#line 2006 "../upgen/src/gcode/ulyac.cpp"
+#line 2006 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2011,14 +2011,14 @@ case 32:
 case 33:
 {
 	
-#line 768 "../upgen/src/meta/ulyac.upg"
+#line 768 "meta/ulyac.upg"
 			{
 		LEX_PUSH_STATE(TYP_SC);
 		return TYPE_LABEL;
 	}
 
 
-#line 2021 "../upgen/src/gcode/ulyac.cpp"
+#line 2021 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2028,7 +2028,7 @@ case 34:
 case 35:
 {
 	
-#line 774 "../upgen/src/meta/ulyac.upg"
+#line 774 "meta/ulyac.upg"
  {		
 		yylval.m_pDstrct = new action_t(yylloc.firstLine);
 		
@@ -2088,7 +2088,7 @@ case 35:
 		return DESTRUCTOR_LABEL;
 	}
 
-#line 2091 "../upgen/src/gcode/ulyac.cpp"
+#line 2091 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2096,13 +2096,13 @@ case 35:
 case 36:
 {
 	
-#line 832 "../upgen/src/meta/ulyac.upg"
+#line 832 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 0;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
-#line 2105 "../upgen/src/gcode/ulyac.cpp"
+#line 2105 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2110,13 +2110,13 @@ case 36:
 case 37:
 {
 	
-#line 836 "../upgen/src/meta/ulyac.upg"
+#line 836 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 1;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
-#line 2119 "../upgen/src/gcode/ulyac.cpp"
+#line 2119 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2124,13 +2124,13 @@ case 37:
 case 38:
 {
 	
-#line 840 "../upgen/src/meta/ulyac.upg"
+#line 840 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 2;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
-#line 2133 "../upgen/src/gcode/ulyac.cpp"
+#line 2133 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2138,14 +2138,14 @@ case 38:
 case 39:
 {
 	
-#line 844 "../upgen/src/meta/ulyac.upg"
+#line 844 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 3;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 	
 
-#line 2148 "../upgen/src/gcode/ulyac.cpp"
+#line 2148 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2153,13 +2153,13 @@ case 39:
 case 40:
 {
 	
-#line 849 "../upgen/src/meta/ulyac.upg"
+#line 849 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 0;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
-#line 2162 "../upgen/src/gcode/ulyac.cpp"
+#line 2162 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2167,13 +2167,13 @@ case 40:
 case 41:
 {
 	
-#line 853 "../upgen/src/meta/ulyac.upg"
+#line 853 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 1;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
-#line 2176 "../upgen/src/gcode/ulyac.cpp"
+#line 2176 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2181,13 +2181,13 @@ case 41:
 case 42:
 {
 	
-#line 857 "../upgen/src/meta/ulyac.upg"
+#line 857 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 2;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
-#line 2190 "../upgen/src/gcode/ulyac.cpp"
+#line 2190 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2195,14 +2195,14 @@ case 42:
 case 43:
 {
 	
-#line 861 "../upgen/src/meta/ulyac.upg"
+#line 861 "meta/ulyac.upg"
 		{
 		sn_nVarDeclInit = 3;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 	
 
-#line 2205 "../upgen/src/gcode/ulyac.cpp"
+#line 2205 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2210,13 +2210,13 @@ case 43:
 case 44:
 {
 	
-#line 866 "../upgen/src/meta/ulyac.upg"
+#line 866 "meta/ulyac.upg"
 			{
 		sn_nVarDeclInit = 4;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
-#line 2219 "../upgen/src/gcode/ulyac.cpp"
+#line 2219 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2224,14 +2224,14 @@ case 44:
 case 45:
 {
 	
-#line 870 "../upgen/src/meta/ulyac.upg"
+#line 870 "meta/ulyac.upg"
 			{
 		sn_nVarDeclInit = 5;
 		LEX_PUSH_STATE(PLVAR_SC);
 	}
 
 
-#line 2234 "../upgen/src/gcode/ulyac.cpp"
+#line 2234 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2239,7 +2239,7 @@ case 45:
 case 46:
 {
 	
-#line 875 "../upgen/src/meta/ulyac.upg"
+#line 875 "meta/ulyac.upg"
 		{
 
 		string strKey;
@@ -2305,7 +2305,7 @@ case 46:
 	}
 
 
-#line 2308 "../upgen/src/gcode/ulyac.cpp"
+#line 2308 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2313,7 +2313,7 @@ case 46:
 case 47:
 {
 	
-#line 939 "../upgen/src/meta/ulyac.upg"
+#line 939 "meta/ulyac.upg"
 		{
 		
 		if(! sn_pactDefHeader) {
@@ -2327,7 +2327,7 @@ case 47:
 	}
 
 
-#line 2330 "../upgen/src/gcode/ulyac.cpp"
+#line 2330 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2335,7 +2335,7 @@ case 47:
 case 48:
 {
 	
-#line 951 "../upgen/src/meta/ulyac.upg"
+#line 951 "meta/ulyac.upg"
 	{
 
 		c = yyleng - 1;
@@ -2350,7 +2350,7 @@ case 48:
 	}
 
 
-#line 2353 "../upgen/src/gcode/ulyac.cpp"
+#line 2353 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2358,7 +2358,7 @@ case 48:
 case 49:
 {
 	
-#line 964 "../upgen/src/meta/ulyac.upg"
+#line 964 "meta/ulyac.upg"
 	{
 
 		yylval.m_pchVal = new char[yyleng + 1];
@@ -2368,7 +2368,7 @@ case 49:
 		return CID;
 	}
 
-#line 2371 "../upgen/src/gcode/ulyac.cpp"
+#line 2371 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2376,12 +2376,12 @@ case 49:
 case 50:
 {
 	
-#line 972 "../upgen/src/meta/ulyac.upg"
+#line 972 "meta/ulyac.upg"
 	{
 		CRET
 	}
 
-#line 2384 "../upgen/src/gcode/ulyac.cpp"
+#line 2384 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2389,13 +2389,13 @@ case 50:
 case 51:
 {
 	
-#line 975 "../upgen/src/meta/ulyac.upg"
+#line 975 "meta/ulyac.upg"
 		{
         yylval.m_cVal = strhelper_t::toEsc(&yytext[1]);
 		return QCHAR;
 	}
 
-#line 2398 "../upgen/src/gcode/ulyac.cpp"
+#line 2398 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2403,13 +2403,13 @@ case 51:
 case 52:
 {
 	
-#line 979 "../upgen/src/meta/ulyac.upg"
+#line 979 "meta/ulyac.upg"
 		{	
 		yylval.m_cVal = (char)strhelper_t::ostr2Num(&yytext[1]);
 		return QCHAR;
 	}
 
-#line 2412 "../upgen/src/gcode/ulyac.cpp"
+#line 2412 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2417,13 +2417,13 @@ case 52:
 case 53:
 {
 	
-#line 983 "../upgen/src/meta/ulyac.upg"
+#line 983 "meta/ulyac.upg"
 		{
 		yylval.m_cVal = (char)strhelper_t::hstr2Num(&yytext[1]);
 		return QCHAR;
 	}
 
-#line 2426 "../upgen/src/gcode/ulyac.cpp"
+#line 2426 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2431,13 +2431,13 @@ case 53:
 case 54:
 {
 	
-#line 987 "../upgen/src/meta/ulyac.upg"
+#line 987 "meta/ulyac.upg"
 	{
 		yylval.m_cVal = yytext[1];
 		return QCHAR;
 	}
 
-#line 2440 "../upgen/src/gcode/ulyac.cpp"
+#line 2440 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2445,13 +2445,13 @@ case 54:
 case 55:
 {
 	
-#line 991 "../upgen/src/meta/ulyac.upg"
+#line 991 "meta/ulyac.upg"
 		{
 		yylval.m_cVal = yytext[2];
 		return QCHAR;
 	}
 
-#line 2454 "../upgen/src/gcode/ulyac.cpp"
+#line 2454 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2459,7 +2459,7 @@ case 55:
 case 56:
 {
 	
-#line 995 "../upgen/src/meta/ulyac.upg"
+#line 995 "meta/ulyac.upg"
            {
         std::string tstr;
         for(auto i = 0; i < yyleng; ) {
@@ -2502,7 +2502,7 @@ case 56:
 
     }
 
-#line 2505 "../upgen/src/gcode/ulyac.cpp"
+#line 2505 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2510,7 +2510,7 @@ case 56:
 case 57:
 {
 	
-#line 1036 "../upgen/src/meta/ulyac.upg"
+#line 1036 "meta/ulyac.upg"
 		{
 
 		if(!strhelper_t::toSnum(yytext, yylval.m_nVal)) {		
@@ -2527,7 +2527,7 @@ case 57:
 		return INT;
 	}
 
-#line 2530 "../upgen/src/gcode/ulyac.cpp"
+#line 2530 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2535,12 +2535,12 @@ case 57:
 case 58:
 {
 	
-#line 1051 "../upgen/src/meta/ulyac.upg"
+#line 1051 "meta/ulyac.upg"
 		{
 		return yytext[0];
 	}
 
-#line 2543 "../upgen/src/gcode/ulyac.cpp"
+#line 2543 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2548,14 +2548,14 @@ case 58:
 case 59:
 {
 	
-#line 1054 "../upgen/src/meta/ulyac.upg"
+#line 1054 "meta/ulyac.upg"
 	{
 		LEX_POP_STATE();
 		return '\n';
 	}
 	
 
-#line 2558 "../upgen/src/gcode/ulyac.cpp"
+#line 2558 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2563,7 +2563,7 @@ case 59:
 case 60:
 {
 	
-#line 1059 "../upgen/src/meta/ulyac.upg"
+#line 1059 "meta/ulyac.upg"
 		{
 
 		strMsg = strhelper_t::fromInt(yylloc.firstLine);
@@ -2586,7 +2586,7 @@ case 60:
 	}
 
 
-#line 2589 "../upgen/src/gcode/ulyac.cpp"
+#line 2589 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2594,7 +2594,7 @@ case 60:
 case 61:
 {
 	
-#line 1080 "../upgen/src/meta/ulyac.upg"
+#line 1080 "meta/ulyac.upg"
 		{
 
 		LEX_PUSH_STATE(SCR_SC);
@@ -2602,7 +2602,7 @@ case 61:
 		CRET
 	}
 
-#line 2605 "../upgen/src/gcode/ulyac.cpp"
+#line 2605 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2610,14 +2610,14 @@ case 61:
 case 62:
 {
 	
-#line 1086 "../upgen/src/meta/ulyac.upg"
+#line 1086 "meta/ulyac.upg"
 	{
 
 		return KW_INITIAL;
 	}
 	
 
-#line 2620 "../upgen/src/gcode/ulyac.cpp"
+#line 2620 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2625,7 +2625,7 @@ case 62:
 case 63:
 {
 	
-#line 1091 "../upgen/src/meta/ulyac.upg"
+#line 1091 "meta/ulyac.upg"
 		{
 
 		yylval.m_pchVal = new char[yyleng + 1];
@@ -2635,7 +2635,7 @@ case 63:
 	}
 	
 
-#line 2638 "../upgen/src/gcode/ulyac.cpp"
+#line 2638 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2643,14 +2643,14 @@ case 63:
 case 64:
 {
 	
-#line 1099 "../upgen/src/meta/ulyac.upg"
+#line 1099 "meta/ulyac.upg"
 			{
 
 		CRET
 	}
 	
 
-#line 2653 "../upgen/src/gcode/ulyac.cpp"
+#line 2653 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2658,7 +2658,7 @@ case 64:
 case 65:
 {
 	
-#line 1104 "../upgen/src/meta/ulyac.upg"
+#line 1104 "meta/ulyac.upg"
 			{
 
 		LEX_POP_STATE();
@@ -2667,7 +2667,7 @@ case 65:
 	}
 	
 
-#line 2670 "../upgen/src/gcode/ulyac.cpp"
+#line 2670 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2675,13 +2675,13 @@ case 65:
 case 66:
 {
 	
-#line 1111 "../upgen/src/meta/ulyac.upg"
+#line 1111 "meta/ulyac.upg"
 			{
 		return KW_ALLSC;
 	}
 
 
-#line 2684 "../upgen/src/gcode/ulyac.cpp"
+#line 2684 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2689,13 +2689,13 @@ case 66:
 case 67:
 {
 	
-#line 1115 "../upgen/src/meta/ulyac.upg"
+#line 1115 "meta/ulyac.upg"
 		{
 		return KW_EOF;
 	}
 
 
-#line 2698 "../upgen/src/gcode/ulyac.cpp"
+#line 2698 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2703,7 +2703,7 @@ case 67:
 case 68:
 {
 	
-#line 1119 "../upgen/src/meta/ulyac.upg"
+#line 1119 "meta/ulyac.upg"
 		{
 
 		i = yyleng - 1;
@@ -2723,7 +2723,7 @@ case 68:
 	}
 
 
-#line 2726 "../upgen/src/gcode/ulyac.cpp"
+#line 2726 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2731,7 +2731,7 @@ case 68:
 case 69:
 {
 	
-#line 1137 "../upgen/src/meta/ulyac.upg"
+#line 1137 "meta/ulyac.upg"
 	{
 
 		LEX_POP_STATE();
@@ -2739,7 +2739,7 @@ case 69:
 	}
 
 
-#line 2742 "../upgen/src/gcode/ulyac.cpp"
+#line 2742 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2747,7 +2747,7 @@ case 69:
 case 70:
 {
 	
-#line 1143 "../upgen/src/meta/ulyac.upg"
+#line 1143 "meta/ulyac.upg"
 		{
 		
 		yylval.m_nPosix = charset_t::ALNUM;
@@ -2756,7 +2756,7 @@ case 70:
 	}
 
 
-#line 2759 "../upgen/src/gcode/ulyac.cpp"
+#line 2759 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2764,7 +2764,7 @@ case 70:
 case 71:
 {
 	
-#line 1150 "../upgen/src/meta/ulyac.upg"
+#line 1150 "meta/ulyac.upg"
 		{
 		
 		yylval.m_nPosix = charset_t::ALPHA;
@@ -2773,7 +2773,7 @@ case 71:
 	}
 	
 
-#line 2776 "../upgen/src/gcode/ulyac.cpp"
+#line 2776 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2781,7 +2781,7 @@ case 71:
 case 72:
 {
 	
-#line 1157 "../upgen/src/meta/ulyac.upg"
+#line 1157 "meta/ulyac.upg"
 		{
 
 		yylval.m_nPosix = charset_t::BLANK;
@@ -2790,7 +2790,7 @@ case 72:
 	}
 	
 
-#line 2793 "../upgen/src/gcode/ulyac.cpp"
+#line 2793 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2798,7 +2798,7 @@ case 72:
 case 73:
 {
 	
-#line 1164 "../upgen/src/meta/ulyac.upg"
+#line 1164 "meta/ulyac.upg"
 		{
 		
 		yylval.m_nPosix = charset_t::CNTRL;
@@ -2807,7 +2807,7 @@ case 73:
 	}
 	
 
-#line 2810 "../upgen/src/gcode/ulyac.cpp"
+#line 2810 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2815,7 +2815,7 @@ case 73:
 case 74:
 {
 	
-#line 1171 "../upgen/src/meta/ulyac.upg"
+#line 1171 "meta/ulyac.upg"
 		{
 		
 		yylval.m_nPosix = charset_t::DIGIT;
@@ -2824,7 +2824,7 @@ case 74:
 	}
 	
 
-#line 2827 "../upgen/src/gcode/ulyac.cpp"
+#line 2827 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2832,7 +2832,7 @@ case 74:
 case 75:
 {
 	
-#line 1178 "../upgen/src/meta/ulyac.upg"
+#line 1178 "meta/ulyac.upg"
 		{
 
 		yylval.m_nPosix = charset_t::GRAPH;
@@ -2841,7 +2841,7 @@ case 75:
 	}
 	
 
-#line 2844 "../upgen/src/gcode/ulyac.cpp"
+#line 2844 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2849,7 +2849,7 @@ case 75:
 case 76:
 {
 	
-#line 1185 "../upgen/src/meta/ulyac.upg"
+#line 1185 "meta/ulyac.upg"
 		{
 
 		yylval.m_nPosix = charset_t::LOWER;
@@ -2858,7 +2858,7 @@ case 76:
 	}
 	
 
-#line 2861 "../upgen/src/gcode/ulyac.cpp"
+#line 2861 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2866,7 +2866,7 @@ case 76:
 case 77:
 {
 	
-#line 1192 "../upgen/src/meta/ulyac.upg"
+#line 1192 "meta/ulyac.upg"
 		{
 
 		yylval.m_nPosix = charset_t::PRINT;
@@ -2875,7 +2875,7 @@ case 77:
 	}
 	
 
-#line 2878 "../upgen/src/gcode/ulyac.cpp"
+#line 2878 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2883,7 +2883,7 @@ case 77:
 case 78:
 {
 	
-#line 1199 "../upgen/src/meta/ulyac.upg"
+#line 1199 "meta/ulyac.upg"
 		{
 
 		yylval.m_nPosix = charset_t::PUNCT;
@@ -2892,7 +2892,7 @@ case 78:
 	}
 	
 
-#line 2895 "../upgen/src/gcode/ulyac.cpp"
+#line 2895 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2900,7 +2900,7 @@ case 78:
 case 79:
 {
 	
-#line 1206 "../upgen/src/meta/ulyac.upg"
+#line 1206 "meta/ulyac.upg"
 		{
 		
 		yylval.m_nPosix = charset_t::SPACE;
@@ -2909,7 +2909,7 @@ case 79:
 	}
 	
 
-#line 2912 "../upgen/src/gcode/ulyac.cpp"
+#line 2912 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2917,7 +2917,7 @@ case 79:
 case 80:
 {
 	
-#line 1213 "../upgen/src/meta/ulyac.upg"
+#line 1213 "meta/ulyac.upg"
 		{
 		
 		yylval.m_nPosix = charset_t::UPPER;
@@ -2926,7 +2926,7 @@ case 80:
 	}
 	
 
-#line 2929 "../upgen/src/gcode/ulyac.cpp"
+#line 2929 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2934,7 +2934,7 @@ case 80:
 case 81:
 {
 	
-#line 1220 "../upgen/src/meta/ulyac.upg"
+#line 1220 "meta/ulyac.upg"
 		{
 		
 		yylval.m_nPosix = charset_t::XDIGIT;
@@ -2942,7 +2942,7 @@ case 81:
 		return POSIX_SET;
 	}
 
-#line 2945 "../upgen/src/gcode/ulyac.cpp"
+#line 2945 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2950,7 +2950,7 @@ case 81:
 case 82:
 {
 	
-#line 1226 "../upgen/src/meta/ulyac.upg"
+#line 1226 "meta/ulyac.upg"
 			{
 		
 		yylval.m_nPosix = charset_t::CIDF;
@@ -2959,7 +2959,7 @@ case 82:
 	}
 	
 
-#line 2962 "../upgen/src/gcode/ulyac.cpp"
+#line 2962 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2967,7 +2967,7 @@ case 82:
 case 83:
 {
 	
-#line 1233 "../upgen/src/meta/ulyac.upg"
+#line 1233 "meta/ulyac.upg"
 			{
 
 		yylval.m_nPosix = charset_t::CIDS;
@@ -2976,7 +2976,7 @@ case 83:
 	}
 	
 
-#line 2979 "../upgen/src/gcode/ulyac.cpp"
+#line 2979 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -2984,7 +2984,7 @@ case 83:
 case 84:
 {
 	
-#line 1240 "../upgen/src/meta/ulyac.upg"
+#line 1240 "meta/ulyac.upg"
 		{
 
 		LEX_PUSH_STATE(CSH_SC);	
@@ -2992,7 +2992,7 @@ case 84:
 	}
 	
 
-#line 2995 "../upgen/src/gcode/ulyac.cpp"
+#line 2995 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3000,14 +3000,14 @@ case 84:
 case 85:
 {
 	
-#line 1246 "../upgen/src/meta/ulyac.upg"
+#line 1246 "meta/ulyac.upg"
 		{
 
 		LEX_PUSH_STATE(CSH_SC);
 		return NCS;
 	}
 
-#line 3010 "../upgen/src/gcode/ulyac.cpp"
+#line 3010 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3015,14 +3015,14 @@ case 85:
 case 86:
 {
 	
-#line 1251 "../upgen/src/meta/ulyac.upg"
+#line 1251 "meta/ulyac.upg"
 	{
 		
 		yylval.m_cVal = yytext[1];
 		return CCHAR;
 	}
 
-#line 3025 "../upgen/src/gcode/ulyac.cpp"
+#line 3025 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3030,7 +3030,7 @@ case 86:
 case 87:
 {
 	
-#line 1256 "../upgen/src/meta/ulyac.upg"
+#line 1256 "meta/ulyac.upg"
 		{
 
         yylval.m_cVal = strhelper_t::toEsc(yytext);
@@ -3038,7 +3038,7 @@ case 87:
 	}
 	
 
-#line 3041 "../upgen/src/gcode/ulyac.cpp"
+#line 3041 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3046,7 +3046,7 @@ case 87:
 case 88:
 {
 	
-#line 1262 "../upgen/src/meta/ulyac.upg"
+#line 1262 "meta/ulyac.upg"
 		{
 	
 		yylval.m_cVal = (char)strhelper_t::ostr2Num(yytext);
@@ -3054,7 +3054,7 @@ case 88:
 		return CCHAR;
 	}
 
-#line 3057 "../upgen/src/gcode/ulyac.cpp"
+#line 3057 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3062,7 +3062,7 @@ case 88:
 case 89:
 {
 	
-#line 1268 "../upgen/src/meta/ulyac.upg"
+#line 1268 "meta/ulyac.upg"
 		{
 
 		yylval.m_cVal = (char)strhelper_t::hstr2Num(yytext);
@@ -3070,7 +3070,7 @@ case 89:
 		return CCHAR;
 	}
 
-#line 3073 "../upgen/src/gcode/ulyac.cpp"
+#line 3073 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3078,7 +3078,7 @@ case 89:
 case 90:
 {
 	
-#line 1274 "../upgen/src/meta/ulyac.upg"
+#line 1274 "meta/ulyac.upg"
 	{
 
 		if(yytext[0] == '\\') {
@@ -3094,7 +3094,7 @@ case 90:
 	}
 	
 
-#line 3097 "../upgen/src/gcode/ulyac.cpp"
+#line 3097 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3102,13 +3102,13 @@ case 90:
 case 91:
 {
 	
-#line 1288 "../upgen/src/meta/ulyac.upg"
+#line 1288 "meta/ulyac.upg"
 			{
 		CRET
 	}
 
 
-#line 3111 "../upgen/src/gcode/ulyac.cpp"
+#line 3111 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3116,7 +3116,7 @@ case 91:
 case 92:
 {
 	
-#line 1292 "../upgen/src/meta/ulyac.upg"
+#line 1292 "meta/ulyac.upg"
 			{
 
 		LEX_POP_STATE();
@@ -3124,7 +3124,7 @@ case 92:
 		CRET
 	}
 
-#line 3127 "../upgen/src/gcode/ulyac.cpp"
+#line 3127 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3132,7 +3132,7 @@ case 92:
 case 93:
 {
 	
-#line 1298 "../upgen/src/meta/ulyac.upg"
+#line 1298 "meta/ulyac.upg"
 			{
 
 		yylval.m_cVal = yytext[0];
@@ -3141,7 +3141,7 @@ case 93:
 	}
 
 
-#line 3144 "../upgen/src/gcode/ulyac.cpp"
+#line 3144 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3149,14 +3149,14 @@ case 93:
 case 94:
 {
 	
-#line 1305 "../upgen/src/meta/ulyac.upg"
+#line 1305 "meta/ulyac.upg"
 		{
 
 		CRET
 	}
 	
 
-#line 3159 "../upgen/src/gcode/ulyac.cpp"
+#line 3159 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3164,7 +3164,7 @@ case 94:
 case 95:
 {
 	
-#line 1310 "../upgen/src/meta/ulyac.upg"
+#line 1310 "meta/ulyac.upg"
 		{
 
 		yylval.m_pchVal = new char[yyleng - 1];
@@ -3175,7 +3175,7 @@ case 95:
 	}
 	
 
-#line 3178 "../upgen/src/gcode/ulyac.cpp"
+#line 3178 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3183,7 +3183,7 @@ case 95:
 case 96:
 {
 	
-#line 1319 "../upgen/src/meta/ulyac.upg"
+#line 1319 "meta/ulyac.upg"
 		{
 
 		char cc = yytext[yyleng - 1];
@@ -3201,7 +3201,7 @@ case 96:
 	}
 
 
-#line 3204 "../upgen/src/gcode/ulyac.cpp"
+#line 3204 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3209,7 +3209,7 @@ case 96:
 case 97:
 {
 	
-#line 1335 "../upgen/src/meta/ulyac.upg"
+#line 1335 "meta/ulyac.upg"
 		{
 
 		char cc = yytext[yyleng - 1];
@@ -3226,7 +3226,7 @@ case 97:
 	}
 	
 
-#line 3229 "../upgen/src/gcode/ulyac.cpp"
+#line 3229 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3234,7 +3234,7 @@ case 97:
 case 98:
 {
 	
-#line 1350 "../upgen/src/meta/ulyac.upg"
+#line 1350 "meta/ulyac.upg"
 		{
 		
 		char cc = yytext[yyleng - 2];
@@ -3252,7 +3252,7 @@ case 98:
 	}
 	
 
-#line 3255 "../upgen/src/gcode/ulyac.cpp"
+#line 3255 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3260,7 +3260,7 @@ case 98:
 case 99:
 {
 	
-#line 1366 "../upgen/src/meta/ulyac.upg"
+#line 1366 "meta/ulyac.upg"
 		{
 
 		int n;
@@ -3288,7 +3288,7 @@ case 99:
 		return RANGE_BET;
 	}
 
-#line 3291 "../upgen/src/gcode/ulyac.cpp"
+#line 3291 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3296,7 +3296,7 @@ case 99:
 case 100:
 {
 	
-#line 1392 "../upgen/src/meta/ulyac.upg"
+#line 1392 "meta/ulyac.upg"
 	{
 
 		yylval.m_cVal = yytext[0];
@@ -3304,7 +3304,7 @@ case 100:
 	}
 	
 
-#line 3307 "../upgen/src/gcode/ulyac.cpp"
+#line 3307 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3314,7 +3314,7 @@ case 101:
 case 102:
 {
 	
-#line 1399 "../upgen/src/meta/ulyac.upg"
+#line 1399 "meta/ulyac.upg"
 	{
 
 		yylval.m_pchVal = new char[yyleng - 1];
@@ -3325,7 +3325,7 @@ case 102:
 	}
 	
 
-#line 3328 "../upgen/src/gcode/ulyac.cpp"
+#line 3328 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3333,7 +3333,7 @@ case 102:
 case 103:
 {
 	
-#line 1408 "../upgen/src/meta/ulyac.upg"
+#line 1408 "meta/ulyac.upg"
 	{
 
 		if('\n' != yytext[yyleng - 1]) {
@@ -3366,7 +3366,7 @@ case 103:
 	}
 
 
-#line 3369 "../upgen/src/gcode/ulyac.cpp"
+#line 3369 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3376,7 +3376,7 @@ case 104:
 case 105:
 {
 	
-#line 1440 "../upgen/src/meta/ulyac.upg"
+#line 1440 "meta/ulyac.upg"
 		{
 
 		c = yytext[yyleng - 1];
@@ -3419,7 +3419,7 @@ case 105:
 	}
 	
 
-#line 3422 "../upgen/src/gcode/ulyac.cpp"
+#line 3422 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3427,13 +3427,13 @@ case 105:
 case 106:
 {
 	
-#line 1481 "../upgen/src/meta/ulyac.upg"
+#line 1481 "meta/ulyac.upg"
 		{
 		CRET
 	}
 
 
-#line 3436 "../upgen/src/gcode/ulyac.cpp"
+#line 3436 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3441,13 +3441,13 @@ case 106:
 case 107:
 {
 	
-#line 1485 "../upgen/src/meta/ulyac.upg"
+#line 1485 "meta/ulyac.upg"
 	{
 
 		return DPRE_LABEL;
 	}
 
-#line 3450 "../upgen/src/gcode/ulyac.cpp"
+#line 3450 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3455,13 +3455,13 @@ case 107:
 case 108:
 {
 	
-#line 1489 "../upgen/src/meta/ulyac.upg"
+#line 1489 "meta/ulyac.upg"
 		{
 
 		return PREC_LABEL;
 	}
 
-#line 3464 "../upgen/src/gcode/ulyac.cpp"
+#line 3464 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3469,7 +3469,7 @@ case 108:
 case 109:
 {
 	
-#line 1493 "../upgen/src/meta/ulyac.upg"
+#line 1493 "meta/ulyac.upg"
 				{
 
 		LEX_PUSH_STATE(PACT_SC);
@@ -3478,7 +3478,7 @@ case 109:
 		return PACT_BEGIN;
 	}
 
-#line 3481 "../upgen/src/gcode/ulyac.cpp"
+#line 3481 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3486,7 +3486,7 @@ case 109:
 case 110:
 {
 	
-#line 1500 "../upgen/src/meta/ulyac.upg"
+#line 1500 "meta/ulyac.upg"
 		{
 
 		LEX_POP_STATE();
@@ -3495,7 +3495,7 @@ case 110:
 	
 	/* ` is considered as escape char during action processing */
 
-#line 3498 "../upgen/src/gcode/ulyac.cpp"
+#line 3498 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3505,13 +3505,13 @@ case 111:
 case 112:
 {
 	
-#line 1508 "../upgen/src/meta/ulyac.upg"
+#line 1508 "meta/ulyac.upg"
 		{
 
 		ptbl.addActionText(&yytext[1]);
 	}
 
-#line 3514 "../upgen/src/gcode/ulyac.cpp"
+#line 3514 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3519,7 +3519,7 @@ case 112:
 case 113:
 {
 	
-#line 1512 "../upgen/src/meta/ulyac.upg"
+#line 1512 "meta/ulyac.upg"
 		{
 
 		int nRuleID = grammar.getLastProdIndex();
@@ -3558,7 +3558,7 @@ case 113:
 		}
 	}
 
-#line 3561 "../upgen/src/gcode/ulyac.cpp"
+#line 3561 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3566,7 +3566,7 @@ case 113:
 case 114:
 {
 	
-#line 1549 "../upgen/src/meta/ulyac.upg"
+#line 1549 "meta/ulyac.upg"
 		{
 		yytext[yyleng - 2] = '\0';
 		ptbl.addActionMacro(SKEY_SVNAME_LEFT, &yytext[2]);
@@ -3583,7 +3583,7 @@ case 114:
 		}
 	}
 
-#line 3586 "../upgen/src/gcode/ulyac.cpp"
+#line 3586 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3591,7 +3591,7 @@ case 114:
 case 115:
 {
 	
-#line 1564 "../upgen/src/meta/ulyac.upg"
+#line 1564 "meta/ulyac.upg"
 		{
 
 		int nVal;
@@ -3659,7 +3659,7 @@ case 115:
 		}
 	}
 
-#line 3662 "../upgen/src/gcode/ulyac.cpp"
+#line 3662 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3667,7 +3667,7 @@ case 115:
 case 116:
 {
 	
-#line 1630 "../upgen/src/meta/ulyac.upg"
+#line 1630 "meta/ulyac.upg"
 	{
 
 		i = yyleng - 1;
@@ -3723,7 +3723,7 @@ case 116:
 		}
 	}
 
-#line 3726 "../upgen/src/gcode/ulyac.cpp"
+#line 3726 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3731,7 +3731,7 @@ case 116:
 case 117:
 {
 	
-#line 1684 "../upgen/src/meta/ulyac.upg"
+#line 1684 "meta/ulyac.upg"
 			{
 		ptbl.addActionText(yytext[0]);
 	}
@@ -3739,7 +3739,7 @@ case 117:
 	/********* default pattern ******/
 	
 
-#line 3742 "../upgen/src/gcode/ulyac.cpp"
+#line 3742 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3747,11 +3747,11 @@ case 117:
 case 118:
 {
 	
-#line 1690 "../upgen/src/meta/ulyac.upg"
+#line 1690 "meta/ulyac.upg"
 
 
 
-#line 3754 "../upgen/src/gcode/ulyac.cpp"
+#line 3754 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3759,12 +3759,12 @@ case 118:
 case 119:
 {
 	
-#line 1691 "../upgen/src/meta/ulyac.upg"
+#line 1691 "meta/ulyac.upg"
 
 
 	
 
-#line 3767 "../upgen/src/gcode/ulyac.cpp"
+#line 3767 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3772,7 +3772,7 @@ case 119:
 case 120:
 {
 	
-#line 1693 "../upgen/src/meta/ulyac.upg"
+#line 1693 "meta/ulyac.upg"
 		{
 		
 		strMsg = strhelper_t::fromInt(yylloc.firstLine);
@@ -3907,7 +3907,7 @@ case 120:
 	}
 
 
-#line 3910 "../upgen/src/gcode/ulyac.cpp"
+#line 3910 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3915,9 +3915,9 @@ case 120:
 case 121:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3920 "../upgen/src/gcode/ulyac.cpp"
+#line 3920 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3925,9 +3925,9 @@ case 121:
 case 122:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3930 "../upgen/src/gcode/ulyac.cpp"
+#line 3930 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3935,9 +3935,9 @@ case 122:
 case 123:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3940 "../upgen/src/gcode/ulyac.cpp"
+#line 3940 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3945,9 +3945,9 @@ case 123:
 case 124:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3950 "../upgen/src/gcode/ulyac.cpp"
+#line 3950 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3955,9 +3955,9 @@ case 124:
 case 125:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3960 "../upgen/src/gcode/ulyac.cpp"
+#line 3960 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3965,9 +3965,9 @@ case 125:
 case 126:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3970 "../upgen/src/gcode/ulyac.cpp"
+#line 3970 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3975,9 +3975,9 @@ case 126:
 case 127:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3980 "../upgen/src/gcode/ulyac.cpp"
+#line 3980 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3985,9 +3985,9 @@ case 127:
 case 128:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 3990 "../upgen/src/gcode/ulyac.cpp"
+#line 3990 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -3995,9 +3995,9 @@ case 128:
 case 129:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 4000 "../upgen/src/gcode/ulyac.cpp"
+#line 4000 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -4005,9 +4005,9 @@ case 129:
 case 130:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 4010 "../upgen/src/gcode/ulyac.cpp"
+#line 4010 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -4015,9 +4015,9 @@ case 130:
 case 131:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 4020 "../upgen/src/gcode/ulyac.cpp"
+#line 4020 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -4025,9 +4025,9 @@ case 131:
 case 132:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 4030 "../upgen/src/gcode/ulyac.cpp"
+#line 4030 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -4035,9 +4035,9 @@ case 132:
 case 133:
 {
 	
-#line 0 "../upgen/src/meta/ulyac.upg"
+#line 0 "meta/ulyac.upg"
 
-#line 4040 "../upgen/src/gcode/ulyac.cpp"
+#line 4040 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -4114,7 +4114,7 @@ case 133:
 		int yysidx__ = PARSE_UNDEFSYMB_INDEX;
 		int yytok__ = PARSE_UNDEFSYMB_ID;
 		
-#line 201 "../upgen/src/meta/ulyac.upg"
+#line 201 "meta/ulyac.upg"
 
 	string strMsg;
 	
@@ -4130,7 +4130,7 @@ case 133:
 	
 	int s_nCurLeftSymbol = INVALID_INDEX;
 
-#line 4133 "../upgen/src/gcode/ulyac.cpp"
+#line 4133 "gcode/ulyac.cpp"
 
 
 		yyltok = PARSE_UNDEFSYMB_ID;
@@ -4183,16 +4183,16 @@ case 133:
 				
 	case 0:
 	{
-#line 1828 "../upgen/src/meta/ulyac.upg"
+#line 1828 "meta/ulyac.upg"
 
-#line 4188 "../upgen/src/gcode/ulyac.cpp"
+#line 4188 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 2:
 	{
-#line 1829 "../upgen/src/meta/ulyac.upg"
+#line 1829 "meta/ulyac.upg"
 
 			if(_GETERR() >= ERRID_BASE) {
 				YYABORT();
@@ -4210,41 +4210,41 @@ case 133:
 				s_nCounter = 0;
 			}
 		
-#line 4213 "../upgen/src/gcode/ulyac.cpp"
+#line 4213 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 3:
 	{
-#line 1847 "../upgen/src/meta/ulyac.upg"
+#line 1847 "meta/ulyac.upg"
 
 			if(_GETERR() >= ERRID_BASE) {
 				YYABORT();
 			}
 		
-#line 4226 "../upgen/src/gcode/ulyac.cpp"
+#line 4226 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 4:
 	{
-#line 1853 "../upgen/src/meta/ulyac.upg"
+#line 1853 "meta/ulyac.upg"
 
 
 			if(_GETERR() >= ERRID_BASE) {
 				YYABORT();
 			}
 		
-#line 4240 "../upgen/src/gcode/ulyac.cpp"
+#line 4240 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 1:
 	{
-#line 1859 "../upgen/src/meta/ulyac.upg"
+#line 1859 "meta/ulyac.upg"
 
 			if(s_vstrSName.size() > 0) {
 				grammar.addTokens(s_vstrSName, s_vnToken);
@@ -4270,106 +4270,106 @@ case 133:
 				YYACCEPT();
 			}
 		
-#line 4273 "../upgen/src/gcode/ulyac.cpp"
+#line 4273 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 5:
 	{
-#line 1885 "../upgen/src/meta/ulyac.upg"
+#line 1885 "meta/ulyac.upg"
 
-#line 4282 "../upgen/src/gcode/ulyac.cpp"
+#line 4282 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 6:
 	{
-#line 1885 "../upgen/src/meta/ulyac.upg"
+#line 1885 "meta/ulyac.upg"
 
-#line 4291 "../upgen/src/gcode/ulyac.cpp"
+#line 4291 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 7:
 	{
-#line 1888 "../upgen/src/meta/ulyac.upg"
+#line 1888 "meta/ulyac.upg"
 
 			grammar.reset();
 		
-#line 4302 "../upgen/src/gcode/ulyac.cpp"
+#line 4302 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 8:
 	{
-#line 1892 "../upgen/src/meta/ulyac.upg"
+#line 1892 "meta/ulyac.upg"
 
-#line 4311 "../upgen/src/gcode/ulyac.cpp"
+#line 4311 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 9:
 	{
-#line 1893 "../upgen/src/meta/ulyac.upg"
+#line 1893 "meta/ulyac.upg"
 
-#line 4320 "../upgen/src/gcode/ulyac.cpp"
+#line 4320 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 10:
 	{
-#line 1896 "../upgen/src/meta/ulyac.upg"
+#line 1896 "meta/ulyac.upg"
 
-#line 4329 "../upgen/src/gcode/ulyac.cpp"
+#line 4329 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 11:
 	{
-#line 1897 "../upgen/src/meta/ulyac.upg"
+#line 1897 "meta/ulyac.upg"
 
-#line 4338 "../upgen/src/gcode/ulyac.cpp"
+#line 4338 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 12:
 	{
-#line 1898 "../upgen/src/meta/ulyac.upg"
+#line 1898 "meta/ulyac.upg"
 
-#line 4347 "../upgen/src/gcode/ulyac.cpp"
+#line 4347 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 13:
 	{
-#line 1899 "../upgen/src/meta/ulyac.upg"
+#line 1899 "meta/ulyac.upg"
 
-#line 4356 "../upgen/src/gcode/ulyac.cpp"
+#line 4356 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 14:
 	{
-#line 1900 "../upgen/src/meta/ulyac.upg"
+#line 1900 "meta/ulyac.upg"
 
-#line 4365 "../upgen/src/gcode/ulyac.cpp"
+#line 4365 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 15:
 	{
-#line 1901 "../upgen/src/meta/ulyac.upg"
+#line 1901 "meta/ulyac.upg"
 
 				
 				if(!lexer.addXSC((yys_sv__[0].m_pchVal))) {
@@ -4384,14 +4384,14 @@ case 133:
 				}
 				delete[] (yys_sv__[0].m_pchVal);
 			
-#line 4387 "../upgen/src/gcode/ulyac.cpp"
+#line 4387 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 16:
 	{
-#line 1915 "../upgen/src/meta/ulyac.upg"
+#line 1915 "meta/ulyac.upg"
 
 				
 				if(!lexer.addISC((yys_sv__[0].m_pchVal)))  {
@@ -4406,14 +4406,14 @@ case 133:
 				}
 				delete[] (yys_sv__[0].m_pchVal);
 			
-#line 4409 "../upgen/src/gcode/ulyac.cpp"
+#line 4409 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 17:
 	{
-#line 1929 "../upgen/src/meta/ulyac.upg"
+#line 1929 "meta/ulyac.upg"
 
 				if(s_strStartSymbol.empty()) {
 					s_strStartSymbol = (yys_sv__[0].m_pchVal);
@@ -4430,23 +4430,23 @@ case 133:
 				}
 				delete[] (yys_sv__[0].m_pchVal);
 			
-#line 4433 "../upgen/src/gcode/ulyac.cpp"
+#line 4433 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 18:
 	{
-#line 1946 "../upgen/src/meta/ulyac.upg"
+#line 1946 "meta/ulyac.upg"
 
-#line 4442 "../upgen/src/gcode/ulyac.cpp"
+#line 4442 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 19:
 	{
-#line 1947 "../upgen/src/meta/ulyac.upg"
+#line 1947 "meta/ulyac.upg"
 
 
 			strMsg = "token name expected.";
@@ -4454,14 +4454,14 @@ case 133:
 			
 			yyerrok();
 		
-#line 4457 "../upgen/src/gcode/ulyac.cpp"
+#line 4457 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 20:
 	{
-#line 1954 "../upgen/src/meta/ulyac.upg"
+#line 1954 "meta/ulyac.upg"
 
 
 			strMsg = "semantic value type or token name expected.";
@@ -4469,117 +4469,117 @@ case 133:
 			
 			yyerrok();
 		
-#line 4472 "../upgen/src/gcode/ulyac.cpp"
+#line 4472 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 21:
 	{
-#line 1962 "../upgen/src/meta/ulyac.upg"
+#line 1962 "meta/ulyac.upg"
 
 			s_nCurAssoc = ASSOC_UNKNOWN;
 			s_nCurPrec = DEFAULT_PREC;
 			s_nCurSVTID = DEFAULT_SVT_ID;
 		
-#line 4485 "../upgen/src/gcode/ulyac.cpp"
+#line 4485 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 22:
 	{
-#line 1967 "../upgen/src/meta/ulyac.upg"
+#line 1967 "meta/ulyac.upg"
 
 			s_nCurAssoc = ASSOC_LEFT;
 			s_nCurPrec = s_nCounter;
 			s_nCurSVTID = DEFAULT_SVT_ID;
 			++s_nCounter;
 		
-#line 4499 "../upgen/src/gcode/ulyac.cpp"
+#line 4499 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 23:
 	{
-#line 1973 "../upgen/src/meta/ulyac.upg"
+#line 1973 "meta/ulyac.upg"
 
 			s_nCurAssoc = ASSOC_RIGHT;
 			s_nCurPrec = s_nCounter;
 			s_nCurSVTID = DEFAULT_SVT_ID;
 			++s_nCounter;
 		
-#line 4513 "../upgen/src/gcode/ulyac.cpp"
+#line 4513 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 24:
 	{
-#line 1979 "../upgen/src/meta/ulyac.upg"
+#line 1979 "meta/ulyac.upg"
 
 			s_nCurAssoc = ASSOC_NO;
 			s_nCurPrec = DEFAULT_PREC;
 			s_nCurSVTID = DEFAULT_SVT_ID;
 		
-#line 4526 "../upgen/src/gcode/ulyac.cpp"
+#line 4526 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 26:
 	{
-#line 1985 "../upgen/src/meta/ulyac.upg"
+#line 1985 "meta/ulyac.upg"
 
 			s_nCurSVTID = grammar.addSVT((yys_sv__[0].m_pchVal)).first;
 			
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 4539 "../upgen/src/gcode/ulyac.cpp"
+#line 4539 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 25:
 	{
-#line 1985 "../upgen/src/meta/ulyac.upg"
+#line 1985 "meta/ulyac.upg"
 
-#line 4548 "../upgen/src/gcode/ulyac.cpp"
+#line 4548 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 27:
 	{
-#line 1991 "../upgen/src/meta/ulyac.upg"
+#line 1991 "meta/ulyac.upg"
 
-#line 4557 "../upgen/src/gcode/ulyac.cpp"
+#line 4557 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 28:
 	{
-#line 1993 "../upgen/src/meta/ulyac.upg"
+#line 1993 "meta/ulyac.upg"
 
-#line 4566 "../upgen/src/gcode/ulyac.cpp"
+#line 4566 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 29:
 	{
-#line 1994 "../upgen/src/meta/ulyac.upg"
+#line 1994 "meta/ulyac.upg"
 
-#line 4575 "../upgen/src/gcode/ulyac.cpp"
+#line 4575 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 30:
 	{
-#line 1996 "../upgen/src/meta/ulyac.upg"
+#line 1996 "meta/ulyac.upg"
 
 			if(s_sname2Idx.find((yys_sv__[0].m_pchVal)) != s_sname2Idx.end()) {
 				strMsg = strhelper_t::fromInt((yys_loc__[0]).firstLine);
@@ -4604,14 +4604,14 @@ case 133:
 			}
 			delete[] (yys_sv__[0].m_pchVal);		
 		
-#line 4607 "../upgen/src/gcode/ulyac.cpp"
+#line 4607 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 31:
 	{
-#line 2020 "../upgen/src/meta/ulyac.upg"
+#line 2020 "meta/ulyac.upg"
 
 			i2b_pair_t pairRet = grammar.addToken(strhelper_t::quotedChar((yys_sv__[0].m_cVal)), (int)(yys_sv__[0].m_cVal),
 				s_nCurSVTID, s_nCurPrec, s_nCurAssoc, false);
@@ -4625,14 +4625,14 @@ case 133:
 				_WARNING(strMsg);
 			}
 		
-#line 4628 "../upgen/src/gcode/ulyac.cpp"
+#line 4628 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 32:
 	{
-#line 2033 "../upgen/src/meta/ulyac.upg"
+#line 2033 "meta/ulyac.upg"
 
             std::string tokenText((yys_sv__[0].m_pchVal));
             delete[] (yys_sv__[0].m_pchVal);
@@ -4648,35 +4648,35 @@ case 133:
                 _WARNING(strMsg);
             }
         
-#line 4651 "../upgen/src/gcode/ulyac.cpp"
+#line 4651 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 34:
 	{
-#line 2050 "../upgen/src/meta/ulyac.upg"
+#line 2050 "meta/ulyac.upg"
 
 			s_nCurSVTID = grammar.addSVT((yys_sv__[0].m_pchVal)).first;
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 4663 "../upgen/src/gcode/ulyac.cpp"
+#line 4663 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 33:
 	{
-#line 2050 "../upgen/src/meta/ulyac.upg"
+#line 2050 "meta/ulyac.upg"
 
-#line 4672 "../upgen/src/gcode/ulyac.cpp"
+#line 4672 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 35:
 	{
-#line 2054 "../upgen/src/meta/ulyac.upg"
+#line 2054 "meta/ulyac.upg"
 
 		
 			strMsg = "semantic value type expected.";
@@ -4684,14 +4684,14 @@ case 133:
 			_ERROR(strMsg, ESYN(1));
 			yyerrok();		
 		
-#line 4687 "../upgen/src/gcode/ulyac.cpp"
+#line 4687 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 36:
 	{
-#line 2061 "../upgen/src/meta/ulyac.upg"
+#line 2061 "meta/ulyac.upg"
 
 		
 			strMsg = "semantic value type or type name expected.";
@@ -4699,14 +4699,14 @@ case 133:
 			_ERROR(strMsg, ESYN(1));
 			yyerrok();		
 		
-#line 4702 "../upgen/src/gcode/ulyac.cpp"
+#line 4702 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 37:
 	{
-#line 2070 "../upgen/src/meta/ulyac.upg"
+#line 2070 "meta/ulyac.upg"
 
 			if(grammar.isToken((yys_sv__[0].m_pchVal))) {
 				strMsg = strhelper_t::fromInt((yys_loc__[0]).firstLine);
@@ -4746,14 +4746,14 @@ case 133:
 			}
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 4749 "../upgen/src/gcode/ulyac.cpp"
+#line 4749 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 38:
 	{
-#line 2109 "../upgen/src/meta/ulyac.upg"
+#line 2109 "meta/ulyac.upg"
 
 			if(grammar.isToken((yys_sv__[0].m_pchVal))) {
 				strMsg = strhelper_t::fromInt((yys_loc__[0]).firstLine);
@@ -4793,40 +4793,40 @@ case 133:
 			}
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 4796 "../upgen/src/gcode/ulyac.cpp"
+#line 4796 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 39:
 	{
-#line 2150 "../upgen/src/meta/ulyac.upg"
+#line 2150 "meta/ulyac.upg"
 
 		if( ! grammar.setUntagDstrct((yys_sv__[3].m_pDstrct))) {
 			delete (yys_sv__[3].m_pDstrct);
 		}
 	
-#line 4809 "../upgen/src/gcode/ulyac.cpp"
+#line 4809 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 40:
 	{
-#line 2155 "../upgen/src/meta/ulyac.upg"
+#line 2155 "meta/ulyac.upg"
 
 		if( ! grammar.setOtherDstrct((yys_sv__[4].m_pDstrct))) {
 			delete (yys_sv__[4].m_pDstrct);
 		}
 	
-#line 4822 "../upgen/src/gcode/ulyac.cpp"
+#line 4822 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 41:
 	{
-#line 2160 "../upgen/src/meta/ulyac.upg"
+#line 2160 "meta/ulyac.upg"
 
 	
 		if( ! grammar.addDstrctBySVT((yys_sv__[4].m_pDstrct), (yys_sv__[2].m_pchVal))) {
@@ -4840,14 +4840,14 @@ case 133:
 		}
 		delete[] (yys_sv__[2].m_pchVal);
 	
-#line 4843 "../upgen/src/gcode/ulyac.cpp"
+#line 4843 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 42:
 	{
-#line 2173 "../upgen/src/meta/ulyac.upg"
+#line 2173 "meta/ulyac.upg"
 
 		assert((yys_sv__[1].m_pvstrSymbs));
 		if( ! grammar.addDstrctBySymbs((yys_sv__[2].m_pDstrct), *(yys_sv__[1].m_pvstrSymbs))) {
@@ -4856,14 +4856,14 @@ case 133:
 
 		delete (yys_sv__[1].m_pvstrSymbs);
 	
-#line 4859 "../upgen/src/gcode/ulyac.cpp"
+#line 4859 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 43:
 	{
-#line 2181 "../upgen/src/meta/ulyac.upg"
+#line 2181 "meta/ulyac.upg"
 
 		
 		strMsg = "semantic value type or symbol name expected.";
@@ -4873,14 +4873,14 @@ case 133:
 		
 		yyerrok();
 	
-#line 4876 "../upgen/src/gcode/ulyac.cpp"
+#line 4876 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 44:
 	{
-#line 2190 "../upgen/src/meta/ulyac.upg"
+#line 2190 "meta/ulyac.upg"
 
 	
 		strMsg = "semantic value type or symbol name expected.";
@@ -4890,92 +4890,92 @@ case 133:
 		delete (yys_sv__[2].m_pvstrSymbs);
 		yyerrok();	
 	
-#line 4893 "../upgen/src/gcode/ulyac.cpp"
+#line 4893 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 45:
 	{
-#line 2201 "../upgen/src/meta/ulyac.upg"
+#line 2201 "meta/ulyac.upg"
 
 		(yyval.m_pvstrSymbs) = (yys_sv__[1].m_pvstrSymbs);
 		(yyval.m_pvstrSymbs)->push_back((yys_sv__[0].m_pchVal));
 		delete[] (yys_sv__[0].m_pchVal);
 	
-#line 4906 "../upgen/src/gcode/ulyac.cpp"
+#line 4906 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 46:
 	{
-#line 2206 "../upgen/src/meta/ulyac.upg"
+#line 2206 "meta/ulyac.upg"
 
 		(yyval.m_pvstrSymbs) = (yys_sv__[1].m_pvstrSymbs);
 		(yyval.m_pvstrSymbs)->push_back(strhelper_t::quotedChar((yys_sv__[0].m_cVal)));
 	
-#line 4918 "../upgen/src/gcode/ulyac.cpp"
+#line 4918 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 47:
 	{
-#line 2210 "../upgen/src/meta/ulyac.upg"
+#line 2210 "meta/ulyac.upg"
 
         (yyval.m_pvstrSymbs) = (yys_sv__[1].m_pvstrSymbs);
         (yyval.m_pvstrSymbs)->push_back((yys_sv__[0].m_pchVal));
         delete[] (yys_sv__[0].m_pchVal);
     
-#line 4931 "../upgen/src/gcode/ulyac.cpp"
+#line 4931 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 48:
 	{
-#line 2215 "../upgen/src/meta/ulyac.upg"
+#line 2215 "meta/ulyac.upg"
 
 		(yyval.m_pvstrSymbs) = new vstr_t;
 		(yyval.m_pvstrSymbs)->push_back((yys_sv__[0].m_pchVal));
 		
 		delete[] (yys_sv__[0].m_pchVal);
 	
-#line 4945 "../upgen/src/gcode/ulyac.cpp"
+#line 4945 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 49:
 	{
-#line 2221 "../upgen/src/meta/ulyac.upg"
+#line 2221 "meta/ulyac.upg"
 
 		(yyval.m_pvstrSymbs) = new vstr_t;
 		(yyval.m_pvstrSymbs)->push_back(strhelper_t::quotedChar((yys_sv__[0].m_cVal)));
 	
-#line 4957 "../upgen/src/gcode/ulyac.cpp"
+#line 4957 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 50:
 	{
-#line 2225 "../upgen/src/meta/ulyac.upg"
+#line 2225 "meta/ulyac.upg"
 
         (yyval.m_pvstrSymbs) = new vstr_t;
         (yyval.m_pvstrSymbs)->push_back((yys_sv__[0].m_pchVal));
 
         delete[] (yys_sv__[0].m_pchVal);
     
-#line 4971 "../upgen/src/gcode/ulyac.cpp"
+#line 4971 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 51:
 	{
-#line 2233 "../upgen/src/meta/ulyac.upg"
+#line 2233 "meta/ulyac.upg"
 
 			
 			if(! dmap.insert((yys_sv__[2].m_pchVal), (yys_sv__[0].m_pchVal))) {
@@ -4992,14 +4992,14 @@ case 133:
 			delete[] (yys_sv__[2].m_pchVal);
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 4995 "../upgen/src/gcode/ulyac.cpp"
+#line 4995 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 52:
 	{
-#line 2249 "../upgen/src/meta/ulyac.upg"
+#line 2249 "meta/ulyac.upg"
 
 		
 			if( ! dmap.insert((yys_sv__[2].m_pchVal), (yys_sv__[0].m_nVal))) {
@@ -5015,14 +5015,14 @@ case 133:
 
 			delete[] (yys_sv__[2].m_pchVal);
 		
-#line 5018 "../upgen/src/gcode/ulyac.cpp"
+#line 5018 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 53:
 	{
-#line 2264 "../upgen/src/meta/ulyac.upg"
+#line 2264 "meta/ulyac.upg"
 
 		
 			if( ! dmap.insert((yys_sv__[2].m_pchVal), false)) {
@@ -5038,14 +5038,14 @@ case 133:
 
 			delete[] (yys_sv__[2].m_pchVal);
 		
-#line 5041 "../upgen/src/gcode/ulyac.cpp"
+#line 5041 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 54:
 	{
-#line 2279 "../upgen/src/meta/ulyac.upg"
+#line 2279 "meta/ulyac.upg"
 
 		
 			if( ! dmap.insert((yys_sv__[2].m_pchVal), true)) {
@@ -5061,14 +5061,14 @@ case 133:
 
 			delete[] (yys_sv__[2].m_pchVal);
 		
-#line 5064 "../upgen/src/gcode/ulyac.cpp"
+#line 5064 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 55:
 	{
-#line 2294 "../upgen/src/meta/ulyac.upg"
+#line 2294 "meta/ulyac.upg"
 
 			
 			if( ! dmap.insert((yys_sv__[1].m_pchVal), (yys_sv__[0].m_pchVal))) {
@@ -5085,14 +5085,14 @@ case 133:
 			delete[] (yys_sv__[1].m_pchVal);
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 5088 "../upgen/src/gcode/ulyac.cpp"
+#line 5088 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 56:
 	{
-#line 2310 "../upgen/src/meta/ulyac.upg"
+#line 2310 "meta/ulyac.upg"
 
 		
 			if( ! dmap.insert((yys_sv__[1].m_pchVal), (yys_sv__[0].m_nVal))) {
@@ -5108,14 +5108,14 @@ case 133:
 
 			delete[] (yys_sv__[1].m_pchVal);
 		
-#line 5111 "../upgen/src/gcode/ulyac.cpp"
+#line 5111 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 57:
 	{
-#line 2325 "../upgen/src/meta/ulyac.upg"
+#line 2325 "meta/ulyac.upg"
 
 		
 			if( ! dmap.insert((yys_sv__[1].m_pchVal), false)) {
@@ -5131,14 +5131,14 @@ case 133:
 
 			delete[] (yys_sv__[1].m_pchVal);
 		
-#line 5134 "../upgen/src/gcode/ulyac.cpp"
+#line 5134 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 58:
 	{
-#line 2340 "../upgen/src/meta/ulyac.upg"
+#line 2340 "meta/ulyac.upg"
 
 		
 			if( ! dmap.insert((yys_sv__[1].m_pchVal), true)) {
@@ -5154,14 +5154,14 @@ case 133:
 
 			delete[] (yys_sv__[1].m_pchVal);
 		
-#line 5157 "../upgen/src/gcode/ulyac.cpp"
+#line 5157 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 59:
 	{
-#line 2355 "../upgen/src/meta/ulyac.upg"
+#line 2355 "meta/ulyac.upg"
 
 		
 			if( ! dmap.insert((yys_sv__[0].m_pchVal), true)) {
@@ -5177,14 +5177,14 @@ case 133:
 
 			delete (yys_sv__[0].m_pchVal);
 		
-#line 5180 "../upgen/src/gcode/ulyac.cpp"
+#line 5180 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 60:
 	{
-#line 2372 "../upgen/src/meta/ulyac.upg"
+#line 2372 "meta/ulyac.upg"
 
 
 			if(!lexer.addMacro((yys_sv__[2].m_pchVal), (yys_sv__[1].m_pRENode))) {
@@ -5201,14 +5201,14 @@ case 133:
 				
 			delete[] (yys_sv__[2].m_pchVal);
 		
-#line 5204 "../upgen/src/gcode/ulyac.cpp"
+#line 5204 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 61:
 	{
-#line 2388 "../upgen/src/meta/ulyac.upg"
+#line 2388 "meta/ulyac.upg"
 
 
 			lexer.addMacro((yys_sv__[3].m_pchVal), (yys_sv__[2].m_pRENode));
@@ -5221,14 +5221,14 @@ case 133:
 			
 			yyerrok();
 		
-#line 5224 "../upgen/src/gcode/ulyac.cpp"
+#line 5224 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 62:
 	{
-#line 2400 "../upgen/src/meta/ulyac.upg"
+#line 2400 "meta/ulyac.upg"
 
 			
 			strMsg = "invalid symbol.";
@@ -5238,32 +5238,32 @@ case 133:
 			delete[] (yys_sv__[2].m_pchVal);
 			yyerrok();
 		
-#line 5241 "../upgen/src/gcode/ulyac.cpp"
+#line 5241 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 63:
 	{
-#line 2411 "../upgen/src/meta/ulyac.upg"
+#line 2411 "meta/ulyac.upg"
 
-#line 5250 "../upgen/src/gcode/ulyac.cpp"
+#line 5250 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 64:
 	{
-#line 2412 "../upgen/src/meta/ulyac.upg"
+#line 2412 "meta/ulyac.upg"
 
-#line 5259 "../upgen/src/gcode/ulyac.cpp"
+#line 5259 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 65:
 	{
-#line 2415 "../upgen/src/meta/ulyac.upg"
+#line 2415 "meta/ulyac.upg"
 
 		
 			assert((yys_sv__[1].m_prTrees));
@@ -5277,14 +5277,14 @@ case 133:
 			
 			delete (yys_sv__[1].m_prTrees);
 		
-#line 5280 "../upgen/src/gcode/ulyac.cpp"
+#line 5280 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 66:
 	{
-#line 2428 "../upgen/src/meta/ulyac.upg"
+#line 2428 "meta/ulyac.upg"
 
 		
 			assert((yys_sv__[2].m_prTrees));
@@ -5297,42 +5297,42 @@ case 133:
 			
 			yyerrok();
 		
-#line 5300 "../upgen/src/gcode/ulyac.cpp"
+#line 5300 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 67:
 	{
-#line 2442 "../upgen/src/meta/ulyac.upg"
+#line 2442 "meta/ulyac.upg"
 
 
 			assert((yys_sv__[0].m_pRETree));
 			(yyval.m_prTrees) = new rtpool_t;
 			(yyval.m_prTrees)->push_back((yys_sv__[0].m_pRETree));
 		
-#line 5314 "../upgen/src/gcode/ulyac.cpp"
+#line 5314 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 68:
 	{
-#line 2448 "../upgen/src/meta/ulyac.upg"
+#line 2448 "meta/ulyac.upg"
 
 			
 			assert((yys_sv__[2].m_prTrees) && (yys_sv__[0].m_pRETree));
 			(yyval.m_prTrees) = (yys_sv__[2].m_prTrees);
 			(yyval.m_prTrees)->push_back((yys_sv__[0].m_pRETree));
 		
-#line 5328 "../upgen/src/gcode/ulyac.cpp"
+#line 5328 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 69:
 	{
-#line 2456 "../upgen/src/meta/ulyac.upg"
+#line 2456 "meta/ulyac.upg"
 
 
 			assert((yys_sv__[0].m_pRETree));
@@ -5355,103 +5355,103 @@ case 133:
 			
 			dtbl.mapRule2Line(lexer.tree2Rule((yys_sv__[0].m_pRETree)->getID()), (yys_loc__[0]).firstLine); 
 		
-#line 5358 "../upgen/src/gcode/ulyac.cpp"
+#line 5358 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 70:
 	{
-#line 2480 "../upgen/src/meta/ulyac.upg"
+#line 2480 "meta/ulyac.upg"
 
 
 			(yyval.m_nVal) = (yys_sv__[0].m_nVal);
 		
-#line 5370 "../upgen/src/gcode/ulyac.cpp"
+#line 5370 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 71:
 	{
-#line 2484 "../upgen/src/meta/ulyac.upg"
+#line 2484 "meta/ulyac.upg"
 
 		
 			assert((yys_sv__[1].m_nVal) == (yys_sv__[0].m_nVal));
 			(yyval.m_nVal) = (yys_sv__[1].m_nVal);
 		
-#line 5383 "../upgen/src/gcode/ulyac.cpp"
+#line 5383 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 72:
 	{
-#line 2491 "../upgen/src/meta/ulyac.upg"
+#line 2491 "meta/ulyac.upg"
 
 			
 			(yyval.m_pIndices) = (yys_sv__[1].m_pIndices);
 		
-#line 5395 "../upgen/src/gcode/ulyac.cpp"
+#line 5395 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 73:
 	{
-#line 2495 "../upgen/src/meta/ulyac.upg"
+#line 2495 "meta/ulyac.upg"
 
 		
 			(yyval.m_pIndices) = nullptr;
 		
-#line 5407 "../upgen/src/gcode/ulyac.cpp"
+#line 5407 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 74:
 	{
-#line 2499 "../upgen/src/meta/ulyac.upg"
+#line 2499 "meta/ulyac.upg"
 
 		
 			(yyval.m_pIndices) = new vint_t;
 			(yyval.m_pIndices)->push_back(0);
 		
-#line 5420 "../upgen/src/gcode/ulyac.cpp"
+#line 5420 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 75:
 	{
-#line 2506 "../upgen/src/meta/ulyac.upg"
+#line 2506 "meta/ulyac.upg"
 
 
 			(yyval.m_pIndices) = new vint_t;
 			(yyval.m_pIndices)->push_back((yys_sv__[0].m_nVal));
 		
-#line 5433 "../upgen/src/gcode/ulyac.cpp"
+#line 5433 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 76:
 	{
-#line 2511 "../upgen/src/meta/ulyac.upg"
+#line 2511 "meta/ulyac.upg"
 
 		
 			assert((yys_sv__[2].m_pIndices));
 			(yys_sv__[2].m_pIndices)->push_back((yys_sv__[0].m_nVal));
 			(yyval.m_pIndices) = (yys_sv__[2].m_pIndices);
 		
-#line 5447 "../upgen/src/gcode/ulyac.cpp"
+#line 5447 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 77:
 	{
-#line 2519 "../upgen/src/meta/ulyac.upg"
+#line 2519 "meta/ulyac.upg"
 
 
 			(yyval.m_nVal) = lexer.getSCIdx((yys_sv__[0].m_pchVal));
@@ -5470,164 +5470,164 @@ case 133:
 			
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 5473 "../upgen/src/gcode/ulyac.cpp"
+#line 5473 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 78:
 	{
-#line 2537 "../upgen/src/meta/ulyac.upg"
+#line 2537 "meta/ulyac.upg"
 
 		
 			(yyval.m_nVal) = 0;
 		
-#line 5485 "../upgen/src/gcode/ulyac.cpp"
+#line 5485 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 79:
 	{
-#line 2543 "../upgen/src/meta/ulyac.upg"
+#line 2543 "meta/ulyac.upg"
 
 
 			(yys_sv__[0].m_pRENode) = lexer.addConcatNode((yys_sv__[0].m_pRENode), lexer.addEorNode(false));
 			(yyval.m_pRETree) = lexer.addTree(dtbl.addRule(), (yys_sv__[0].m_pRENode), false);
 			lexer.setLookaheadFlag(false);
 		
-#line 5499 "../upgen/src/gcode/ulyac.cpp"
+#line 5499 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 80:
 	{
-#line 2549 "../upgen/src/meta/ulyac.upg"
+#line 2549 "meta/ulyac.upg"
 
 		
 			(yys_sv__[0].m_pRENode) = lexer.addConcatNode((yys_sv__[0].m_pRENode), lexer.addEorNode(false));
 			(yyval.m_pRETree) = lexer.addTree(dtbl.addRule(), (yys_sv__[0].m_pRENode), true);
 			lexer.setLookaheadFlag(false);
 		
-#line 5513 "../upgen/src/gcode/ulyac.cpp"
+#line 5513 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 81:
 	{
-#line 2555 "../upgen/src/meta/ulyac.upg"
+#line 2555 "meta/ulyac.upg"
 
 		
 			(yyval.m_pRETree) = lexer.addTree(dtbl.addRule(), lexer.addEofNode(), false, true);
 		
-#line 5525 "../upgen/src/gcode/ulyac.cpp"
+#line 5525 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 82:
 	{
-#line 2561 "../upgen/src/meta/ulyac.upg"
+#line 2561 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
 		
-#line 5537 "../upgen/src/gcode/ulyac.cpp"
+#line 5537 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 83:
 	{
-#line 2565 "../upgen/src/meta/ulyac.upg"
+#line 2565 "meta/ulyac.upg"
 
 			lexer.setLookaheadFlag(true);
 			(yyval.m_pRENode) = lexer.addLeafNode(new charset_t('\n'), false);
 			(yyval.m_pRENode) = lexer.addConcatNode((yys_sv__[1].m_pRENode), (yyval.m_pRENode));
 		
-#line 5550 "../upgen/src/gcode/ulyac.cpp"
+#line 5550 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 84:
 	{
-#line 2570 "../upgen/src/meta/ulyac.upg"
+#line 2570 "meta/ulyac.upg"
 		
 			
 			(yyval.m_pRENode) = lexer.addConcatNode((yys_sv__[1].m_pRENode), (yys_sv__[0].m_pRENode));
 		
-#line 5562 "../upgen/src/gcode/ulyac.cpp"
+#line 5562 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 85:
 	{
-#line 2576 "../upgen/src/meta/ulyac.upg"
+#line 2576 "meta/ulyac.upg"
 
 		
 			lexer.setLookaheadFlag(true);
 			(yyval.m_pRENode) = (yys_sv__[1].m_pRENode);
 		
-#line 5575 "../upgen/src/gcode/ulyac.cpp"
+#line 5575 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 86:
 	{
-#line 2583 "../upgen/src/meta/ulyac.upg"
+#line 2583 "meta/ulyac.upg"
 
 
 			(yyval.m_pRENode) = lexer.addUnionNode((yys_sv__[2].m_pRENode), (yys_sv__[0].m_pRENode));
 		
-#line 5587 "../upgen/src/gcode/ulyac.cpp"
+#line 5587 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 87:
 	{
-#line 2587 "../upgen/src/meta/ulyac.upg"
+#line 2587 "meta/ulyac.upg"
 
 		
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
         
-#line 5599 "../upgen/src/gcode/ulyac.cpp"
+#line 5599 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 88:
 	{
-#line 2593 "../upgen/src/meta/ulyac.upg"
+#line 2593 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = lexer.addConcatNode((yys_sv__[1].m_pRENode), (yys_sv__[0].m_pRENode));
 		
-#line 5611 "../upgen/src/gcode/ulyac.cpp"
+#line 5611 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 89:
 	{
-#line 2597 "../upgen/src/meta/ulyac.upg"
+#line 2597 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
 		
-#line 5623 "../upgen/src/gcode/ulyac.cpp"
+#line 5623 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 90:
 	{
-#line 2603 "../upgen/src/meta/ulyac.upg"
+#line 2603 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[1].m_pRENode);
@@ -5637,14 +5637,14 @@ case 133:
 				(yyval.m_pRENode) = lexer.addConcatNode((yyval.m_pRENode), lexer.copySubtree((yys_sv__[1].m_pRENode)));
 			}			
 		
-#line 5640 "../upgen/src/gcode/ulyac.cpp"
+#line 5640 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 91:
 	{
-#line 2612 "../upgen/src/meta/ulyac.upg"
+#line 2612 "meta/ulyac.upg"
 
 		
 			(yys_sv__[1].m_pRENode)->setNullable(true);
@@ -5655,14 +5655,14 @@ case 133:
 				(yyval.m_pRENode) = lexer.addConcatNode((yyval.m_pRENode), lexer.copySubtree((yys_sv__[1].m_pRENode)));
 			}
 		
-#line 5658 "../upgen/src/gcode/ulyac.cpp"
+#line 5658 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 92:
 	{
-#line 2622 "../upgen/src/meta/ulyac.upg"
+#line 2622 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[1].m_pRENode);
@@ -5674,14 +5674,14 @@ case 133:
 			
 			(yyval.m_pRENode) = lexer.addConcatNode((yyval.m_pRENode), lexer.addStarNode(lexer.copySubtree((yys_sv__[1].m_pRENode))));
 		
-#line 5677 "../upgen/src/gcode/ulyac.cpp"
+#line 5677 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 93:
 	{
-#line 2633 "../upgen/src/meta/ulyac.upg"
+#line 2633 "meta/ulyac.upg"
 
 		
 			if((yys_sv__[0].m_nRange).m_nLower > (yys_sv__[0].m_nRange).m_nUpper || _EQ(0, (yys_sv__[0].m_nRange).m_nUpper)) {
@@ -5720,26 +5720,26 @@ case 133:
 				(yyval.m_pRENode) = lexer.addConcatNode((yyval.m_pRENode), pNode);
 			}
 		
-#line 5723 "../upgen/src/gcode/ulyac.cpp"
+#line 5723 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 94:
 	{
-#line 2671 "../upgen/src/meta/ulyac.upg"
+#line 2671 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = lexer.addStarNode((yys_sv__[1].m_pRENode));
 		
-#line 5735 "../upgen/src/gcode/ulyac.cpp"
+#line 5735 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 95:
 	{
-#line 2675 "../upgen/src/meta/ulyac.upg"
+#line 2675 "meta/ulyac.upg"
 
 			
 			renode_t *pNode = lexer.copySubtree((yys_sv__[1].m_pRENode));
@@ -5748,75 +5748,75 @@ case 133:
 			
 			(yyval.m_pRENode) = lexer.addConcatNode((yys_sv__[1].m_pRENode), lexer.addStarNode(pNode));			
 		
-#line 5751 "../upgen/src/gcode/ulyac.cpp"
+#line 5751 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 96:
 	{
-#line 2683 "../upgen/src/meta/ulyac.upg"
+#line 2683 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[1].m_pRENode);
 			(yys_sv__[1].m_pRENode)->setNullable(true);
 		
-#line 5764 "../upgen/src/gcode/ulyac.cpp"
+#line 5764 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 97:
 	{
-#line 2688 "../upgen/src/meta/ulyac.upg"
+#line 2688 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
 		
-#line 5776 "../upgen/src/gcode/ulyac.cpp"
+#line 5776 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 98:
 	{
-#line 2694 "../upgen/src/meta/ulyac.upg"
+#line 2694 "meta/ulyac.upg"
 
 
 			(yyval.m_pRENode) = (yys_sv__[1].m_pRENode);
 		
-#line 5788 "../upgen/src/gcode/ulyac.cpp"
+#line 5788 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 99:
 	{
-#line 2698 "../upgen/src/meta/ulyac.upg"
+#line 2698 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
 		
-#line 5800 "../upgen/src/gcode/ulyac.cpp"
+#line 5800 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 100:
 	{
-#line 2704 "../upgen/src/meta/ulyac.upg"
+#line 2704 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
 		
-#line 5812 "../upgen/src/gcode/ulyac.cpp"
+#line 5812 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 101:
 	{
-#line 2708 "../upgen/src/meta/ulyac.upg"
+#line 2708 "meta/ulyac.upg"
 		
 			
 			(yyval.m_pRENode) = lexer.copyMacrotree((yys_sv__[0].m_pchVal));
@@ -5835,38 +5835,38 @@ case 133:
 			
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 5838 "../upgen/src/gcode/ulyac.cpp"
+#line 5838 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 102:
 	{
-#line 2727 "../upgen/src/meta/ulyac.upg"
+#line 2727 "meta/ulyac.upg"
 
 
 			(yyval.m_pRENode) = lexer.addConcatNode((yys_sv__[1].m_pRENode), (yys_sv__[0].m_pRENode));
 		
-#line 5850 "../upgen/src/gcode/ulyac.cpp"
+#line 5850 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 103:
 	{
-#line 2731 "../upgen/src/meta/ulyac.upg"
+#line 2731 "meta/ulyac.upg"
 
 		
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
 		
-#line 5862 "../upgen/src/gcode/ulyac.cpp"
+#line 5862 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 104:
 	{
-#line 2736 "../upgen/src/meta/ulyac.upg"
+#line 2736 "meta/ulyac.upg"
 
 			
 			(yyval.m_pRENode) = (yys_sv__[1].m_pRENode);
@@ -5876,49 +5876,49 @@ case 133:
 				(yyval.m_pRENode) = lexer.addConcatNode((yyval.m_pRENode), lexer.copySubtree((yys_sv__[1].m_pRENode)));
 			}			
 		
-#line 5879 "../upgen/src/gcode/ulyac.cpp"
+#line 5879 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 105:
 	{
-#line 2745 "../upgen/src/meta/ulyac.upg"
+#line 2745 "meta/ulyac.upg"
 
 
 			(yyval.m_pRENode) = (yys_sv__[1].m_pRENode);
 		
-#line 5891 "../upgen/src/gcode/ulyac.cpp"
+#line 5891 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 106:
 	{
-#line 2749 "../upgen/src/meta/ulyac.upg"
+#line 2749 "meta/ulyac.upg"
 
 		
 			(yyval.m_pRENode) = (yys_sv__[0].m_pRENode);
 		
-#line 5903 "../upgen/src/gcode/ulyac.cpp"
+#line 5903 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 107:
 	{
-#line 2755 "../upgen/src/meta/ulyac.upg"
+#line 2755 "meta/ulyac.upg"
 
 			(yyval.m_pRENode) = lexer.addLeafNode((yys_sv__[0].m_pCS));
 		
-#line 5914 "../upgen/src/gcode/ulyac.cpp"
+#line 5914 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 108:
 	{
-#line 2758 "../upgen/src/meta/ulyac.upg"
+#line 2758 "meta/ulyac.upg"
 
 			charset_t *pcs = new charset_t((yys_sv__[0].m_cVal));	
 			if( ! gsetup.m_bCaseSensitive) {
@@ -5931,14 +5931,14 @@ case 133:
 			}
 			(yyval.m_pRENode) = lexer.addLeafNode(pcs);
 		
-#line 5934 "../upgen/src/gcode/ulyac.cpp"
+#line 5934 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 109:
 	{
-#line 2770 "../upgen/src/meta/ulyac.upg"
+#line 2770 "meta/ulyac.upg"
 
 			if( ! gsetup.m_bCaseSensitive && (charset_t::LOWER == (yys_sv__[0].m_nPosix) || charset_t::UPPER == (yys_sv__[0].m_nPosix))) {
 			
@@ -5946,14 +5946,14 @@ case 133:
 			}
 			(yyval.m_pRENode) = lexer.addLeafNode((yys_sv__[0].m_nPosix));
 		
-#line 5949 "../upgen/src/gcode/ulyac.cpp"
+#line 5949 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 110:
 	{
-#line 2777 "../upgen/src/meta/ulyac.upg"
+#line 2777 "meta/ulyac.upg"
 
 		
 			string str;
@@ -5992,64 +5992,64 @@ case 133:
 			}
 			delete (yys_sv__[0].m_pchVal);
 		
-#line 5995 "../upgen/src/gcode/ulyac.cpp"
+#line 5995 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 111:
 	{
-#line 2815 "../upgen/src/meta/ulyac.upg"
+#line 2815 "meta/ulyac.upg"
 
 			
 			const char cc[2] = {'\n', '\0'};
 			(yyval.m_pRENode) = lexer.addLeafNode(cc, true);
 		
-#line 6008 "../upgen/src/gcode/ulyac.cpp"
+#line 6008 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 112:
 	{
-#line 2822 "../upgen/src/meta/ulyac.upg"
+#line 2822 "meta/ulyac.upg"
 
 
 			(yyval.m_pCS) = (yys_sv__[1].m_pCS);
 		
-#line 6020 "../upgen/src/gcode/ulyac.cpp"
+#line 6020 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 113:
 	{
-#line 2826 "../upgen/src/meta/ulyac.upg"
+#line 2826 "meta/ulyac.upg"
 
 
 			(yyval.m_pCS) = (yys_sv__[1].m_pCS);
 			(yys_sv__[1].m_pCS)->flip();			
 		
-#line 6033 "../upgen/src/gcode/ulyac.cpp"
+#line 6033 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 114:
 	{
-#line 2833 "../upgen/src/meta/ulyac.upg"
+#line 2833 "meta/ulyac.upg"
 
 		
 			(yyval.m_pCS) = (yys_sv__[0].m_pCS);
 		
-#line 6045 "../upgen/src/gcode/ulyac.cpp"
+#line 6045 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 115:
 	{
-#line 2837 "../upgen/src/meta/ulyac.upg"
+#line 2837 "meta/ulyac.upg"
 
 			
 			*((yys_sv__[1].m_pCS)) |= *((yys_sv__[0].m_pCS));
@@ -6057,26 +6057,26 @@ case 133:
 
 			delete (yys_sv__[0].m_pCS);
 		
-#line 6060 "../upgen/src/gcode/ulyac.cpp"
+#line 6060 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 116:
 	{
-#line 2846 "../upgen/src/meta/ulyac.upg"
+#line 2846 "meta/ulyac.upg"
 
 			
 			(yyval.m_pCS) = new charset_t('\n', true);			
 		
-#line 6072 "../upgen/src/gcode/ulyac.cpp"
+#line 6072 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 117:
 	{
-#line 2850 "../upgen/src/meta/ulyac.upg"
+#line 2850 "meta/ulyac.upg"
 
 		
 			(yyval.m_pCS) = new charset_t((yys_sv__[0].m_cVal));
@@ -6090,14 +6090,14 @@ case 133:
 				}
 			}
 		
-#line 6093 "../upgen/src/gcode/ulyac.cpp"
+#line 6093 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 118:
 	{
-#line 2863 "../upgen/src/meta/ulyac.upg"
+#line 2863 "meta/ulyac.upg"
 
 		
 			if((unsigned char)(yys_sv__[2].m_cVal) > (unsigned char)(yys_sv__[0].m_cVal)) {
@@ -6130,14 +6130,14 @@ case 133:
 				}
 			} 
 		
-#line 6133 "../upgen/src/gcode/ulyac.cpp"
+#line 6133 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 119:
 	{
-#line 2895 "../upgen/src/meta/ulyac.upg"
+#line 2895 "meta/ulyac.upg"
 
 		
 			if( ! gsetup.m_bCaseSensitive && (charset_t::LOWER == (yys_sv__[0].m_nPosix) || charset_t::UPPER == (yys_sv__[0].m_nPosix))) {
@@ -6146,41 +6146,41 @@ case 133:
 			}
 			(yyval.m_pCS) = new charset_t((yys_sv__[0].m_nPosix));
 		
-#line 6149 "../upgen/src/gcode/ulyac.cpp"
+#line 6149 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 120:
 	{
-#line 2905 "../upgen/src/meta/ulyac.upg"
+#line 2905 "meta/ulyac.upg"
 
-#line 6158 "../upgen/src/gcode/ulyac.cpp"
+#line 6158 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 121:
 	{
-#line 2906 "../upgen/src/meta/ulyac.upg"
+#line 2906 "meta/ulyac.upg"
 
-#line 6167 "../upgen/src/gcode/ulyac.cpp"
+#line 6167 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 122:
 	{
-#line 2908 "../upgen/src/meta/ulyac.upg"
+#line 2908 "meta/ulyac.upg"
 
-#line 6176 "../upgen/src/gcode/ulyac.cpp"
+#line 6176 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 123:
 	{
-#line 2909 "../upgen/src/meta/ulyac.upg"
+#line 2909 "meta/ulyac.upg"
 
 				strMsg = strhelper_t::fromInt((yys_loc__[0]).lastLine);
 				strMsg += ':';
@@ -6188,27 +6188,27 @@ case 133:
 				strMsg += "; description: lack of `;\'.";
 				_WARNING(strMsg);
 		
-#line 6191 "../upgen/src/gcode/ulyac.cpp"
+#line 6191 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 124:
 	{
-#line 2916 "../upgen/src/meta/ulyac.upg"
+#line 2916 "meta/ulyac.upg"
 
 				strMsg = "invalid syntactic rule.";
 				_ERROR(strMsg, ESYN(5));
 				yyerrok();
 		
-#line 6204 "../upgen/src/gcode/ulyac.cpp"
+#line 6204 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 125:
 	{
-#line 2922 "../upgen/src/meta/ulyac.upg"
+#line 2922 "meta/ulyac.upg"
 
 			
 			if( grammar.isToken((yys_sv__[0].m_pchVal))) {
@@ -6261,55 +6261,55 @@ case 133:
 			
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 6264 "../upgen/src/gcode/ulyac.cpp"
+#line 6264 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 127:
 	{
-#line 2976 "../upgen/src/meta/ulyac.upg"
+#line 2976 "meta/ulyac.upg"
 
 
 			grammar.addEmptyRule(s_nCurLeftSymbol);
 		
-#line 6276 "../upgen/src/gcode/ulyac.cpp"
+#line 6276 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 126:
 	{
-#line 2976 "../upgen/src/meta/ulyac.upg"
+#line 2976 "meta/ulyac.upg"
 
-#line 6285 "../upgen/src/gcode/ulyac.cpp"
+#line 6285 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 129:
 	{
-#line 2981 "../upgen/src/meta/ulyac.upg"
+#line 2981 "meta/ulyac.upg"
 
 			grammar.addEmptyRule(s_nCurLeftSymbol);
 		
-#line 6296 "../upgen/src/gcode/ulyac.cpp"
+#line 6296 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 128:
 	{
-#line 2981 "../upgen/src/meta/ulyac.upg"
+#line 2981 "meta/ulyac.upg"
 
-#line 6305 "../upgen/src/gcode/ulyac.cpp"
+#line 6305 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 130:
 	{
-#line 2986 "../upgen/src/meta/ulyac.upg"
+#line 2986 "meta/ulyac.upg"
 
 			
 			(yyval.m_pProd) = (yys_sv__[4].m_pProd);
@@ -6320,14 +6320,14 @@ case 133:
 			
 			grammar.clearMidSVT();
 		
-#line 6323 "../upgen/src/gcode/ulyac.cpp"
+#line 6323 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 131:
 	{
-#line 2996 "../upgen/src/meta/ulyac.upg"
+#line 2996 "meta/ulyac.upg"
 
 			
 			(yyval.m_pProd) = (yys_sv__[2].m_pProd);
@@ -6337,14 +6337,14 @@ case 133:
 			ptbl.mapRule2Line((yyval.m_pProd)->getID(), (yys_loc__[2]).firstLine);
 			(yyval.m_pProd)->setActionIndex(nActID);
 		
-#line 6340 "../upgen/src/gcode/ulyac.cpp"
+#line 6340 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 132:
 	{
-#line 3005 "../upgen/src/meta/ulyac.upg"
+#line 3005 "meta/ulyac.upg"
 
 		
 			(yyval.m_pProd) = grammar.getProd(grammar.getLastProdIndex());
@@ -6355,14 +6355,14 @@ case 133:
 			
 			grammar.clearMidSVT();
 		
-#line 6358 "../upgen/src/gcode/ulyac.cpp"
+#line 6358 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 133:
 	{
-#line 3015 "../upgen/src/meta/ulyac.upg"
+#line 3015 "meta/ulyac.upg"
 
 		
 			(yyval.m_pProd) = grammar.getProd(grammar.getLastProdIndex());
@@ -6372,14 +6372,14 @@ case 133:
 			ptbl.mapRule2Line((yyval.m_pProd)->getID(), (yys_loc__[1]).firstLine);
 			(yyval.m_pProd)->setActionIndex(nActID);
 		
-#line 6375 "../upgen/src/gcode/ulyac.cpp"
+#line 6375 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 134:
 	{
-#line 3024 "../upgen/src/meta/ulyac.upg"
+#line 3024 "meta/ulyac.upg"
 
 			
 			(yyval.m_pProd) = (yys_sv__[2].m_pProd);
@@ -6389,14 +6389,14 @@ case 133:
 			
 			grammar.clearMidSVT();
 		
-#line 6392 "../upgen/src/gcode/ulyac.cpp"
+#line 6392 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 135:
 	{
-#line 3033 "../upgen/src/meta/ulyac.upg"
+#line 3033 "meta/ulyac.upg"
 
 			(yyval.m_pProd) = (yys_sv__[0].m_pProd);
 			int nActID = ptbl.addEmptyAction((yys_loc__[0]).firstLine);
@@ -6404,14 +6404,14 @@ case 133:
 			ptbl.mapRule2Line((yyval.m_pProd)->getID(), (yys_loc__[0]).firstLine);
 			(yyval.m_pProd)->setActionIndex(nActID);
 		
-#line 6407 "../upgen/src/gcode/ulyac.cpp"
+#line 6407 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 136:
 	{
-#line 3040 "../upgen/src/meta/ulyac.upg"
+#line 3040 "meta/ulyac.upg"
 
 			
 			(yyval.m_pProd) = grammar.getProd(grammar.getLastProdIndex());
@@ -6421,14 +6421,14 @@ case 133:
 			
 			grammar.clearMidSVT();
 		
-#line 6424 "../upgen/src/gcode/ulyac.cpp"
+#line 6424 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 137:
 	{
-#line 3049 "../upgen/src/meta/ulyac.upg"
+#line 3049 "meta/ulyac.upg"
 
 			(yyval.m_pProd) = grammar.getProd(grammar.getLastProdIndex());
 			int nActID = ptbl.addEmptyAction((yys_loc__[0]).firstLine);
@@ -6436,14 +6436,14 @@ case 133:
 			ptbl.mapRule2Line(nActID, (yys_loc__[0]).firstLine);
 			(yyval.m_pProd)->setActionIndex(nActID);			
 		
-#line 6439 "../upgen/src/gcode/ulyac.cpp"
+#line 6439 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 138:
 	{
-#line 3057 "../upgen/src/meta/ulyac.upg"
+#line 3057 "meta/ulyac.upg"
 
 			(yyval.m_pProd) = (yys_sv__[3].m_pProd);
 			prod_t* pr = grammar.addMidRule((yys_sv__[2].m_nVal));
@@ -6457,28 +6457,28 @@ case 133:
 			
 			delete (yys_sv__[0].m_pPItem);
 		
-#line 6460 "../upgen/src/gcode/ulyac.cpp"
+#line 6460 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 139:
 	{
-#line 3070 "../upgen/src/meta/ulyac.upg"
+#line 3070 "meta/ulyac.upg"
 
 			(yyval.m_pProd) = (yys_sv__[1].m_pProd);
 			(yyval.m_pProd)->addRight((yys_sv__[0].m_pPItem)->m_nSymbol, (yys_sv__[0].m_pPItem)->m_nPrec, (yys_sv__[0].m_pPItem)->m_nAssoc);
 			
 			delete (yys_sv__[0].m_pPItem);
 		
-#line 6474 "../upgen/src/gcode/ulyac.cpp"
+#line 6474 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 140:
 	{
-#line 3076 "../upgen/src/meta/ulyac.upg"
+#line 3076 "meta/ulyac.upg"
 
 			prod_t* pr = grammar.addMidRule((yys_sv__[2].m_nVal));
 			assert(pr);
@@ -6493,28 +6493,28 @@ case 133:
 			
 			delete (yys_sv__[0].m_pPItem);
 		
-#line 6496 "../upgen/src/gcode/ulyac.cpp"
+#line 6496 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 141:
 	{
-#line 3090 "../upgen/src/meta/ulyac.upg"
+#line 3090 "meta/ulyac.upg"
 
 			(yyval.m_pProd) = grammar.getProd(grammar.getLastProdIndex());
 			(yyval.m_pProd)->addRight((yys_sv__[0].m_pPItem)->m_nSymbol, (yys_sv__[0].m_pPItem)->m_nPrec, (yys_sv__[0].m_pPItem)->m_nAssoc);
 			
 			delete (yys_sv__[0].m_pPItem);
 		
-#line 6510 "../upgen/src/gcode/ulyac.cpp"
+#line 6510 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 142:
 	{
-#line 3097 "../upgen/src/meta/ulyac.upg"
+#line 3097 "meta/ulyac.upg"
 
 			if((yys_sv__[2].m_nVal) >= grammar.getTypeBase()) {
 				strMsg = "at line ";
@@ -6544,14 +6544,14 @@ case 133:
 			}
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 6547 "../upgen/src/gcode/ulyac.cpp"
+#line 6547 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 143:
 	{
-#line 3126 "../upgen/src/meta/ulyac.upg"
+#line 3126 "meta/ulyac.upg"
 
 		
 			if((yys_sv__[0].m_nVal) >= grammar.getTypeBase()) {				
@@ -6568,14 +6568,14 @@ case 133:
 				}
 			}
 		
-#line 6571 "../upgen/src/gcode/ulyac.cpp"
+#line 6571 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 144:
 	{
-#line 3143 "../upgen/src/meta/ulyac.upg"
+#line 3143 "meta/ulyac.upg"
 
 			(yyval.m_nVal) = grammar.getSymbolIndex((yys_sv__[0].m_pchVal));
 			if(INVALID_INDEX == (yyval.m_nVal)) {
@@ -6584,14 +6584,14 @@ case 133:
 			}
 			delete[] (yys_sv__[0].m_pchVal);
 		
-#line 6587 "../upgen/src/gcode/ulyac.cpp"
+#line 6587 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 145:
 	{
-#line 3151 "../upgen/src/meta/ulyac.upg"
+#line 3151 "meta/ulyac.upg"
 
 				string strSName = strhelper_t::quotedChar((yys_sv__[0].m_cVal));
 				(yyval.m_nVal) = grammar.getSymbolIndex(strSName);
@@ -6612,14 +6612,14 @@ case 133:
 						}
 				}
 		
-#line 6615 "../upgen/src/gcode/ulyac.cpp"
+#line 6615 "gcode/ulyac.cpp"
 
 	}
 	break;
 	
 	case 146:
 	{
-#line 3171 "../upgen/src/meta/ulyac.upg"
+#line 3171 "meta/ulyac.upg"
 
             std::string strSName{(yys_sv__[0].m_pchVal)};
             delete[] (yys_sv__[0].m_pchVal);
@@ -6642,7 +6642,7 @@ case 133:
                 }
             }
         
-#line 6645 "../upgen/src/gcode/ulyac.cpp"
+#line 6645 "gcode/ulyac.cpp"
 
 	}
 	break;
@@ -7064,7 +7064,7 @@ private:
 	// index of left symbol in a grammar rule
 	static const int yyplid[147];
 	// parse action table
-	static const int yypact[602];
+	static const int yypact[599];
 
 	// base array for parse action table
 	// which is used to determine the base location of the entries
@@ -8260,83 +8260,82 @@ const int yyparser_t::yyplid[147] = {
 };
 
 // parse action table
-const int yyparser_t::yypact[602] = {
-212,	50,	95,	68,	69,	91,	8,	9,
-	72,	357,	10,	71,	103,	11,	66,	214,
-	167,	67,	357,	214,	137,	119,	138,	357,
-	56,	357,	94,	12,	13,	14,	15,	16,
-	92,	168,	17,	18,	269,	31,	32,	136,
-	53,	74,	269,	269,	357,	49,	269,	48,
-	29,	269,	72,	30,	54,	55,	70,	102,
-	75,	215,	34,	35,	64,	176,	36,	269,
-	269,	269,	269,	269,	51,	74,	269,	269,
-	357,	37,	38,	123,	58,	34,	35,	123,
-	357,	36,	76,	97,	75,	357,	173,	357,
-	59,	60,	357,	357,	37,	38,	74,	58,
-	357,	357,	39,	98,	40,	41,	122,	299,
-	61,	299,	174,	59,	60,	75,	76,	99,
-	100,	357,	299,	299,	180,	39,	299,	40,
-	41,	297,	299,	297,	74,	80,	96,	357,
-	357,	299,	299,	357,	34,	35,	237,	76,
-	36,	116,	357,	75,	297,	357,	299,	84,
-	357,	357,	299,	37,	38,	357,	58,	357,
-	299,	299,	299,	299,	299,	299,	357,	357,
-	297,	357,	59,	60,	297,	76,	235,	120,
-	357,	357,	297,	297,	39,	297,	40,	41,
-	213,	237,	357,	357,	284,	109,	58,	357,
-	284,	284,	357,	357,	284,	34,	35,	357,
-	357,	36,	59,	60,	298,	357,	298,	284,
-	284,	357,	333,	333,	37,	38,	333,	298,
-	298,	235,	357,	298,	357,	357,	357,	298,
-	357,	110,	80,	357,	333,	284,	298,	298,
-	284,	357,	284,	284,	357,	39,	357,	40,
-	41,	140,	357,	298,	84,	34,	35,	298,
-	357,	36,	182,	357,	357,	298,	298,	298,
-	298,	298,	298,	357,	37,	38,	357,	357,
-	296,	357,	296,	357,	181,	357,	357,	357,
-	357,	357,	357,	34,	35,	357,	357,	36,
-	357,	357,	141,	296,	357,	39,	357,	40,
-	41,	357,	37,	38,	357,	357,	357,	357,
-	275,	357,	357,	357,	275,	275,	357,	296,
-	275,	275,	357,	296,	275,	357,	357,	357,
-	153,	296,	296,	39,	296,	40,	41,	275,
-	275,	357,	357,	284,	109,	357,	357,	284,
-	284,	357,	357,	284,	357,	357,	34,	35,
-	357,	275,	36,	357,	357,	275,	284,	284,
-	275,	357,	275,	275,	357,	37,	38,	357,
-	292,	357,	292,	357,	357,	34,	35,	357,
-	110,	36,	357,	357,	284,	357,	357,	284,
-	357,	284,	284,	292,	357,	38,	39,	357,
-	40,	41,	357,	357,	276,	357,	357,	357,
-	276,	276,	357,	357,	276,	276,	357,	72,
-	276,	357,	34,	35,	153,	160,	36,	40,
-	41,	157,	158,	276,	276,	294,	357,	294,
-	357,	357,	38,	357,	357,	357,	357,	357,
-	34,	35,	357,	357,	36,	276,	357,	357,
-	294,	276,	357,	313,	276,	313,	276,	276,
-	38,	312,	160,	312,	40,	41,	313,	313,
-	357,	357,	313,	357,	312,	312,	313,	357,
-	312,	173,	357,	357,	312,	357,	313,	173,
-	160,	357,	40,	41,	312,	357,	357,	357,
-	357,	357,	357,	357,	357,	357,	357,	347,
-	347,	345,	345,	347,	357,	345,	313,	357,
-	313,	313,	357,	357,	312,	357,	312,	312,
-	184,	347,	184,	345,	185,	357,	196,	357,
-	357,	357,	357,	357,	186,	187,	186,	187,
-	347,	347,	357,	188,	347,	195,	357,	347,
-	357,	345,	343,	343,	357,	357,	343,	346,
-	346,	184,	347,	346,	357,	185,	357,	357,
-	357,	347,	357,	345,	343,	186,	187,	201,
-	184,	346,	357,	357,	188,	357,	341,	341,
-	347,	357,	341,	357,	186,	187,	357,	344,
-	344,	357,	343,	344,	357,	357,	357,	346,
-	341,	357,	347,	206,	357,	357,	357,	357,
-	184,	344,	357,	357,	343,	357,	357,	357,
-	357,	346,	357,	357,	186,	187,	341,	357,
-	357,	357,	357,	357,	357,	357,	357,	344,
-	357,	357,	357,	357,	357,	357,	357,	357,
-	341,	357,	357,	357,	357,	357,	357,	357,
-	357,	344
+const int yyparser_t::yypact[599] = {
+212,	37,	77,	67,	29,	90,	14,	13,
+	40,	33,	23,	74,	118,	24,	118,	215,
+	357,	171,	125,	176,	33,	34,	35,	357,
+	41,	105,	76,	17,	19,	18,	20,	21,
+	34,	35,	15,	22,	42,	43,	73,	117,
+	104,	174,	50,	357,	237,	36,	66,	180,
+	30,	269,	47,	48,	38,	64,	60,	269,
+	269,	61,	89,	269,	33,	45,	269,	357,
+	46,	357,	103,	105,	57,	59,	79,	357,
+	34,	35,	86,	87,	269,	269,	269,	269,
+	269,	357,	104,	269,	269,	84,	80,	237,
+	85,	357,	357,	357,	297,	54,	297,	62,
+	63,	90,	81,	82,	357,	88,	357,	64,
+	60,	214,	168,	61,	103,	214,	299,	297,
+	299,	78,	132,	105,	133,	357,	57,	59,
+	357,	299,	299,	169,	357,	299,	357,	357,
+	357,	299,	104,	297,	93,	134,	357,	297,
+	299,	299,	357,	357,	357,	297,	297,	54,
+	297,	62,	63,	357,	357,	299,	97,	64,
+	60,	299,	357,	61,	103,	105,	126,	299,
+	299,	299,	299,	299,	299,	213,	57,	59,
+	357,	284,	113,	357,	104,	284,	284,	357,
+	357,	284,	357,	357,	64,	60,	357,	235,
+	61,	292,	357,	292,	284,	284,	357,	54,
+	357,	62,	63,	57,	59,	357,	103,	33,
+	129,	357,	357,	357,	292,	357,	112,	357,
+	357,	357,	284,	34,	35,	284,	357,	284,
+	284,	298,	357,	298,	54,	357,	62,	63,
+	90,	357,	235,	357,	298,	298,	357,	357,
+	298,	138,	155,	156,	298,	64,	60,	93,
+	357,	61,	357,	298,	298,	357,	357,	64,
+	60,	357,	357,	61,	57,	59,	357,	357,
+	298,	97,	357,	357,	298,	357,	57,	59,
+	357,	357,	298,	298,	298,	298,	298,	298,
+	357,	296,	137,	296,	357,	54,	357,	62,
+	63,	357,	357,	357,	64,	60,	357,	54,
+	61,	62,	63,	357,	296,	357,	357,	357,
+	357,	275,	357,	57,	59,	275,	275,	357,
+	357,	275,	275,	357,	357,	275,	357,	357,
+	296,	151,	64,	60,	296,	357,	61,	357,
+	275,	275,	296,	296,	54,	296,	62,	63,
+	357,	357,	59,	284,	113,	357,	357,	284,
+	284,	357,	275,	284,	357,	357,	275,	357,
+	357,	275,	357,	275,	275,	357,	284,	284,
+	357,	357,	159,	357,	62,	63,	276,	357,
+	357,	357,	276,	276,	357,	357,	276,	276,
+	112,	357,	276,	357,	284,	357,	151,	284,
+	357,	284,	284,	357,	357,	276,	276,	294,
+	357,	294,	357,	357,	64,	60,	357,	357,
+	61,	357,	64,	60,	357,	357,	61,	276,
+	357,	357,	294,	276,	59,	313,	276,	313,
+	276,	276,	59,	333,	333,	357,	357,	333,
+	313,	313,	357,	357,	313,	357,	343,	343,
+	313,	357,	343,	171,	159,	333,	62,	63,
+	313,	312,	159,	312,	62,	63,	357,	357,
+	343,	357,	357,	202,	312,	312,	357,	357,
+	312,	347,	347,	182,	312,	347,	357,	171,
+	313,	357,	313,	313,	312,	357,	343,	357,
+	357,	357,	189,	347,	357,	181,	186,	357,
+	357,	345,	345,	357,	357,	345,	190,	191,
+	343,	357,	357,	357,	312,	185,	312,	312,
+	357,	347,	189,	345,	357,	357,	194,	357,
+	357,	347,	347,	357,	357,	347,	190,	191,
+	357,	357,	357,	347,	357,	193,	357,	357,
+	357,	345,	189,	347,	357,	357,	186,	357,
+	357,	346,	346,	357,	357,	346,	190,	191,
+	341,	341,	357,	345,	341,	185,	357,	357,
+	357,	347,	189,	346,	344,	344,	357,	357,
+	344,	357,	341,	357,	357,	205,	190,	191,
+	357,	357,	357,	347,	357,	189,	344,	357,
+	357,	346,	357,	357,	357,	357,	357,	357,
+	341,	190,	191,	357,	357,	357,	357,	357,
+	357,	357,	357,	346,	344,	357,	357,	357,
+	357,	357,	341,	357,	357,	357,	357,	357,
+	357,	357,	357,	357,	357,	357,	344
 };
 
 // base array for parse action table
@@ -8344,64 +8343,64 @@ const int yyparser_t::yypact[602] = {
 // for each state stored in the yypack table
 const int yyparser_t::yypabase[209] = {
 0,	0,	0,	0,	0,	-4,	0,	0,
-	0,	0,	32,	46,	0,	0,	0,	0,
-	0,	0,	23,	0,	0,	0,	0,	0,
-	59,	0,	0,	0,	-2,	0,	0,	0,
-	0,	10,	28,	0,	0,	0,	0,	65,
-	0,	56,	0,	0,	102,	0,	0,	120,
-	0,	0,	-12,	-15,	82,	0,	0,	0,
-	0,	11,	0,	0,	0,	0,	133,	0,
-	0,	172,	0,	0,	0,	0,	0,	0,
-	177,	81,	0,	0,	0,	0,	-32,	111,
-	0,	0,	0,	0,	0,	0,	0,	195,
-	0,	0,	58,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	19,
-	0,	225,	0,	255,	0,	0,	0,	0,
+	3,	0,	0,	0,	0,	0,	7,	45,
+	41,	0,	0,	0,	2,	0,	0,	43,
+	0,	0,	0,	0,	0,	-6,	-15,	69,
+	0,	0,	0,	0,	69,	0,	0,	0,
+	0,	57,	0,	91,	109,	0,	139,	0,
+	0,	0,	0,	0,	0,	0,	0,	12,
+	54,	161,	0,	0,	0,	0,	0,	0,
+	-5,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	284,
-	0,	0,	307,	0,	0,	314,	343,	0,
-	337,	0,	0,	0,	0,	78,	15,	0,
-	0,	0,	368,	0,	0,	0,	0,	396,
-	374,	0,	418,	62,	165,	57,	0,	0,
-	0,	0,	0,	424,	63,	0,	0,	0,
-	0,	0,	202,	463,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	465,	0,
-	496,	511,	506,	0,	0,	0,	0,	0,
-	0,	0,	534,	543,	0,	0,	0,	0,
+	0,	0,	168,	0,	216,	0,	0,	0,
+	0,	0,	0,	0,	-35,	102,	0,	0,
+	0,	0,	144,	0,	0,	113,	0,	225,
+	0,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	272,	0,	0,	0,
+	0,	0,	0,	293,	0,	323,	0,	0,
+	0,	235,	0,	184,	302,	0,	0,	0,
+	0,	-8,	0,	0,	0,	0,	105,	0,
+	354,	0,	0,	0,	0,	382,	404,	376,
+	0,	0,	0,	182,	-3,	15,	0,	0,
+	0,	0,	432,	0,	-6,	0,	0,	0,
+	0,	411,	449,	0,	0,	0,	0,	0,
+	473,	0,	0,	0,	0,	0,	0,	0,
+	497,	0,	0,	0,	422,	521,	0,	0,
+	528,	540,	0,	0,	0,	0,	0,	0,
 	0
 };
 
 const int yyparser_t::yypgoto[35] = {
-44,	87,	46,	46,	357,	47,	33,	44,
-	87,	46,	46,	357,	47,	78,	44,	44,
-	46,	46,	357,	115,	47,	142,	143,	44,
-	357,	46,	161,	162,	47,	142,	156,	161,
-	171,	161,	172
+52,	92,	56,	56,	357,	51,	49,	52,
+	92,	56,	56,	357,	51,	100,	52,	52,
+	56,	56,	357,	124,	51,	139,	136,	52,
+	357,	56,	160,	158,	51,	139,	154,	160,
+	170,	160,	172
 };
 
 const int yyparser_t::yypgbase[209] = {
 0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	-13,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	-6,
-	0,	0,	0,	0,	0,	0,	0,	-12,
+	-13,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	0,
-	1,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	-12,	0,	0,	-6,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	2,	0,	-5,	0,	0,	0,	0,
+	0,	0,	1,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	0,	0,	0,	2,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	10,	0,	0,
-	11,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	16,
-	18,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	-5,	0,	0,	0,
+	0,	0,	0,	0,	0,	0,	0,	0,
+	0,	10,	0,	0,	11,	0,	0,	0,
+	0,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	0,	16,	0,	18,
+	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
@@ -8419,119 +8418,114 @@ const by_te_t yyparser_t::yyvbmap[1672] = {
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	0,	0,	0,	0,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
 	0,	128,	0,	0,	0,	0,	0,	0,
 	0,	128,	0,	0,	0,	0,	0,	0,
-	112,	76,	11,	128,	207,	128,	0,	0,
-	2,	48,	1,	24,	0,	0,	208,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	2,	0,	2,	96,	0,	32,	0,	0,
 	2,	0,	2,	96,	0,	32,	0,	0,
 	2,	0,	2,	96,	0,	32,	0,	0,
 	2,	0,	2,	96,	0,	32,	0,	0,
 	2,	0,	2,	96,	0,	32,	0,	0,
 	2,	0,	0,	0,	0,	32,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
 	2,	0,	2,	96,	0,	32,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	2,	0,	2,	96,	0,	32,	0,	0,
+	112,	76,	11,	128,	207,	128,	0,	0,
+	2,	48,	1,	24,	0,	0,	208,	0,
 	16,	51,	1,	24,	0,	32,	210,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
+	2,	0,	0,	0,	0,	16,	0,	0,
+	0,	0,	0,	0,	0,	16,	0,	0,
+	0,	0,	2,	0,	0,	0,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	0,	0,	2,	0,	0,	0,	0,	0,
+	0,	0,	2,	0,	0,	16,	0,	0,
+	0,	0,	2,	0,	0,	66,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	0,	0,	0,	0,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
 	96,	0,	9,	0,	0,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	2,	0,	0,	0,	0,	17,	0,	0,
-	0,	32,	0,	16,	0,	0,	64,	0,
+	0,	0,	0,	0,	0,	16,	0,	0,
 	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
 	0,	48,	1,	24,	0,	0,	208,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
 	0,	32,	0,	16,	0,	0,	64,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	0,	0,	0,	0,	0,	16,	0,	0,
-	0,	0,	2,	0,	0,	0,	0,	0,
-	0,	0,	2,	0,	0,	16,	0,	0,
-	0,	0,	2,	0,	0,	66,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	0,	0,	0,	0,	0,	16,	0,	0,
-	2,	0,	0,	0,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	0,	0,	2,	0,	0,	0,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	0,	0,	0,	0,	0,	16,	0,	0,
+	0,	32,	0,	16,	0,	0,	64,	0,
 	16,	51,	1,	24,	0,	32,	210,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
+	0,	0,	0,	0,	0,	16,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	0,	0,	0,	0,	0,	64,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	0,	0,	0,	0,	0,	64,	0,	0,
+	0,	0,	2,	0,	0,	16,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	0,	0,	2,	0,	0,	16,	0,	0,
+	0,	0,	0,	0,	0,	16,	0,	0,
+	0,	0,	0,	0,	0,	64,	0,	0,
+	0,	0,	0,	0,	0,	64,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	0,	0,	0,	0,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	2,	0,	2,	96,	0,	16,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	0,	0,	0,	0,	0,	16,	0,	0,
 	0,	48,	1,	24,	0,	0,	208,	0,
+	16,	76,	2,	128,	207,	0,	0,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	0,	0,	0,	0,	0,	1,	32,	0,
+	0,	32,	0,	16,	0,	0,	64,	1,
 	0,	32,	0,	16,	0,	0,	64,	1,
 	0,	32,	0,	16,	0,	0,	64,	1,
 	0,	32,	0,	16,	0,	0,	64,	3,
 	0,	32,	0,	16,	0,	0,	64,	1,
 	0,	32,	0,	16,	0,	0,	64,	1,
-	0,	0,	0,	0,	0,	1,	32,	0,
-	0,	32,	0,	16,	0,	0,	64,	1,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	10,	48,	145,	31,	0,	31,	252,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	0,	0,	0,	0,	0,	64,	0,	0,
-	0,	0,	2,	0,	0,	16,	0,	0,
-	0,	0,	2,	0,	0,	16,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	0,	0,	0,	0,	0,	16,	0,	0,
-	0,	0,	0,	0,	0,	64,	0,	0,
-	0,	0,	0,	0,	0,	64,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	0,	0,	0,	0,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
-	0,	0,	0,	0,	0,	16,	0,	0,
-	0,	0,	0,	0,	0,	64,	0,	0,
-	2,	0,	2,	96,	0,	16,	0,	0,
-	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	0,	0,	0,	0,	0,	0,	0,
 	16,	51,	1,	24,	0,	32,	210,	0,
+	10,	0,	16,	0,	0,	0,	0,	0,
+	10,	0,	16,	0,	0,	0,	0,	0,
 	0,	49,	1,	24,	0,	0,	210,	0,
 	128,	0,	2,	0,	0,	0,	0,	0,
-	10,	0,	16,	0,	0,	0,	0,	0,
-	10,	0,	16,	0,	0,	0,	0,	0,
 	0,	49,	1,	24,	0,	0,	210,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	0,	32,	0,	16,	0,	0,	64,	1,
-	0,	0,	0,	16,	0,	0,	0,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
-	10,	48,	17,	24,	0,	17,	252,	0,
+	0,	0,	0,	0,	0,	64,	0,	0,
 	0,	0,	0,	0,	0,	64,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	0,	0,	2,	0,	0,	16,	0,	0,
@@ -8540,30 +8534,33 @@ const by_te_t yyparser_t::yyvbmap[1672] = {
 	0,	0,	0,	0,	0,	16,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
-	0,	0,	0,	0,	0,	64,	0,	0,
+	10,	48,	17,	24,	0,	17,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
+	0,	32,	0,	16,	0,	0,	64,	1,
+	0,	0,	0,	16,	0,	0,	0,	0,
+	10,	48,	145,	31,	0,	31,	252,	0,
 	19,	0,	4,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	64,	1,	0,
-	0,	0,	0,	0,	0,	64,	1,	0,
-	0,	0,	0,	0,	0,	64,	1,	0,
-	0,	0,	0,	0,	0,	64,	1,	0,
-	16,	51,	17,	24,	0,	32,	210,	0,
 	16,	51,	17,	24,	0,	32,	210,	0,
 	0,	0,	16,	0,	0,	0,	0,	0,
 	0,	51,	1,	24,	0,	32,	210,	0,
+	16,	51,	17,	24,	0,	32,	210,	0,
 	10,	0,	16,	0,	0,	0,	0,	0,
 	10,	0,	16,	0,	0,	0,	0,	0,
 	0,	48,	1,	24,	0,	0,	208,	0,
-	10,	0,	16,	0,	0,	1,	12,	0,
 	10,	0,	16,	0,	0,	0,	0,	0,
+	10,	0,	16,	0,	0,	1,	12,	0,
 	0,	48,	1,	16,	0,	0,	208,	0,
-	0,	32,	0,	16,	0,	0,	64,	1,
+	0,	0,	0,	0,	0,	64,	1,	0,
+	0,	0,	0,	0,	0,	64,	1,	0,
+	0,	0,	0,	0,	0,	64,	1,	0,
+	0,	0,	0,	0,	0,	64,	1,	0,
+	0,	0,	2,	96,	0,	0,	0,	0,
 	0,	0,	2,	0,	0,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
-	0,	0,	2,	96,	0,	0,	0,	0,
+	0,	32,	0,	16,	0,	0,	64,	1,
 	19,	0,	4,	0,	0,	0,	0,	0,
-	0,	49,	1,	24,	0,	0,	210,	0,
-	128,	0,	2,	0,	0,	0,	0,	0,
 	16,	51,	17,	24,	0,	32,	210,	0,
 	16,	51,	17,	24,	0,	32,	210,	0,
 	10,	0,	16,	0,	0,	0,	0,	0,
@@ -8571,134 +8568,136 @@ const by_te_t yyparser_t::yyvbmap[1672] = {
 	10,	0,	16,	0,	0,	0,	0,	0,
 	0,	48,	1,	16,	0,	0,	208,	0,
 	10,	48,	17,	16,	0,	0,	208,	0,
+	10,	48,	145,	16,	0,	0,	208,	0,
 	0,	48,	1,	16,	0,	0,	208,	0,
 	10,	48,	145,	16,	0,	0,	240,	0,
-	10,	48,	145,	16,	0,	0,	208,	0,
-	0,	0,	2,	0,	0,	16,	0,	0,
+	0,	49,	1,	24,	0,	0,	210,	0,
+	128,	0,	2,	0,	0,	0,	0,	0,
 	2,	0,	2,	96,	0,	16,	0,	0,
+	0,	0,	2,	0,	0,	16,	0,	0,
 	17,	0,	0,	0,	0,	0,	0,	0,
 	19,	0,	4,	0,	0,	0,	0,	0,
+	19,	0,	38,	96,	16,	1,	0,	4,
 	0,	0,	0,	0,	0,	0,	0,	4,
 	19,	0,	38,	96,	16,	1,	0,	4,
-	19,	0,	38,	96,	16,	0,	0,	4,
-	0,	0,	0,	0,	0,	64,	1,	0,
 	10,	48,	145,	16,	0,	0,	208,	0,
-	0,	0,	128,	0,	0,	0,	32,	0,
 	10,	48,	145,	16,	0,	0,	240,	0,
+	0,	0,	128,	0,	0,	0,	32,	0,
+	0,	0,	0,	0,	0,	64,	1,	0,
 	16,	76,	2,	128,	207,	0,	0,	0,
 	1,	0,	0,	0,	0,	0,	0,	0,
 	1,	0,	0,	0,	0,	0,	0,	0,
-	19,	0,	4,	0,	0,	0,	0,	0,
 	19,	0,	4,	0,	0,	1,	0,	4,
 	19,	0,	38,	96,	16,	1,	0,	4,
-	10,	48,	145,	16,	0,	0,	208,	0,
+	19,	0,	4,	0,	0,	0,	0,	0,
+	10,	48,	145,	16,	0,	0,	240,	0,
 	19,	0,	4,	0,	0,	0,	0,	0,
 	19,	0,	38,	96,	16,	1,	0,	4,
 	19,	0,	4,	0,	0,	1,	0,	4,
-	19,	0,	38,	96,	48,	1,	0,	4,
-	0,	0,	64,	0,	0,	0,	0,	0,
-	19,	0,	38,	96,	48,	1,	0,	4,
-	19,	0,	38,	96,	48,	1,	0,	4,
+	19,	0,	38,	96,	16,	1,	0,	4,
 	0,	0,	8,	0,	0,	0,	0,	0,
-	19,	0,	38,	96,	16,	1,	0,	4,
+	0,	0,	64,	0,	0,	0,	0,	0,
 	19,	0,	38,	96,	16,	1,	0,	4,
 	19,	0,	38,	96,	48,	1,	0,	4,
+	19,	0,	38,	96,	48,	1,	0,	4,
+	19,	0,	38,	96,	48,	1,	0,	4,
+	19,	0,	38,	96,	48,	1,	0,	4,
 	19,	0,	38,	96,	16,	1,	0,	4,
-	19,	0,	6,	96,	0,	1,	0,	4,
+	0,	0,	8,	0,	0,	0,	0,	0,
+	0,	0,	64,	0,	0,	0,	0,	0,
+	19,	0,	38,	96,	16,	1,	0,	4,
 	19,	0,	36,	0,	0,	1,	0,	4,
-	0,	0,	8,	0,	0,	0,	0,	0,
-	0,	0,	64,	0,	0,	0,	0,	0,
-	19,	0,	38,	96,	16,	1,	0,	4,
+	19,	0,	6,	96,	0,	1,	0,	4,
 	0,	0,	2,	0,	0,	0,	0,	0,
 	19,	0,	4,	0,	0,	1,	0,	4,
-	19,	0,	38,	96,	16,	1,	0,	4,
-	0,	0,	64,	0,	0,	0,	0,	0,
 	19,	0,	36,	0,	0,	1,	0,	4,
 	19,	0,	6,	96,	0,	1,	0,	4,
-	19,	0,	38,	96,	16,	1,	0,	4,
-	19,	0,	4,	0,	0,	1,	0,	4,
 	0,	0,	64,	0,	0,	0,	0,	0,
 	19,	0,	38,	96,	16,	1,	0,	4,
+	19,	0,	38,	96,	16,	1,	0,	4,
+	0,	0,	64,	0,	0,	0,	0,	0,
+	19,	0,	38,	96,	16,	1,	0,	4,
+	19,	0,	4,	0,	0,	1,	0,	4,
 	19,	0,	4,	0,	0,	1,	0,	4
 };
 
 const int yyparser_t::yyparv[209] = {
 357,	217,	4,	219,	210,	357,	25,	218,
-	26,	27,	357,	357,	231,	233,	232,	234,
-	357,	227,	357,	221,	220,	222,	223,	224,
-	357,	273,	226,	225,	357,	265,	266,	267,
-	268,	357,	357,	319,	320,	311,	318,	357,
-	321,	357,	317,	309,	357,	307,	310,	357,
-	88,	89,	357,	357,	357,	258,	259,	260,
-	101,	357,	240,	241,	242,	104,	357,	239,
-	106,	357,	261,	262,	263,	264,	270,	114,
-	357,	357,	329,	327,	326,	324,	357,	357,
-	300,	301,	302,	303,	304,	305,	306,	357,
-	272,	244,	357,	248,	246,	124,	125,	126,
-	252,	127,	255,	256,	257,	253,	228,	128,
-	236,	238,	230,	130,	274,	283,	133,	357,
-	277,	357,	271,	357,	323,	325,	145,	308,
-	322,	146,	245,	247,	249,	147,	148,	254,
-	229,	149,	331,	151,	288,	287,	285,	357,
-	280,	136,	357,	279,	291,	357,	357,	289,
-	357,	328,	91,	250,	251,	357,	357,	282,
-	133,	281,	357,	278,	290,	293,	295,	357,
-	357,	316,	357,	357,	357,	357,	330,	177,
-	335,	339,	286,	357,	357,	314,	243,	211,
-	216,	334,	357,	357,	315,	332,	337,	338,
-	354,	193,	355,	356,	194,	351,	357,	353,
-	357,	357,	357,	202,	203,	349,	204,	336,
-	350,	205,	357,	357,	352,	342,	208,	348,
+	220,	221,	222,	223,	224,	26,	27,	227,
+	357,	231,	232,	233,	234,	357,	357,	357,
+	357,	273,	225,	226,	357,	68,	69,	357,
+	239,	240,	241,	242,	71,	357,	357,	357,
+	83,	258,	259,	260,	357,	265,	266,	267,
+	268,	357,	91,	357,	357,	307,	357,	309,
+	310,	311,	317,	318,	319,	320,	321,	357,
+	357,	357,	228,	114,	230,	236,	238,	244,
+	357,	246,	248,	119,	120,	121,	252,	122,
+	255,	256,	257,	253,	261,	262,	263,	264,
+	270,	123,	357,	272,	357,	300,	301,	302,
+	303,	304,	305,	306,	357,	357,	324,	326,
+	327,	329,	357,	130,	274,	357,	277,	357,
+	143,	283,	229,	145,	146,	245,	247,	249,
+	147,	148,	254,	271,	357,	308,	322,	325,
+	149,	323,	331,	357,	134,	357,	280,	279,
+	289,	357,	291,	357,	357,	161,	285,	287,
+	288,	357,	74,	250,	251,	328,	357,	281,
+	357,	278,	290,	293,	295,	357,	357,	357,
+	316,	282,	143,	357,	357,	357,	330,	339,
+	179,	335,	357,	314,	357,	286,	243,	211,
+	216,	357,	357,	334,	315,	332,	337,	338,
+	357,	196,	197,	351,	353,	354,	355,	356,
+	357,	200,	201,	349,	357,	357,	204,	336,
+	357,	357,	207,	350,	352,	208,	348,	342,
 	340
 };
 
 
 const int yyparser_t::yyparn[209] = {
 32,	0,	0,	0,	0,	32,	0,	0,
-	0,	0,	32,	32,	0,	0,	0,	0,
-	32,	0,	32,	0,	0,	0,	0,	0,
-	32,	0,	0,	0,	32,	0,	0,	0,
-	0,	32,	32,	0,	0,	0,	0,	32,
-	0,	32,	0,	0,	32,	0,	0,	32,
-	0,	0,	32,	32,	32,	0,	0,	0,
-	0,	32,	0,	0,	0,	0,	32,	0,
-	0,	32,	0,	0,	0,	0,	0,	0,
-	32,	32,	0,	2,	0,	0,	32,	32,
+	0,	0,	0,	0,	0,	0,	0,	0,
+	32,	0,	0,	0,	0,	32,	32,	32,
+	32,	0,	0,	0,	32,	0,	0,	32,
+	0,	0,	0,	0,	0,	32,	32,	32,
+	0,	0,	0,	0,	32,	0,	0,	0,
+	0,	32,	0,	32,	32,	0,	32,	0,
 	0,	0,	0,	0,	0,	0,	0,	32,
-	0,	0,	32,	0,	0,	0,	0,	0,
+	32,	32,	0,	0,	0,	0,	0,	0,
+	32,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	2,	32,
-	0,	32,	0,	32,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	2,	0,	0,	0,	32,
-	0,	0,	32,	0,	0,	32,	32,	0,
-	32,	0,	0,	0,	0,	32,	32,	0,
-	2,	0,	32,	0,	0,	0,	0,	32,
-	32,	0,	32,	32,	32,	32,	0,	0,
-	0,	0,	0,	32,	32,	0,	0,	0,
-	0,	0,	32,	32,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	32,	2,
-	32,	32,	32,	0,	0,	0,	0,	0,
-	0,	0,	32,	32,	0,	0,	0,	0,
+	0,	0,	32,	0,	32,	0,	0,	0,
+	0,	0,	0,	0,	32,	32,	0,	0,
+	2,	0,	32,	0,	0,	32,	0,	32,
+	2,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	32,	0,	0,	0,
+	0,	0,	0,	32,	0,	32,	0,	0,
+	0,	32,	0,	32,	32,	2,	0,	0,
+	0,	32,	0,	0,	0,	0,	32,	0,
+	32,	0,	0,	0,	0,	32,	32,	32,
+	0,	0,	2,	32,	32,	32,	0,	0,
+	0,	0,	32,	0,	32,	0,	0,	0,
+	0,	32,	32,	0,	0,	0,	0,	0,
+	32,	0,	0,	0,	2,	0,	0,	0,
+	32,	0,	0,	0,	32,	32,	0,	0,
+	32,	32,	0,	0,	0,	0,	0,	0,
 	0
 };
 
 const int yyparser_t::yypcv[113] = {
-357,	357,	357,	357,	357,	357,	357,	132,
+357,	357,	357,	357,	357,	357,	357,	144,
 	357,	357,	357,	357,	357,	357,	357,	357,
 	357,	357,	357,	357,	357,	357,	357,	357,
-	81,	82,	83,	357,	357,	357,	357,	357,
+	94,	95,	96,	357,	357,	357,	357,	357,
 	357,	357,	357,	357,	357,	198,	357,	357,
-	357,	357,	85,	86,	357,	357,	93,	28,
-	152,	357,	357,	357,	357,	357,	357,	357,
-	357,	118,	357,	357,	77,	357,	42,	169,
-	19,	111,	357,	189,	190,	191,	357,	43,
-	357,	45,	357,	357,	159,	357,	357,	357,
-	144,	139,	131,	134,	113,	2,	357,	357,
+	357,	357,	98,	99,	357,	357,	75,	44,
+	162,	357,	357,	357,	357,	357,	357,	357,
+	357,	128,	357,	357,	102,	357,	58,	167,
+	9,	109,	357,	187,	184,	188,	357,	55,
+	357,	53,	357,	357,	157,	357,	357,	357,
+	140,	135,	141,	142,	111,	2,	357,	357,
 	3,	357,	6,	357,	107,	357,	357,	165,
-	7,	20,	21,	22,	23,	24,	57,	357,
-	357,	63,	357,	357,	108,	166,	178,	357,
-	179
+	7,	8,	10,	11,	12,	16,	28,	357,
+	357,	32,	357,	357,	108,	166,	177,	357,
+	178
 };
 
 const int yyparser_t::yypcn[113] = {
@@ -8723,60 +8722,60 @@ const int yyparser_t::yypcn[113] = {
 const int yyparser_t::yypgrv[209] = {
 357,	357,	357,	5,	357,	357,	357,	357,
 	357,	357,	357,	357,	357,	357,	357,	357,
-	357,	357,	52,	357,	357,	357,	357,	357,
-	62,	65,	357,	357,	357,	357,	357,	357,
-	357,	357,	73,	357,	357,	357,	357,	357,
-	357,	79,	357,	357,	357,	357,	357,	357,
-	357,	357,	90,	357,	357,	357,	357,	357,
-	357,	357,	357,	357,	357,	357,	105,	357,
-	357,	112,	357,	357,	357,	357,	357,	357,
-	357,	117,	357,	357,	357,	357,	357,	117,
-	357,	357,	357,	357,	357,	357,	357,	357,
-	357,	121,	357,	357,	357,	357,	357,	357,
-	357,	357,	357,	357,	357,	357,	357,	357,
-	129,	357,	357,	357,	357,	357,	357,	135,
+	31,	357,	357,	357,	357,	357,	39,	357,
+	357,	65,	357,	357,	357,	357,	357,	70,
+	357,	357,	357,	357,	357,	72,	357,	357,
 	357,	357,	357,	357,	357,	357,	357,	357,
 	357,	357,	357,	357,	357,	357,	357,	357,
-	357,	357,	150,	357,	357,	357,	357,	357,
-	357,	154,	155,	357,	357,	357,	357,	357,
-	357,	357,	163,	357,	357,	164,	357,	357,
-	170,	357,	357,	357,	357,	357,	357,	357,
-	357,	357,	357,	357,	105,	175,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	101,
+	106,	110,	357,	357,	357,	115,	357,	116,
 	357,	357,	357,	357,	357,	357,	357,	357,
-	357,	357,	357,	183,	357,	357,	192,	357,
-	357,	357,	357,	357,	357,	357,	197,	357,
-	199,	200,	357,	357,	357,	357,	357,	357,
-	357,	357,	357,	207,	357,	357,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	357,
+	357,	357,	357,	357,	357,	127,	357,	357,
+	357,	357,	127,	357,	357,	131,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	357,
+	357,	357,	150,	357,	152,	153,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	357,
+	357,	163,	164,	357,	357,	357,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	357,
+	357,	357,	173,	70,	357,	175,	357,	357,
+	357,	357,	357,	357,	357,	357,	357,	357,
+	357,	357,	183,	357,	357,	357,	192,	357,
+	195,	357,	357,	357,	357,	357,	357,	357,
+	199,	357,	357,	357,	357,	203,	357,	357,
+	357,	206,	357,	357,	357,	357,	357,	357,
 	357
 };
 
 const int yyparser_t::yypgrn[209] = {
 32,	32,	32,	0,	32,	32,	32,	32,
 	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	32,	0,	32,	32,	32,	32,	32,
-	2,	0,	32,	32,	32,	32,	32,	32,
-	32,	32,	2,	32,	32,	32,	32,	32,
-	32,	2,	32,	32,	32,	32,	32,	32,
-	32,	32,	0,	32,	32,	32,	32,	32,
-	32,	32,	32,	32,	32,	32,	0,	32,
-	32,	2,	32,	32,	32,	32,	32,	32,
+	2,	32,	32,	32,	32,	32,	0,	32,
 	32,	0,	32,	32,	32,	32,	32,	0,
-	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	0,	32,	32,	32,	32,	32,	32,
-	32,	32,	32,	32,	32,	32,	32,	32,
-	0,	32,	32,	32,	32,	32,	32,	0,
+	32,	32,	32,	32,	32,	0,	32,	32,
 	32,	32,	32,	32,	32,	32,	32,	32,
 	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	32,	0,	32,	32,	32,	32,	32,
-	32,	0,	2,	32,	32,	32,	32,	32,
-	32,	32,	0,	32,	32,	2,	32,	32,
-	0,	32,	32,	32,	32,	32,	32,	32,
-	32,	32,	32,	32,	0,	0,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	2,
+	2,	2,	32,	32,	32,	0,	32,	0,
 	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	32,	32,	4,	32,	32,	0,	32,
-	32,	32,	32,	32,	32,	32,	2,	32,
-	4,	2,	32,	32,	32,	32,	32,	32,
-	32,	32,	32,	2,	32,	32,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	32,	32,	32,	32,	0,	32,	32,
+	32,	32,	0,	32,	32,	0,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	32,	0,	32,	0,	2,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	2,	0,	32,	32,	32,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	32,	0,	0,	32,	0,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	32,	4,	32,	32,	32,	0,	32,
+	2,	32,	32,	32,	32,	32,	32,	32,
+	4,	32,	32,	32,	32,	2,	32,	32,
+	32,	2,	32,	32,	32,	32,	32,	32,
 	32
 };
 
@@ -8865,7 +8864,7 @@ int yyparse(lexer_ns::lexer_t& lexer, lexer_ns::dtable_t &dtbl,
 }
 } // namspace
 
-#line 3196 "../upgen/src/meta/ulyac.upg"
+#line 3196 "meta/ulyac.upg"
 
 
 int debug_yyparse(lexer_ns::lexer_t &lexer, lexer_ns::dtable_t &dtbl,
@@ -8877,6 +8876,6 @@ int debug_yyparse(lexer_ns::lexer_t &lexer, lexer_ns::dtable_t &dtbl,
 	return nRet;
 }
 
-#line 8880 "../upgen/src/gcode/ulyac.cpp"
+#line 8879 "gcode/ulyac.cpp"
 
 

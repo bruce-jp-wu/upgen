@@ -1429,6 +1429,242 @@ void grammar_t::gram2PGraph(pgraph_t &a_pgrp) {
 	}
 }
 
+void grammar_t::calcLR1Closure(LALRGraphNode &curNode) {
+
+    std::map<int, sint_t> rule2Lookaheads;
+
+    bool hasUpdated = true;
+    while(hasUpdated) {
+        hasUpdated = false;
+        for(LALRGraphNode::item_cit_t cit = curNode.beginItems();
+            cit != curNode.endItems();
+            cit++) {
+
+            prod_t *ppr = m_vrRule[cit->first.mRuleID];
+            if(ppr->getRightSize() <= cit->first.mDotPos) {
+                continue;
+            }
+
+            int nCurSymb = ppr->getRightSymbol(cit->first.mDotPos);
+            if(m_vsSymbol[nCurSymb]->isToken()) {
+                continue;
+            }
+
+            sint_t si;
+            int i = cit->first.mDotPos + 1;
+            for(; i < ppr->getRightSize(); i++) {
+                if(m_vsSymbol[ppr->getRightSymbol(i)]->isToken()) {
+                    si.insert(ppr->getRightSymbol(i));
+                    break;
+                } else {
+                    iset_t* firstSet = m_vsSymbol[ppr->getRightSymbol(i)]->m_pFirstSet;
+                    si.insert(firstSet->begin(),firstSet->end());
+                    if( ! m_vsSymbol[ppr->getRightSymbol(i)]->isNullable()) {
+                        break;
+                    }
+                }
+            }
+
+            if(_EQ(i, ppr->getRightSize())) {
+                si.insert(cit->second.begin(), cit->second.end());
+            }
+
+            symbol_t *leftSymb = m_vsSymbol[nCurSymb];
+            for(iset_t::const_iterator citRule = leftSymb->m_pRLSSet->begin();
+                citRule != leftSymb->m_pRLSSet->end(); ++citRule) {
+
+                std::map<int, sint_t>::iterator itFind = rule2Lookaheads.find(*citRule);
+                if(itFind == rule2Lookaheads.end()) {
+                    rule2Lookaheads[*citRule] = si;
+                } else {
+                    rule2Lookaheads[*citRule].insert(si.begin(), si.end());
+                }
+            }
+        }
+
+        for(std::map<int, sint_t>::const_iterator rlCit = rule2Lookaheads.begin();
+            rlCit != rule2Lookaheads.end();
+            rlCit++) {
+            std::pair<LALRGraphNode::item_it_t, bool> ret =
+                    curNode.insertItem(rlCit->first, 0);
+            if(ret.second) {
+                ret.first->second.insert(
+                            rlCit->second.begin(),
+                            rlCit->second.end());
+                hasUpdated = true;
+            } else {
+                for(sint_t::const_iterator symCit = rlCit->second.begin();
+                    symCit != rlCit->second.end();
+                    symCit++) {
+
+                    if(ret.first->second.insert(*symCit).second) {
+                        hasUpdated = true;
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+// calculate LR(1) Items
+void grammar_t::calcLR1Items(LALRGraph &lalrGraph) {
+
+    queue< int > quNodeIndex;
+
+    {
+        // calculate closure of first
+        //
+        LALRGraphNode& curNode = lalrGraph.addNode();
+        curNode.insertItem(m_nAcceptRule, 0).first->second.insert(END_SYMBOL_INDEX);
+        calcLR1Closure(curNode);
+        curNode.calcLR0Code(lalrGraph.getCRCCoder());
+        curNode.calcLR1Code(lalrGraph.getCRCCoder());
+
+        quNodeIndex.push(curNode.getID());
+    }
+
+    std::map<KernelItems, int, KernelItemsLess> kernels2Index;
+
+    while(!quNodeIndex.empty()) {
+        int nodeIdx = quNodeIndex.front();
+        quNodeIndex.pop();
+
+        LALRGraphNode& curNode = lalrGraph.getNode(nodeIdx);
+
+        std::vector<KernelItems> nextNodeKernels;
+        i2i_map_t symb2Index;
+        vector<int> vtSymb;
+
+        for(LALRGraphNode::item_cit_t citItem = curNode.beginItems();
+            citItem != curNode.endItems();
+            citItem++) {
+            prod_t *ppr = m_vrRule[citItem->first.mRuleID];
+            if(ppr->getRightSize() <= citItem->first.mDotPos) {
+                // dot lies the end of the rule, need a Reduction instead of Goto
+                continue;
+            }
+
+            LR0Item lr0Item = citItem->first;
+            lr0Item.mDotPos++;
+
+            int nCurSymb = ppr->getRightSymbol(citItem->first.mDotPos);
+            i2i_cit_t citOld = symb2Index.find(nCurSymb);
+            if(citOld != symb2Index.end()) {
+                assert(citOld->second >= 0 && citOld->second < (int)nextNodeKernels.size());
+                nextNodeKernels[citOld->second].insert(lr0Item, citItem->second);
+            } else {
+                symb2Index[nCurSymb] = (int)nextNodeKernels.size();
+                vtSymb.push_back(nCurSymb);
+                nextNodeKernels.push_back(KernelItems());
+                nextNodeKernels.back().insert(lr0Item, citItem->second);
+            }
+        }
+
+        for(int i = 0; i < (int)nextNodeKernels.size(); i++) {
+            nextNodeKernels[i].calcLR0Code(lalrGraph.getCRCCoder());
+            nextNodeKernels[i].calcLR1Code(lalrGraph.getCRCCoder());
+
+            std::map<KernelItems, int, KernelItemsLess>::const_iterator citOld =
+                    kernels2Index.find(nextNodeKernels[i]);
+            if(citOld != kernels2Index.end()) {
+                // Target node exists, add a tranistion ARC
+                curNode.addArc(vtSymb[i], citOld->second);
+            } else {
+                LALRGraphNode& nxtNode = lalrGraph.addNode(nextNodeKernels[i]);
+                curNode.addArc(vtSymb[i], nxtNode.getID());
+
+                calcLR1Closure(nxtNode);
+                nxtNode.calcLR0Code(lalrGraph.getCRCCoder());
+                nxtNode.calcLR1Code(lalrGraph.getCRCCoder());
+
+                kernels2Index[nextNodeKernels[i]] = nxtNode.getID();
+
+                quNodeIndex.push(nxtNode.getID());
+            }
+        }
+    }
+}
+
+void grammar_t::gram2PGraph2(pgraph_t &a_pgrp) {
+    if(!isValid()) {
+        return ;
+    }
+
+    LALRGraph lalrGraph;
+
+    // calculate LR(1) Items
+    calcLR1Items(lalrGraph);
+
+    // merge LR(1) Items into LALR Items group by Core Items
+    lalrGraph.kernelMerge();
+
+    // convert LALRGraph to pgraph_t
+    for(int i = 0; i < lalrGraph.getNodeCount(); i++) {
+        pgnode_t *pgNode = a_pgrp.addEmptyNode();
+
+#define TO_PSTATE(x) (FIRST_STATE + (x))
+
+        const int pstateID = TO_PSTATE(i);
+        assert(pgNode->getID() == pstateID);
+
+        std::map<int, lr2si_map_t*> symb2LrLaMap;
+
+        LALRGraphNode& lrNode = lalrGraph.getNode(i);
+
+        for(LALRGraphNode::arc_cit_t citArc = lrNode.beginArcs();
+            citArc != lrNode.endArcs();
+            citArc++) {
+            symb2LrLaMap[citArc->mSymbol] = new lr2si_map_t();
+        }
+
+        // convert reduction rules
+        for(LALRGraphNode::item_cit_t citItem = lrNode.beginItems();
+            citItem != lrNode.endItems();
+            citItem++) {
+            prod_t *ppr = m_vrRule[citItem->first.mRuleID];
+            if(ppr->getRightSize() <= citItem->first.mDotPos) {
+                for(sint_t::const_iterator citSym = citItem->second.begin();
+                    citSym != citItem->second.end();
+                    citSym++) {
+                    pgNode->addRRule(citItem->first.mRuleID, *citSym);
+                }
+            }
+
+
+            if(citItem->first.mDotPos < ppr->getRightSize()) {
+                int nCurSymb = ppr->getRightSymbol(citItem->first.mDotPos);
+                lr2si_map_t* plrMap = symb2LrLaMap[nCurSymb];
+                assert(plrMap != nullptr);
+                lri_pair_t lri(citItem->first.mRuleID, citItem->first.mDotPos + 1);
+                sint_t *psi = new sint_t(citItem->second);
+                plrMap->insert(std::make_pair(lri, psi));
+            }
+        }
+
+        // convert arcs
+        for(LALRGraphNode::arc_cit_t citArc = lrNode.beginArcs();
+            citArc != lrNode.endArcs();
+            citArc++) {
+
+            pgarc_t *parc = new pgarc_t(pstateID,
+                                        TO_PSTATE(citArc->mToState),
+                                        citArc->mSymbol);
+            lr2si_map_t* plrMap = symb2LrLaMap[citArc->mSymbol];
+            parc->insertItems(*plrMap);
+
+            a_pgrp.addArc(parc);
+            pgNode->addOutArc(parc);
+        }
+
+        for(std::map<int, lr2si_map_t*>::iterator lrIt = symb2LrLaMap.begin();
+            lrIt != symb2LrLaMap.end();
+            lrIt++) {
+            delete lrIt->second;
+        }
+    }
+}
+
 // initialize before conversion from grammar object to parse-tables
 void grammar_t::initPTable(ptable_t & a_ptbl) {
 
@@ -1561,7 +1797,7 @@ void grammar_t::gram2PTable(ptable_t & a_ptbl, gsetting_t &gsetup) {
 	// initialize before conversion from grammar object to parse-tables
 	initPTable(a_ptbl);
 	// convert from grammar object to parse-graph object
-	gram2PGraph(grp);
+    gram2PGraph2(grp);
 
 	// convert from parse-graph object to parse-tables
 	grp.grp2PTbl(gsetup);	

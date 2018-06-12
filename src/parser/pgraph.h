@@ -94,6 +94,10 @@ public:
 		pairRet.first->second->insert(a_siLa.begin(), a_siLa.end());
 		return pairRet.first->second->size() > nOldSize;
 	}
+
+    inline void insertItems(const lr2si_map_t& lrMap) {
+        m_lrp2Lookaheads.insert(lrMap.begin(), lrMap.end());
+    }
 	
 	inline item_it_t itemBegin(void) {
 		return m_lrp2Lookaheads.begin();

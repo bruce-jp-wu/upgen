@@ -23,7 +23,7 @@ typedef bufbase_t *YYPBUFFER;
 
 #include "./coderyac.h"
 
-#line 33 "./meta/coderyac.upg"
+#line 33 "meta/coderyac.upg"
 
 /*
     Upgen -- a scanner and parser generator.
@@ -84,7 +84,7 @@ using coder_ns::vmac2cond_t;
 using coder_ns::cmacro_term_t;
 
 
-#line 87 "./gcode/coderyac.cpp"
+#line 87 "gcode/coderyac.cpp"
 namespace coder_nsx {
 enum {
 INC_YYTEXT_SIZE = 4096,
@@ -1095,11 +1095,11 @@ public:
 		bool yylast_at_bol__ = yyat_bol__;
 		bool bwrap__ = false;
 		
-#line 97 "./meta/coderyac.upg"
+#line 97 "meta/coderyac.upg"
 
 	int c;
 
-#line 1102 "./gcode/coderyac.cpp"
+#line 1102 "gcode/coderyac.cpp"
 
 		yymore_flag__ = false;
 		yyecode__ = YYE_ALIVE;
@@ -1200,7 +1200,7 @@ public:
 case 0:
 {
 	
-#line 146 "./meta/coderyac.upg"
+#line 146 "meta/coderyac.upg"
 		{
 		
 		if(coder.isThrowAway()) {
@@ -1358,7 +1358,7 @@ case 0:
 	}
 	
 
-#line 1361 "./gcode/coderyac.cpp"
+#line 1361 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1366,11 +1366,11 @@ case 0:
 case 1:
 {
 	
-#line 302 "./meta/coderyac.upg"
+#line 302 "meta/coderyac.upg"
 		return yytext[0];
 
 
-#line 1373 "./gcode/coderyac.cpp"
+#line 1373 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1378,11 +1378,11 @@ case 1:
 case 2:
 {
 	
-#line 304 "./meta/coderyac.upg"
+#line 304 "meta/coderyac.upg"
 			return LBL_HAS;
 
 
-#line 1385 "./gcode/coderyac.cpp"
+#line 1385 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1390,11 +1390,11 @@ case 2:
 case 3:
 {
 	
-#line 306 "./meta/coderyac.upg"
+#line 306 "meta/coderyac.upg"
 			return LBL_EMPTY;
 
 
-#line 1397 "./gcode/coderyac.cpp"
+#line 1397 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1402,11 +1402,11 @@ case 3:
 case 4:
 {
 	
-#line 308 "./meta/coderyac.upg"
+#line 308 "meta/coderyac.upg"
 			return LBL_EQUAL;
 
 
-#line 1409 "./gcode/coderyac.cpp"
+#line 1409 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1414,11 +1414,11 @@ case 4:
 case 5:
 {
 	
-#line 310 "./meta/coderyac.upg"
+#line 310 "meta/coderyac.upg"
 		return LBL_UNEQUAL;
 
 
-#line 1421 "./gcode/coderyac.cpp"
+#line 1421 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1426,11 +1426,11 @@ case 5:
 case 6:
 {
 	
-#line 312 "./meta/coderyac.upg"
+#line 312 "meta/coderyac.upg"
 			return LBL_END;
 
 
-#line 1433 "./gcode/coderyac.cpp"
+#line 1433 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1438,11 +1438,11 @@ case 6:
 case 7:
 {
 	
-#line 314 "./meta/coderyac.upg"
+#line 314 "meta/coderyac.upg"
 			return 	LBL_LAST;
 
 
-#line 1445 "./gcode/coderyac.cpp"
+#line 1445 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1450,11 +1450,11 @@ case 7:
 case 8:
 {
 	
-#line 316 "./meta/coderyac.upg"
+#line 316 "meta/coderyac.upg"
 			return LBL_MORE;
 
 
-#line 1457 "./gcode/coderyac.cpp"
+#line 1457 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1462,11 +1462,11 @@ case 8:
 case 9:
 {
 	
-#line 318 "./meta/coderyac.upg"
+#line 318 "meta/coderyac.upg"
 	return LBL_GROUPFIRST;
 
 
-#line 1469 "./gcode/coderyac.cpp"
+#line 1469 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1474,11 +1474,11 @@ case 9:
 case 10:
 {
 	
-#line 320 "./meta/coderyac.upg"
+#line 320 "meta/coderyac.upg"
 		return LBL_GROUP;
 
 
-#line 1481 "./gcode/coderyac.cpp"
+#line 1481 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1486,11 +1486,11 @@ case 10:
 case 11:
 {
 	
-#line 322 "./meta/coderyac.upg"
+#line 322 "meta/coderyac.upg"
 			return LBL_MOD;
 
 
-#line 1493 "./gcode/coderyac.cpp"
+#line 1493 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1498,11 +1498,11 @@ case 11:
 case 12:
 {
 	
-#line 324 "./meta/coderyac.upg"
+#line 324 "meta/coderyac.upg"
 			return LBL_TRUE;
 
 
-#line 1505 "./gcode/coderyac.cpp"
+#line 1505 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1510,11 +1510,11 @@ case 12:
 case 13:
 {
 	
-#line 326 "./meta/coderyac.upg"
+#line 326 "meta/coderyac.upg"
 			return LBL_FALSE;
 
 
-#line 1517 "./gcode/coderyac.cpp"
+#line 1517 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1522,11 +1522,11 @@ case 13:
 case 14:
 {
 	
-#line 328 "./meta/coderyac.upg"
+#line 328 "meta/coderyac.upg"
 		return LBL_SCALAR;
 	
 
-#line 1529 "./gcode/coderyac.cpp"
+#line 1529 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1534,11 +1534,11 @@ case 14:
 case 15:
 {
 	
-#line 330 "./meta/coderyac.upg"
+#line 330 "meta/coderyac.upg"
 		return LBL_SETUPHEAD;
 	
 
-#line 1541 "./gcode/coderyac.cpp"
+#line 1541 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1546,11 +1546,11 @@ case 15:
 case 16:
 {
 	
-#line 332 "./meta/coderyac.upg"
+#line 332 "meta/coderyac.upg"
 		return LBL_MSHEAD;
 	
 
-#line 1553 "./gcode/coderyac.cpp"
+#line 1553 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1558,11 +1558,11 @@ case 16:
 case 17:
 {
 	
-#line 334 "./meta/coderyac.upg"
+#line 334 "meta/coderyac.upg"
 		return LBL_MSTAIL;
 	
 
-#line 1565 "./gcode/coderyac.cpp"
+#line 1565 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1570,11 +1570,11 @@ case 17:
 case 18:
 {
 	
-#line 336 "./meta/coderyac.upg"
+#line 336 "meta/coderyac.upg"
 			return LBL_MACRO;
 	
 
-#line 1577 "./gcode/coderyac.cpp"
+#line 1577 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1582,11 +1582,11 @@ case 18:
 case 19:
 {
 	
-#line 338 "./meta/coderyac.upg"
+#line 338 "meta/coderyac.upg"
 		return LBL_DEFAULTHEAD;
 	
 
-#line 1589 "./gcode/coderyac.cpp"
+#line 1589 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1594,11 +1594,11 @@ case 19:
 case 20:
 {
 	
-#line 340 "./meta/coderyac.upg"
+#line 340 "meta/coderyac.upg"
 	return LBL_DEFAULTTAIL;
 
 
-#line 1601 "./gcode/coderyac.cpp"
+#line 1601 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1606,11 +1606,11 @@ case 20:
 case 21:
 {
 	
-#line 342 "./meta/coderyac.upg"
+#line 342 "meta/coderyac.upg"
 			return LBL_CASEHEAD;
 
 
-#line 1613 "./gcode/coderyac.cpp"
+#line 1613 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1618,11 +1618,11 @@ case 21:
 case 22:
 {
 	
-#line 344 "./meta/coderyac.upg"
+#line 344 "meta/coderyac.upg"
 		return LBL_CASETAIL;
 
 
-#line 1625 "./gcode/coderyac.cpp"
+#line 1625 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1630,11 +1630,11 @@ case 22:
 case 23:
 {
 	
-#line 346 "./meta/coderyac.upg"
+#line 346 "meta/coderyac.upg"
 			return LBL_IFHEAD;
 
 
-#line 1637 "./gcode/coderyac.cpp"
+#line 1637 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1642,11 +1642,11 @@ case 23:
 case 24:
 {
 	
-#line 348 "./meta/coderyac.upg"
+#line 348 "meta/coderyac.upg"
 			return LBL_IFTAIL;
 	
 
-#line 1649 "./gcode/coderyac.cpp"
+#line 1649 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1654,11 +1654,11 @@ case 24:
 case 25:
 {
 	
-#line 350 "./meta/coderyac.upg"
+#line 350 "meta/coderyac.upg"
 		return LBL_ELSEHEAD;
 
 
-#line 1661 "./gcode/coderyac.cpp"
+#line 1661 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1666,11 +1666,11 @@ case 25:
 case 26:
 {
 	
-#line 352 "./meta/coderyac.upg"
+#line 352 "meta/coderyac.upg"
 		return LBL_ELSETAIL;
 
 
-#line 1673 "./gcode/coderyac.cpp"
+#line 1673 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1678,11 +1678,11 @@ case 26:
 case 27:
 {
 	
-#line 354 "./meta/coderyac.upg"
+#line 354 "meta/coderyac.upg"
 	return LBL_DECLARE;
 
 
-#line 1685 "./gcode/coderyac.cpp"
+#line 1685 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1690,11 +1690,11 @@ case 27:
 case 28:
 {
 	
-#line 356 "./meta/coderyac.upg"
+#line 356 "meta/coderyac.upg"
 		return LBL_DEFINE;
 
 
-#line 1697 "./gcode/coderyac.cpp"
+#line 1697 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1702,11 +1702,11 @@ case 28:
 case 29:
 {
 	
-#line 358 "./meta/coderyac.upg"
+#line 358 "meta/coderyac.upg"
 		return LBL_PHEAD;
 
 
-#line 1709 "./gcode/coderyac.cpp"
+#line 1709 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1714,11 +1714,11 @@ case 29:
 case 30:
 {
 	
-#line 360 "./meta/coderyac.upg"
+#line 360 "meta/coderyac.upg"
 	return LBL_PTAIL;
 
 
-#line 1721 "./gcode/coderyac.cpp"
+#line 1721 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1726,7 +1726,7 @@ case 30:
 case 31:
 {
 	
-#line 362 "./meta/coderyac.upg"
+#line 362 "meta/coderyac.upg"
 		{
 		if( ! coder.isThrowAway()) {
 			yytext[yyleng - 1] = '\0';
@@ -1738,7 +1738,7 @@ case 31:
 		return QUOTEDSTR;
 	}
 
-#line 1741 "./gcode/coderyac.cpp"
+#line 1741 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1746,7 +1746,7 @@ case 31:
 case 32:
 {
 	
-#line 372 "./meta/coderyac.upg"
+#line 372 "meta/coderyac.upg"
 		{
 		if( ! coder.isThrowAway()) {		
 			coder_lval.m_pstrVal = new string(yytext);
@@ -1757,7 +1757,7 @@ case 32:
 		return CID;
 	}
 
-#line 1760 "./gcode/coderyac.cpp"
+#line 1760 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1765,7 +1765,7 @@ case 32:
 case 33:
 {
 	
-#line 381 "./meta/coderyac.upg"
+#line 381 "meta/coderyac.upg"
 		{
 		
 		strhelper_t::toSnum(yytext, coder_lval.m_nVal);
@@ -1773,7 +1773,7 @@ case 33:
 		return INTEGER;
 	}
 
-#line 1776 "./gcode/coderyac.cpp"
+#line 1776 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1781,11 +1781,11 @@ case 33:
 case 34:
 {
 	
-#line 387 "./meta/coderyac.upg"
+#line 387 "meta/coderyac.upg"
 
 
 
-#line 1788 "./gcode/coderyac.cpp"
+#line 1788 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1793,11 +1793,11 @@ case 34:
 case 35:
 {
 	
-#line 388 "./meta/coderyac.upg"
+#line 388 "meta/coderyac.upg"
 
 
 
-#line 1800 "./gcode/coderyac.cpp"
+#line 1800 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1805,12 +1805,12 @@ case 35:
 case 36:
 {
 	
-#line 389 "./meta/coderyac.upg"
+#line 389 "meta/coderyac.upg"
 
 
 	
 
-#line 1813 "./gcode/coderyac.cpp"
+#line 1813 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1818,9 +1818,9 @@ case 36:
 case 37:
 {
 	
-#line 0 "./meta/coderyac.upg"
+#line 0 "meta/coderyac.upg"
 
-#line 1823 "./gcode/coderyac.cpp"
+#line 1823 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -1946,42 +1946,42 @@ case 37:
 				
 	case 0:
 	{
-#line 394 "./meta/coderyac.upg"
+#line 394 "meta/coderyac.upg"
 
-#line 1951 "./gcode/coderyac.cpp"
+#line 1951 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 1:
 	{
-#line 394 "./meta/coderyac.upg"
+#line 394 "meta/coderyac.upg"
 
 
 			YYACCEPT();
 		
-#line 1963 "./gcode/coderyac.cpp"
+#line 1963 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 2:
 	{
-#line 400 "./meta/coderyac.upg"
+#line 400 "meta/coderyac.upg"
 
 			
 			if( ! coder.openStream(dmap)) {
 				YYABORT();
 			}
 		
-#line 1977 "./gcode/coderyac.cpp"
+#line 1977 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 3:
 	{
-#line 408 "./meta/coderyac.upg"
+#line 408 "meta/coderyac.upg"
 
 			
 			if( ! coder.addSetupItem(*(yys_sv__[2].m_pstrVal), *(yys_sv__[0].m_pstrVal))) {
@@ -1995,14 +1995,14 @@ case 37:
 			delete (yys_sv__[2].m_pstrVal);
 			delete (yys_sv__[0].m_pstrVal);
 		
-#line 1998 "./gcode/coderyac.cpp"
+#line 1998 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 4:
 	{
-#line 421 "./meta/coderyac.upg"
+#line 421 "meta/coderyac.upg"
 
 
 			if( ! coder.addSetupItem(*(yys_sv__[2].m_pstrVal), *(yys_sv__[0].m_pstrVal))) {
@@ -2016,41 +2016,41 @@ case 37:
 			delete (yys_sv__[2].m_pstrVal);
 			delete (yys_sv__[0].m_pstrVal);
 		
-#line 2019 "./gcode/coderyac.cpp"
+#line 2019 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 5:
 	{
-#line 436 "./meta/coderyac.upg"
+#line 436 "meta/coderyac.upg"
 
-#line 2028 "./gcode/coderyac.cpp"
+#line 2028 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 6:
 	{
-#line 437 "./meta/coderyac.upg"
+#line 437 "meta/coderyac.upg"
 
-#line 2037 "./gcode/coderyac.cpp"
+#line 2037 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 7:
 	{
-#line 437 "./meta/coderyac.upg"
+#line 437 "meta/coderyac.upg"
 
-#line 2046 "./gcode/coderyac.cpp"
+#line 2046 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 8:
 	{
-#line 439 "./meta/coderyac.upg"
+#line 439 "meta/coderyac.upg"
 
 
 			(yyval.m_pMac) = cmmgr.newMacro(*(yys_sv__[2].m_pstrVal));
@@ -2063,14 +2063,14 @@ case 37:
 			delete (yys_sv__[1].m_pvmac2Cond);
 			delete (yys_sv__[2].m_pstrVal);
 	
-#line 2066 "./gcode/coderyac.cpp"
+#line 2066 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 9:
 	{
-#line 451 "./meta/coderyac.upg"
+#line 451 "meta/coderyac.upg"
 
 	
 		(yyval.m_pMac) = cmmgr.newMacro(*(yys_sv__[2].m_pstrVal));
@@ -2079,115 +2079,115 @@ case 37:
 		
 		delete (yys_sv__[2].m_pstrVal);
 	
-#line 2082 "./gcode/coderyac.cpp"
+#line 2082 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 10:
 	{
-#line 461 "./meta/coderyac.upg"
+#line 461 "meta/coderyac.upg"
 
 			
 			(yyval.m_pstrVal) = (yys_sv__[1].m_pstrVal);
 		
-#line 2094 "./gcode/coderyac.cpp"
+#line 2094 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 11:
 	{
-#line 466 "./meta/coderyac.upg"
+#line 466 "meta/coderyac.upg"
 
-#line 2103 "./gcode/coderyac.cpp"
+#line 2103 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 12:
 	{
-#line 468 "./meta/coderyac.upg"
+#line 468 "meta/coderyac.upg"
 
 			
 			(yyval.m_pvmac2Cond) = new vmac2cond_t;
 			(yyval.m_pvmac2Cond)->push_back((yys_sv__[0].m_pmac2Cond));
 		
-#line 2116 "./gcode/coderyac.cpp"
+#line 2116 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 13:
 	{
-#line 473 "./meta/coderyac.upg"
+#line 473 "meta/coderyac.upg"
 
 		
 			(yyval.m_pvmac2Cond) = (yys_sv__[1].m_pvmac2Cond);
 			(yyval.m_pvmac2Cond)->push_back((yys_sv__[0].m_pmac2Cond));
 		
-#line 2129 "./gcode/coderyac.cpp"
+#line 2129 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 14:
 	{
-#line 479 "./meta/coderyac.upg"
+#line 479 "meta/coderyac.upg"
 
 		
 			(yyval.m_pmac2Cond) = new mac2cond_pair_t;
 			(yyval.m_pmac2Cond)->first = (yys_sv__[1].m_pvmTerms);
 			(yyval.m_pmac2Cond)->second = nullptr;
 		
-#line 2143 "./gcode/coderyac.cpp"
+#line 2143 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 15:
 	{
-#line 485 "./meta/coderyac.upg"
+#line 485 "meta/coderyac.upg"
 
 		
 			(yyval.m_pmac2Cond) = new mac2cond_pair_t;
 			(yyval.m_pmac2Cond)->first = (yys_sv__[1].m_pvmTerms);
 			(yyval.m_pmac2Cond)->second = (yys_sv__[2].m_pCpdcond);
 		
-#line 2157 "./gcode/coderyac.cpp"
+#line 2157 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 16:
 	{
-#line 493 "./meta/coderyac.upg"
+#line 493 "meta/coderyac.upg"
 
 
 			(yyval.m_pCpdcond) = (yys_sv__[1].m_pCpdcond);
 		
-#line 2169 "./gcode/coderyac.cpp"
+#line 2169 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 17:
 	{
-#line 499 "./meta/coderyac.upg"
+#line 499 "meta/coderyac.upg"
 
 			
 			assert((yys_sv__[0].m_pmTerm));
 			(yyval.m_pvmTerms) = new vterm_t;
 			(yyval.m_pvmTerms)->push_back((yys_sv__[0].m_pmTerm));
 		
-#line 2183 "./gcode/coderyac.cpp"
+#line 2183 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 18:
 	{
-#line 505 "./meta/coderyac.upg"
+#line 505 "meta/coderyac.upg"
 
 		
 			assert((yys_sv__[1].m_pvmTerms));
@@ -2195,14 +2195,14 @@ case 37:
 			(yyval.m_pvmTerms)->push_back((yys_sv__[0].m_pmTerm));			
 			
 		
-#line 2198 "./gcode/coderyac.cpp"
+#line 2198 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 19:
 	{
-#line 513 "./meta/coderyac.upg"
+#line 513 "meta/coderyac.upg"
 
 			if((yys_sv__[0].m_textVal) && (yys_sv__[0].m_textVal)->second) {
 				(yyval.m_pmTerm) = cmmgr.newTextTerm(*((yys_sv__[0].m_textVal)->second), (yys_sv__[0].m_textVal)->first);
@@ -2210,14 +2210,14 @@ case 37:
 				delete (yys_sv__[0].m_textVal);
 			}
 		
-#line 2213 "./gcode/coderyac.cpp"
+#line 2213 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 20:
 	{
-#line 520 "./meta/coderyac.upg"
+#line 520 "meta/coderyac.upg"
 
 		
 			if((yys_sv__[0].m_pmacRef)->second) {
@@ -2232,14 +2232,14 @@ case 37:
 			delete (yys_sv__[0].m_pmacRef)->first;
 			delete (yys_sv__[0].m_pmacRef);
 		
-#line 2235 "./gcode/coderyac.cpp"
+#line 2235 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 21:
 	{
-#line 534 "./meta/coderyac.upg"
+#line 534 "meta/coderyac.upg"
 
 			
 			string strVal;
@@ -2253,14 +2253,14 @@ case 37:
 			}
 			delete (yys_sv__[2].m_pstrVal);
 		
-#line 2256 "./gcode/coderyac.cpp"
+#line 2256 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 22:
 	{
-#line 547 "./meta/coderyac.upg"
+#line 547 "meta/coderyac.upg"
 
 			
 			string strVal;
@@ -2274,340 +2274,340 @@ case 37:
 			}
 			delete (yys_sv__[2].m_pstrVal);
 		
-#line 2277 "./gcode/coderyac.cpp"
+#line 2277 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 23:
 	{
-#line 561 "./meta/coderyac.upg"
+#line 561 "meta/coderyac.upg"
 
 
 			(yyval.m_pCpdcond) = cmmgr.newCompoundCond();
 			(yyval.m_pCpdcond)->addCondItem((yys_sv__[0].m_pcondItem));
 		
-#line 2290 "./gcode/coderyac.cpp"
+#line 2290 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 24:
 	{
-#line 566 "./meta/coderyac.upg"
+#line 566 "meta/coderyac.upg"
 
 		
 			(yyval.m_pCpdcond) = (yys_sv__[1].m_pCpdcond);
 			(yyval.m_pCpdcond)->addCondItem((yys_sv__[0].m_pcondItem));
 		
-#line 2303 "./gcode/coderyac.cpp"
+#line 2303 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 25:
 	{
-#line 572 "./meta/coderyac.upg"
+#line 572 "meta/coderyac.upg"
 
 
 			(yyval.m_pcondItem) = cmmgr.newOptCond(*(yys_sv__[2].m_pstrVal), (yys_sv__[0].m_nVal));
 			delete (yys_sv__[2].m_pstrVal);
 		
-#line 2316 "./gcode/coderyac.cpp"
+#line 2316 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 26:
 	{
-#line 577 "./meta/coderyac.upg"
+#line 577 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.newOptCond(*(yys_sv__[0].m_pstrVal), true);
 			delete (yys_sv__[0].m_pstrVal);
 		
-#line 2329 "./gcode/coderyac.cpp"
+#line 2329 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 27:
 	{
-#line 582 "./meta/coderyac.upg"
+#line 582 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.newOptCond(*(yys_sv__[2].m_pstrVal), (yys_sv__[0].m_bVal));
 			delete (yys_sv__[2].m_pstrVal);
 		
-#line 2342 "./gcode/coderyac.cpp"
+#line 2342 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 28:
 	{
-#line 587 "./meta/coderyac.upg"
+#line 587 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.newOptCond(*(yys_sv__[2].m_pstrVal), *(yys_sv__[0].m_pstrVal));
 			delete (yys_sv__[2].m_pstrVal);
 			delete (yys_sv__[0].m_pstrVal);
 		
-#line 2356 "./gcode/coderyac.cpp"
+#line 2356 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 29:
 	{
-#line 593 "./meta/coderyac.upg"
+#line 593 "meta/coderyac.upg"
 
 			
 			(yyval.m_pcondItem) = cmmgr.newERelCond(cond_elemrel_t::EOP_EQ, (yys_sv__[0].m_nVal));
 		
-#line 2368 "./gcode/coderyac.cpp"
+#line 2368 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 30:
 	{
-#line 597 "./meta/coderyac.upg"
+#line 597 "meta/coderyac.upg"
 
 
 			(yyval.m_pcondItem) = cmmgr.newERelCond(cond_elemrel_t::EOP_NE, (yys_sv__[0].m_nVal));	
 		
-#line 2380 "./gcode/coderyac.cpp"
+#line 2380 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 31:
 	{
-#line 601 "./meta/coderyac.upg"
+#line 601 "meta/coderyac.upg"
 
 			
 			(yyval.m_pcondItem) = cmmgr.newERelCond(cond_elemrel_t::EOP_EQ, (yys_sv__[0].m_bVal));
 		
-#line 2392 "./gcode/coderyac.cpp"
+#line 2392 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 32:
 	{
-#line 605 "./meta/coderyac.upg"
+#line 605 "meta/coderyac.upg"
 
 
 			(yyval.m_pcondItem) = cmmgr.newERelCond(cond_elemrel_t::EOP_NE, (yys_sv__[0].m_bVal));	
 		
-#line 2404 "./gcode/coderyac.cpp"
+#line 2404 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 33:
 	{
-#line 609 "./meta/coderyac.upg"
+#line 609 "meta/coderyac.upg"
 
 			
 			(yyval.m_pcondItem) = cmmgr.newERelCond(cond_elemrel_t::EOP_EQ, *(yys_sv__[0].m_pstrVal));
 			delete (yys_sv__[0].m_pstrVal);
 		
-#line 2417 "./gcode/coderyac.cpp"
+#line 2417 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 34:
 	{
-#line 614 "./meta/coderyac.upg"
+#line 614 "meta/coderyac.upg"
 
 
 			(yyval.m_pcondItem) = cmmgr.newERelCond(cond_elemrel_t::EOP_NE, *(yys_sv__[0].m_pstrVal));
 			delete (yys_sv__[0].m_pstrVal);		
 		
-#line 2430 "./gcode/coderyac.cpp"
+#line 2430 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 35:
 	{
-#line 619 "./meta/coderyac.upg"
+#line 619 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.getHasCond();
 		
-#line 2442 "./gcode/coderyac.cpp"
+#line 2442 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 36:
 	{
-#line 623 "./meta/coderyac.upg"
+#line 623 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.getEmptyCond();
 		
-#line 2454 "./gcode/coderyac.cpp"
+#line 2454 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 37:
 	{
-#line 627 "./meta/coderyac.upg"
+#line 627 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.getEndCond();
 		
-#line 2466 "./gcode/coderyac.cpp"
+#line 2466 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 38:
 	{
-#line 631 "./meta/coderyac.upg"
+#line 631 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.getLastCond();
 		
-#line 2478 "./gcode/coderyac.cpp"
+#line 2478 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 39:
 	{
-#line 635 "./meta/coderyac.upg"
+#line 635 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.getMoreCond();
 		
-#line 2490 "./gcode/coderyac.cpp"
+#line 2490 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 40:
 	{
-#line 639 "./meta/coderyac.upg"
+#line 639 "meta/coderyac.upg"
 
 			
 			(yyval.m_pcondItem) = cmmgr.getGroupCond();
 		
-#line 2502 "./gcode/coderyac.cpp"
+#line 2502 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 41:
 	{
-#line 643 "./meta/coderyac.upg"
+#line 643 "meta/coderyac.upg"
 
 			(yyval.m_pcondItem) = cmmgr.getGroupFirstCond();
 		
-#line 2513 "./gcode/coderyac.cpp"
+#line 2513 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 42:
 	{
-#line 646 "./meta/coderyac.upg"
+#line 646 "meta/coderyac.upg"
 
 		
 			(yyval.m_pcondItem) = cmmgr.newModCond((yys_sv__[0].m_nVal));
 		
-#line 2525 "./gcode/coderyac.cpp"
+#line 2525 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 43:
 	{
-#line 651 "./meta/coderyac.upg"
+#line 651 "meta/coderyac.upg"
 
 		
 			(yyval.m_bVal) = true;
 		
-#line 2537 "./gcode/coderyac.cpp"
+#line 2537 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 44:
 	{
-#line 655 "./meta/coderyac.upg"
+#line 655 "meta/coderyac.upg"
 
 		
 			(yyval.m_bVal) = false;
 		
-#line 2549 "./gcode/coderyac.cpp"
+#line 2549 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 45:
 	{
-#line 660 "./meta/coderyac.upg"
+#line 660 "meta/coderyac.upg"
 
 			
 			(yyval.m_pmacRef) = new pstr2pvn_t;
 			(yyval.m_pmacRef)->first = (yys_sv__[2].m_pstrVal);
 			(yyval.m_pmacRef)->second = nullptr;
 		
-#line 2563 "./gcode/coderyac.cpp"
+#line 2563 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 46:
 	{
-#line 666 "./meta/coderyac.upg"
+#line 666 "meta/coderyac.upg"
 
 		
 			(yyval.m_pmacRef) = new pstr2pvn_t;
 			(yyval.m_pmacRef)->first = (yys_sv__[3].m_pstrVal);;
 			(yyval.m_pmacRef)->second = (yys_sv__[2].m_pvnVal);
 		
-#line 2577 "./gcode/coderyac.cpp"
+#line 2577 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 47:
 	{
-#line 674 "./meta/coderyac.upg"
+#line 674 "meta/coderyac.upg"
 
 
 			(yyval.m_pvnVal) = new vint_t;
 			(yyval.m_pvnVal)->push_back((yys_sv__[0].m_nVal));
 		
-#line 2590 "./gcode/coderyac.cpp"
+#line 2590 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 48:
 	{
-#line 679 "./meta/coderyac.upg"
+#line 679 "meta/coderyac.upg"
 
 		
 			(yyval.m_pvnVal) = (yys_sv__[2].m_pvnVal);
 			(yyval.m_pvnVal)->push_back((yys_sv__[0].m_nVal));
 		
-#line 2603 "./gcode/coderyac.cpp"
+#line 2603 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 49:
 	{
-#line 685 "./meta/coderyac.upg"
+#line 685 "meta/coderyac.upg"
 
 
 			if( ! coder.isThrowAway()) {
@@ -2622,14 +2622,14 @@ case 37:
 				delete (yys_sv__[0].m_pstrVal);
 			}
 		
-#line 2625 "./gcode/coderyac.cpp"
+#line 2625 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 50:
 	{
-#line 699 "./meta/coderyac.upg"
+#line 699 "meta/coderyac.upg"
 
 		
 			(yyval.m_pvstrVal) = (yys_sv__[1].m_pvstrVal);
@@ -2640,56 +2640,56 @@ case 37:
 				delete (yys_sv__[0].m_pstrVal);
 			}
 		
-#line 2643 "./gcode/coderyac.cpp"
+#line 2643 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 52:
 	{
-#line 711 "./meta/coderyac.upg"
+#line 711 "meta/coderyac.upg"
 
 
 			coder.switchToDef();
 		
-#line 2655 "./gcode/coderyac.cpp"
+#line 2655 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 51:
 	{
-#line 714 "./meta/coderyac.upg"
+#line 714 "meta/coderyac.upg"
 
 
 			coder.flush();
 		
-#line 2667 "./gcode/coderyac.cpp"
+#line 2667 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 53:
 	{
-#line 720 "./meta/coderyac.upg"
+#line 720 "meta/coderyac.upg"
 
-#line 2676 "./gcode/coderyac.cpp"
+#line 2676 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 54:
 	{
-#line 720 "./meta/coderyac.upg"
+#line 720 "meta/coderyac.upg"
 
-#line 2685 "./gcode/coderyac.cpp"
+#line 2685 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 55:
 	{
-#line 723 "./meta/coderyac.upg"
+#line 723 "meta/coderyac.upg"
 
 			
 			if((yys_sv__[0].m_textVal) && (yys_sv__[0].m_textVal)->second) {
@@ -2700,41 +2700,41 @@ case 37:
 				delete (yys_sv__[0].m_textVal);
 			}
 		
-#line 2703 "./gcode/coderyac.cpp"
+#line 2703 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 56:
 	{
-#line 733 "./meta/coderyac.upg"
+#line 733 "meta/coderyac.upg"
 
-#line 2712 "./gcode/coderyac.cpp"
+#line 2712 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 57:
 	{
-#line 734 "./meta/coderyac.upg"
+#line 734 "meta/coderyac.upg"
 
-#line 2721 "./gcode/coderyac.cpp"
+#line 2721 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 58:
 	{
-#line 735 "./meta/coderyac.upg"
+#line 735 "meta/coderyac.upg"
 
-#line 2730 "./gcode/coderyac.cpp"
+#line 2730 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 59:
 	{
-#line 738 "./meta/coderyac.upg"
+#line 738 "meta/coderyac.upg"
 
 
 			if( ! coder.isThrowAway()) {
@@ -2747,14 +2747,14 @@ case 37:
 				delete (yys_sv__[2].m_pvstrVal);
 			}
 		
-#line 2750 "./gcode/coderyac.cpp"
+#line 2750 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 60:
 	{
-#line 750 "./meta/coderyac.upg"
+#line 750 "meta/coderyac.upg"
 
 			
 			if( ! coder.isThrowAway()) {
@@ -2764,120 +2764,120 @@ case 37:
 				delete (yys_sv__[2].m_pstrVal);
 			}
 		
-#line 2767 "./gcode/coderyac.cpp"
+#line 2767 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 61:
 	{
-#line 761 "./meta/coderyac.upg"
+#line 761 "meta/coderyac.upg"
 
 
 		if( ! coder.isThrowAway()) {
 				coder.switchToDecl();
 			}
 		
-#line 2781 "./gcode/coderyac.cpp"
+#line 2781 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 62:
 	{
-#line 767 "./meta/coderyac.upg"
+#line 767 "meta/coderyac.upg"
 
 
 			if( coder.isCondTrue()) {
 				coder.switchToDef();
 			}
 		
-#line 2795 "./gcode/coderyac.cpp"
+#line 2795 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 63:
 	{
-#line 775 "./meta/coderyac.upg"
+#line 775 "meta/coderyac.upg"
 
-#line 2804 "./gcode/coderyac.cpp"
+#line 2804 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 65:
 	{
-#line 776 "./meta/coderyac.upg"
+#line 776 "meta/coderyac.upg"
 
 			coder.addIPCond( ! (yys_sv__[1].m_bVal));
 		
-#line 2815 "./gcode/coderyac.cpp"
+#line 2815 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 64:
 	{
-#line 779 "./meta/coderyac.upg"
+#line 779 "meta/coderyac.upg"
 
 			coder.subIPCond( ! (yys_sv__[4].m_bVal));
 		
-#line 2826 "./gcode/coderyac.cpp"
+#line 2826 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 67:
 	{
-#line 784 "./meta/coderyac.upg"
+#line 784 "meta/coderyac.upg"
 
 
 			coder.addIPCond((yys_sv__[1].m_bVal));
 		
-#line 2838 "./gcode/coderyac.cpp"
+#line 2838 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 66:
 	{
-#line 788 "./meta/coderyac.upg"
+#line 788 "meta/coderyac.upg"
 
 			coder.subIPCond((yys_sv__[4].m_bVal));
 			(yyval.m_bVal) = (yys_sv__[4].m_bVal);
 		
-#line 2850 "./gcode/coderyac.cpp"
+#line 2850 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 68:
 	{
-#line 794 "./meta/coderyac.upg"
+#line 794 "meta/coderyac.upg"
 
 
 			(yyval.m_bVal) = (yys_sv__[0].m_bVal);
 		
-#line 2862 "./gcode/coderyac.cpp"
+#line 2862 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 69:
 	{
-#line 798 "./meta/coderyac.upg"
+#line 798 "meta/coderyac.upg"
 
 			(yyval.m_bVal) = (yys_sv__[1].m_bVal) && (yys_sv__[0].m_bVal);
 		
-#line 2873 "./gcode/coderyac.cpp"
+#line 2873 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 70:
 	{
-#line 803 "./meta/coderyac.upg"
+#line 803 "meta/coderyac.upg"
 
 		
 			if( coder.isThrowAway()) {
@@ -2890,14 +2890,14 @@ case 37:
 				delete (yys_sv__[0].m_pstrVal);
 			}			
 		
-#line 2893 "./gcode/coderyac.cpp"
+#line 2893 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 71:
 	{
-#line 815 "./meta/coderyac.upg"
+#line 815 "meta/coderyac.upg"
 
 		
 			if( coder.isThrowAway()) {
@@ -2911,14 +2911,14 @@ case 37:
 				delete (yys_sv__[0].m_pstrVal);
 			}
 		
-#line 2914 "./gcode/coderyac.cpp"
+#line 2914 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 72:
 	{
-#line 828 "./meta/coderyac.upg"
+#line 828 "meta/coderyac.upg"
 
 
 			if( coder.isThrowAway()) {
@@ -2931,14 +2931,14 @@ case 37:
 				delete (yys_sv__[2].m_pstrVal);
 			}
 		
-#line 2934 "./gcode/coderyac.cpp"
+#line 2934 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 73:
 	{
-#line 840 "./meta/coderyac.upg"
+#line 840 "meta/coderyac.upg"
 
 		
 			if( coder.isThrowAway()) {
@@ -2951,14 +2951,14 @@ case 37:
 				delete (yys_sv__[2].m_pstrVal);
 			}
 		
-#line 2954 "./gcode/coderyac.cpp"
+#line 2954 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 74:
 	{
-#line 852 "./meta/coderyac.upg"
+#line 852 "meta/coderyac.upg"
 
 		
 			if( coder.isThrowAway()) {
@@ -2974,14 +2974,14 @@ case 37:
 				delete (yys_sv__[0].m_pstrVal);
 			}
 		
-#line 2977 "./gcode/coderyac.cpp"
+#line 2977 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 75:
 	{
-#line 867 "./meta/coderyac.upg"
+#line 867 "meta/coderyac.upg"
 
 			if( coder.isThrowAway()) {
 				(yyval.m_bVal) = false;
@@ -2994,14 +2994,14 @@ case 37:
 				delete (yys_sv__[0].m_pstrVal);
 			}
 		
-#line 2997 "./gcode/coderyac.cpp"
+#line 2997 "gcode/coderyac.cpp"
 
 	}
 	break;
 	
 	case 76:
 	{
-#line 879 "./meta/coderyac.upg"
+#line 879 "meta/coderyac.upg"
 
 			
 			if( coder.isThrowAway()) {
@@ -3015,7 +3015,7 @@ case 37:
 				delete (yys_sv__[0].m_pstrVal);
 			}
 		
-#line 3018 "./gcode/coderyac.cpp"
+#line 3018 "gcode/coderyac.cpp"
 
 	}
 	break;
@@ -3435,13 +3435,13 @@ private:
 	// index of left symbol in a grammar rule
 	static const int yyplid[77];
 	// parse action table
-	static const int yypact[109];
+	static const int yypact[105];
 
 	// base array for parse action table
 	// which is used to determine the base location of the entries
 	// for each state stored in the yypack table
 	static const int yypabase[145];
-	static const int yypgoto[23];
+	static const int yypgoto[18];
 	static const int yypgbase[145];
 
 	// check table for parse action table
@@ -3752,59 +3752,59 @@ const int coder_parser_t::yyplid[77] = {
 };
 
 // parse action table
-const int coder_parser_t::yypact[109] = {
-11,	32,	41,	10,	93,	92,	33,	42,
-	53,	54,	55,	56,	57,	58,	59,	60,
-	32,	32,	75,	76,	32,	33,	33,	61,
-	62,	68,	41,	63,	32,	32,	223,	42,
-	71,	33,	33,	83,	223,	77,	53,	54,
-	55,	56,	57,	58,	59,	60,	78,	94,
-	223,	223,	223,	104,	96,	61,	62,	105,
-	113,	63,	223,	109,	223,	84,	172,	172,
-	172,	172,	172,	172,	172,	172,	75,	76,
-	216,	216,	223,	223,	116,	172,	172,	114,
-	119,	172,	123,	117,	132,	172,	89,	124,
-	133,	77,	223,	216,	223,	97,	131,	216,
-	101,	129,	78,	41,	216,	41,	41,	41,
-	42,	223,	42,	42,	42
+const int coder_parser_t::yypact[105] = {
+17,	29,	38,	16,	29,	29,	31,	42,
+	29,	51,	31,	92,	91,	31,	61,	60,
+	62,	63,	64,	67,	65,	66,	38,	81,
+	80,	69,	29,	42,	82,	58,	59,	31,
+	29,	57,	93,	110,	97,	31,	108,	95,
+	99,	223,	78,	61,	60,	62,	63,	64,
+	67,	65,	66,	79,	115,	223,	223,	113,
+	81,	80,	58,	59,	118,	126,	57,	116,
+	223,	127,	85,	172,	172,	172,	172,	172,
+	172,	172,	172,	78,	216,	216,	133,	101,
+	123,	131,	172,	172,	79,	124,	172,	38,
+	38,	38,	172,	87,	42,	42,	42,	216,
+	38,	223,	223,	216,	103,	42,	223,	223,
+	216
 };
 
 // base array for parse action table
 // which is used to determine the base location of the entries
 // for each state stored in the yypack table
 const int coder_parser_t::yypabase[145] = {
-0,	0,	0,	0,	0,	0,	-33,	0,
+0,	0,	0,	0,	0,	0,	0,	0,
+	-33,	0,	0,	0,	0,	0,	-33,	0,
+	0,	0,	0,	-32,	0,	0,	0,	-30,
+	0,	-29,	-26,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	-12,	0,	0,	0,
+	0,	0,	0,	0,	0,	0,	9,	0,
+	0,	0,	0,	-8,	0,	-8,	-2,	29,
+	0,	53,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	-21,	-2,	0,	0,
+	0,	0,	4,	0,	42,	0,	62,	0,
+	0,	0,	0,	0,	0,	0,	0,	3,
+	20,	28,	0,	0,	0,	0,	44,	0,
+	0,	0,	29,	0,	53,	0,	0,	46,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	-33,	0,	0,	0,	-32,	0,
-	0,	0,	0,	-6,	-18,	-17,	0,	-14,
-	0,	0,	0,	0,	0,	-8,	4,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	24,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	48,
-	0,	-6,	-5,	0,	-1,	0,	-28,	11,
-	0,	0,	56,	0,	0,	58,	0,	0,
-	19,	0,	0,	0,	0,	0,	0,	24,
-	44,	48,	0,	0,	0,	0,	0,	46,
-	0,	0,	0,	0,	0,	62,	0,	52,
-	0,	0,	65,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	67,	0,
-	0,	0,	0,	0,	0,	0,	0,	68,
-	0,	0,	0,	0,	0,	69,	0,	0,
+	0,	54,	55,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	0,	0,	0,	62,
 	0
 };
 
-const int coder_parser_t::yypgoto[23] = {
-34,	31,	51,	34,	65,	30,	34,	66,
-	69,	223,	223,	49,	223,	223,	223,	223,
-	223,	223,	223,	223,	223,	223,	67
+const int coder_parser_t::yypgoto[18] = {
+28,	23,	49,	52,	223,	24,	28,	53,
+	28,	54,	223,	47,	223,	223,	223,	223,
+	223,	50
 };
 
 const int coder_parser_t::yypgbase[145] = {
 0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	-9,	0,	0,	0,	0,	0,
-	0,	0,	-12,	0,	-6,	-3,	0,	-1,
+	0,	0,	0,	0,	0,	0,	-9,	0,
+	0,	0,	0,	0,	0,	0,	-12,	-6,
+	0,	-3,	-1,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
@@ -3825,85 +3825,85 @@ const int coder_parser_t::yypgbase[145] = {
 const by_te_t coder_parser_t::yyvbmap[870] = {
 0,	0,	0,	0,	0,	0,	0,	0,
 	0,	4,	0,	0,	1,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	2,	0,
-	8,	0,	0,	0,	0,	0,	1,	0,
-	0,	0,	0,	0,	0,	0,	0,	0,
-	18,	0,	0,	0,	0,	0,	64,	0,
-	0,	0,	0,	1,	0,	0,	0,	0,
-	0,	0,	128,	0,	0,	0,	0,	0,
-	32,	0,	0,	0,	0,	0,	64,	0,
-	0,	0,	0,	0,	1,	0,	1,	0,
-	0,	0,	0,	0,	0,	4,	0,	24,
-	132,	0,	16,	0,	0,	0,	128,	0,
-	32,	0,	0,	0,	0,	0,	16,	0,
+	0,	0,	8,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	2,	0,	1,	0,
+	0,	0,	0,	0,	0,	0,	0,	1,
+	0,	0,	0,	0,	0,	0,	128,	0,
+	0,	0,	0,	0,	18,	0,	0,	0,
+	0,	0,	64,	0,	1,	0,	0,	0,
+	0,	0,	0,	4,	0,	24,	132,	0,
+	16,	0,	0,	0,	128,	0,	16,	0,
 	0,	0,	128,	0,	64,	1,	0,	0,
-	132,	0,	8,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	1,	0,	0,	0,
-	0,	0,	18,	0,	0,	4,	0,	24,
-	132,	0,	0,	0,	0,	1,	0,	0,
-	16,	0,	0,	0,	128,	0,	0,	0,
-	0,	0,	1,	0,	64,	1,	0,	0,
-	128,	0,	0,	192,	63,	96,	2,	0,
-	0,	0,	0,	0,	132,	0,	0,	0,
-	0,	0,	132,	0,	64,	1,	0,	0,
+	132,	0,	32,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	32,	0,	0,	0,
+	0,	0,	64,	0,	0,	0,	0,	0,
+	1,	0,	0,	4,	0,	24,	132,	0,
+	0,	0,	0,	1,	0,	0,	16,	0,
+	0,	0,	128,	0,	64,	1,	0,	0,
 	128,	0,	0,	0,	0,	0,	132,	0,
-	128,	2,	0,	0,	132,	0,	0,	0,
-	0,	128,	2,	0,	128,	2,	0,	0,
-	132,	0,	128,	2,	0,	0,	132,	0,
-	0,	0,	0,	0,	18,	0,	0,	4,
-	0,	26,	132,	0,	0,	192,	0,	0,
-	2,	4,	0,	44,	0,	26,	132,	0,
-	0,	44,	0,	26,	132,	0,	0,	44,
-	0,	26,	132,	0,	0,	0,	0,	0,
-	2,	0,	0,	60,	0,	26,	132,	0,
-	0,	44,	0,	26,	132,	0,	0,	44,
+	64,	1,	0,	0,	128,	0,	0,	0,
+	0,	0,	132,	0,	0,	0,	0,	0,
+	132,	0,	0,	192,	63,	96,	2,	0,
+	128,	2,	0,	0,	132,	0,	128,	2,
+	0,	0,	132,	0,	128,	2,	0,	0,
+	132,	0,	0,	0,	0,	128,	2,	0,
+	0,	0,	0,	0,	1,	0,	8,	0,
+	0,	0,	0,	0,	0,	0,	0,	0,
+	1,	0,	0,	0,	0,	0,	18,	0,
+	0,	4,	0,	26,	132,	0,	0,	44,
 	0,	26,	132,	0,	0,	44,	0,	26,
 	132,	0,	0,	44,	0,	26,	132,	0,
-	0,	0,	0,	0,	32,	0,	16,	0,
-	0,	0,	128,	0,	0,	0,	0,	0,
-	16,	0,	64,	1,	0,	0,	128,	0,
+	0,	44,	0,	26,	132,	0,	0,	44,
+	0,	26,	132,	0,	0,	0,	0,	0,
+	2,	0,	0,	44,	0,	26,	132,	0,
+	0,	44,	0,	26,	132,	0,	0,	60,
+	0,	26,	132,	0,	0,	192,	0,	0,
+	2,	4,	16,	0,	0,	0,	128,	0,
+	0,	0,	0,	0,	16,	0,	64,	1,
+	0,	0,	128,	0,	16,	0,	0,	0,
+	128,	0,	0,	0,	0,	128,	18,	0,
+	128,	2,	0,	0,	132,	0,	0,	2,
+	0,	0,	132,	0,	128,	0,	0,	0,
+	132,	0,	0,	192,	63,	96,	34,	0,
+	0,	192,	63,	96,	34,	0,	0,	192,
+	63,	96,	98,	0,	0,	0,	0,	0,
+	0,	1,	0,	0,	0,	0,	0,	1,
 	0,	192,	63,	96,	34,	0,	0,	192,
 	63,	96,	34,	0,	0,	192,	63,	96,
 	34,	0,	0,	192,	63,	96,	34,	0,
 	0,	192,	63,	96,	34,	0,	0,	192,
-	63,	96,	34,	0,	0,	0,	0,	0,
-	0,	1,	0,	192,	63,	96,	34,	0,
-	0,	192,	63,	96,	34,	0,	0,	0,
-	0,	0,	0,	1,	0,	0,	0,	0,
-	0,	1,	0,	192,	63,	96,	98,	0,
-	0,	192,	63,	96,	34,	0,	0,	2,
-	0,	0,	132,	0,	128,	0,	0,	0,
-	132,	0,	16,	0,	0,	0,	128,	0,
-	0,	0,	0,	128,	18,	0,	128,	2,
-	0,	0,	132,	0,	0,	0,	0,	0,
-	3,	0,	0,	0,	0,	0,	16,	2,
+	63,	96,	34,	0,	0,	192,	63,	96,
+	34,	0,	0,	0,	0,	0,	0,	1,
+	0,	0,	0,	0,	3,	0,	0,	0,
+	0,	0,	16,	2,	0,	0,	0,	0,
+	32,	0,	0,	0,	0,	0,	18,	0,
 	1,	0,	0,	0,	0,	0,	0,	44,
-	0,	26,	132,	0,	0,	192,	0,	0,
-	34,	4,	0,	0,	0,	0,	0,	1,
-	0,	0,	0,	0,	0,	1,	0,	192,
-	0,	0,	98,	4,	0,	0,	0,	0,
-	2,	0,	0,	192,	0,	0,	34,	4,
-	0,	0,	0,	0,	17,	0,	0,	4,
-	0,	24,	132,	0,	64,	1,	0,	0,
-	132,	0,	32,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	132,	0,	0,	192,
-	63,	96,	34,	0,	0,	0,	0,	0,
-	8,	0,	0,	0,	192,	0,	9,	0,
+	0,	26,	132,	0,	0,	0,	0,	0,
+	17,	0,	0,	4,	0,	24,	132,	0,
+	0,	192,	0,	0,	34,	4,	0,	192,
+	0,	0,	34,	4,	0,	192,	0,	0,
+	98,	4,	0,	0,	0,	0,	2,	0,
+	0,	0,	0,	0,	0,	1,	0,	0,
+	0,	0,	0,	1,	32,	0,	0,	0,
+	0,	0,	64,	1,	0,	0,	128,	0,
+	64,	1,	0,	0,	128,	0,	0,	0,
+	0,	0,	132,	0,	0,	192,	63,	96,
+	34,	0,	0,	0,	192,	0,	9,	0,
 	0,	0,	192,	0,	9,	0,	0,	0,
-	192,	0,	9,	0,	64,	1,	0,	0,
-	128,	0,	64,	1,	0,	0,	128,	0,
+	192,	0,	9,	0,	0,	0,	0,	0,
+	8,	0,	0,	0,	0,	0,	16,	0,
 	0,	0,	0,	0,	16,	0,	0,	0,
-	0,	0,	16,	0,	0,	0,	0,	0,
-	32,	0,	0,	0,	0,	0,	16,	2,
-	0,	0,	0,	0,	8,	0,	0,	4,
+	0,	0,	32,	0,	0,	0,	0,	0,
+	16,	2,	0,	0,	0,	0,	8,	0,
+	64,	1,	0,	0,	132,	0,	0,	0,
+	0,	0,	17,	0,	0,	0,	0,	0,
+	17,	0,	0,	0,	0,	0,	32,	0,
+	0,	4,	0,	24,	132,	0,	0,	4,
 	0,	24,	132,	0,	0,	192,	0,	0,
-	34,	4,	0,	0,	0,	0,	1,	0,
-	0,	0,	0,	0,	1,	0,	0,	0,
-	192,	0,	9,	0,	0,	192,	0,	0,
-	34,	4,	0,	0,	0,	0,	17,	0,
-	0,	0,	0,	0,	17,	0,	0,	0,
-	0,	0,	32,	0,	0,	4,	0,	24,
-	132,	0,	0,	0,	0,	0,	32,	0,
+	34,	4,	0,	0,	192,	0,	9,	0,
+	0,	192,	0,	0,	34,	4,	0,	0,
+	0,	0,	1,	0,	0,	0,	0,	0,
+	1,	0,	0,	0,	0,	0,	32,	0,
 	0,	192,	63,	96,	34,	0,	0,	192,
 	63,	96,	34,	0,	0,	192,	63,	96,
 	34,	0,	0,	192,	63,	96,	34,	4,
@@ -3917,79 +3917,79 @@ const by_te_t coder_parser_t::yyvbmap[870] = {
 	0,	0,	32,	0,	128,	2,	0,	0,
 	132,	0,	0,	0,	0,	0,	32,	0,
 	0,	0,	0,	0,	8,	0,	0,	0,
-	0,	0,	16,	2,	0,	4,	0,	24,
+	0,	0,	16,	2,	0,	0,	0,	0,
+	17,	0,	0,	0,	0,	0,	32,	0,
+	0,	44,	0,	26,	132,	0,	0,	36,
+	0,	24,	132,	0,	0,	4,	0,	24,
 	132,	0,	0,	192,	0,	0,	34,	4,
 	0,	192,	0,	0,	34,	4,	0,	192,
 	0,	0,	34,	4,	0,	192,	0,	0,
 	34,	4,	0,	192,	0,	0,	34,	4,
-	0,	0,	0,	0,	17,	0,	0,	0,
-	0,	0,	32,	0,	0,	44,	0,	26,
-	132,	0,	0,	36,	0,	24,	132,	0,
 	16,	0,	0,	0,	128,	0,	128,	2,
 	0,	0,	132,	0,	128,	2,	0,	0,
 	132,	0,	128,	2,	0,	0,	132,	0,
-	0,	0,	0,	0,	16,	2,	0,	12,
-	0,	24,	132,	0,	0,	44,	0,	26,
-	132,	0,	0,	44,	0,	26,	132,	0,
+	0,	0,	0,	0,	16,	2,	0,	44,
+	0,	26,	132,	0,	0,	44,	0,	26,
+	132,	0,	0,	12,	0,	24,	132,	0,
 	0,	60,	0,	26,	132,	0
 };
 
 const int coder_parser_t::yyparv[145] = {
-223,	3,	5,	7,	9,	146,	223,	12,
-	14,	16,	19,	20,	21,	147,	198,	16,
-	25,	152,	223,	148,	36,	150,	223,	151,
-	153,	48,	50,	223,	223,	223,	158,	223,
-	165,	71,	163,	166,	149,	223,	223,	207,
-	208,	201,	80,	209,	199,	202,	203,	204,
-	82,	154,	83,	159,	223,	182,	181,	183,
-	184,	185,	86,	186,	187,	87,	88,	223,
-	169,	223,	223,	155,	223,	164,	223,	223,
-	197,	200,	223,	99,	100,	223,	102,	214,
-	223,	211,	156,	107,	162,	170,	108,	223,
-	223,	223,	160,	161,	120,	121,	122,	223,
-	125,	213,	215,	127,	128,	223,	217,	223,
-	195,	134,	223,	136,	188,	175,	177,	189,
-	190,	179,	176,	178,	180,	171,	173,	174,
-	137,	138,	191,	139,	140,	193,	223,	222,
-	221,	218,	219,	220,	196,	142,	206,	223,
-	157,	167,	168,	192,	194,	223,	205,	210,
+223,	4,	5,	7,	9,	146,	11,	15,
+	223,	18,	147,	198,	15,	152,	223,	32,
+	33,	34,	35,	223,	151,	153,	48,	223,
+	158,	223,	223,	223,	163,	165,	166,	69,
+	70,	148,	71,	150,	223,	199,	201,	202,
+	203,	204,	74,	207,	208,	209,	223,	154,
+	82,	159,	155,	223,	164,	223,	223,	223,
+	169,	223,	88,	89,	181,	182,	183,	184,
+	185,	186,	187,	90,	223,	223,	96,	149,
+	197,	200,	223,	211,	223,	214,	223,	104,
+	105,	106,	107,	160,	161,	162,	170,	223,
+	223,	223,	119,	120,	121,	122,	223,	125,
+	156,	195,	223,	128,	223,	213,	215,	223,
+	217,	134,	135,	136,	171,	173,	174,	189,
+	190,	175,	177,	179,	176,	178,	180,	188,
+	137,	138,	191,	139,	140,	193,	196,	141,
+	206,	223,	223,	218,	219,	220,	221,	222,
+	157,	167,	168,	192,	194,	205,	210,	223,
 	212
 };
 
 
 const int coder_parser_t::yyparn[145] = {
-32,	0,	0,	0,	0,	0,	32,	0,
-	0,	0,	0,	0,	0,	0,	0,	2,
-	0,	0,	32,	0,	0,	0,	32,	0,
-	0,	0,	2,	32,	32,	32,	0,	32,
-	0,	2,	0,	0,	0,	32,	32,	0,
-	0,	0,	0,	2,	0,	0,	0,	0,
+32,	0,	0,	0,	0,	0,	0,	0,
+	32,	0,	0,	0,	2,	0,	32,	0,
+	0,	0,	0,	32,	0,	0,	2,	32,
+	0,	32,	32,	32,	0,	0,	0,	2,
 	0,	0,	0,	0,	32,	0,	0,	0,
+	0,	0,	0,	0,	0,	2,	32,	0,
+	0,	0,	0,	32,	0,	32,	32,	32,
+	0,	32,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	32,	32,	0,	0,
+	0,	0,	32,	0,	32,	0,	32,	0,
 	0,	0,	0,	0,	0,	0,	0,	32,
-	0,	32,	32,	0,	32,	0,	32,	32,
-	0,	0,	32,	0,	0,	32,	0,	0,
-	32,	0,	0,	0,	0,	0,	0,	32,
-	32,	32,	0,	0,	0,	0,	0,	32,
-	0,	0,	0,	0,	0,	32,	0,	32,
-	0,	0,	32,	0,	0,	0,	0,	0,
+	32,	32,	0,	0,	0,	0,	32,	0,
+	0,	0,	32,	0,	32,	0,	0,	32,
 	0,	0,	0,	0,	0,	0,	0,	0,
-	0,	0,	0,	0,	0,	0,	32,	0,
+	0,	0,	0,	0,	0,	0,	0,	0,
+	0,	0,	0,	0,	0,	0,	0,	0,
+	0,	32,	32,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	32,
-	0,	0,	0,	0,	0,	32,	0,	0,
 	0
 };
 
 const int coder_parser_t::yypcv[75] = {
-223,	223,	223,	223,	23,	223,	27,	91,
-	28,	90,	38,	144,	81,	143,	223,	223,
+223,	223,	223,	223,	20,	223,	27,	84,
+	25,	83,	46,	144,	75,	142,	223,	223,
 	223,	223,	223,	223,	223,	223,	111,	112,
-	223,	72,	223,	39,	40,	223,	223,	70,
+	223,	72,	223,	43,	44,	223,	223,	68,
 	223,	223,	223,	223,	223,	223,	223,	223,
-	223,	223,	223,	223,	29,	2,	43,	74,
-	79,	223,	52,	64,	223,	223,	223,	26,
-	18,	223,	35,	223,	223,	4,	223,	223,
-	223,	15,	223,	223,	223,	44,	45,	46,
-	47,	223,	223
+	223,	223,	223,	223,	26,	2,	45,	76,
+	77,	223,	55,	56,	223,	223,	223,	22,
+	14,	223,	30,	223,	223,	3,	223,	223,
+	223,	12,	223,	223,	223,	37,	39,	40,
+	41,	223,	223
 };
 
 const int coder_parser_t::yypcn[75] = {
@@ -4007,46 +4007,46 @@ const int coder_parser_t::yypcn[75] = {
 
 
 const int coder_parser_t::yypgrv[145] = {
-223,	223,	223,	6,	8,	223,	223,	223,
-	13,	17,	223,	223,	223,	223,	22,	24,
-	223,	223,	223,	223,	223,	223,	37,	223,
+223,	223,	223,	6,	8,	223,	10,	13,
+	223,	223,	223,	19,	21,	223,	223,	223,
+	223,	223,	223,	36,	223,	223,	223,	223,
 	223,	223,	223,	223,	223,	223,	223,	223,
-	223,	223,	223,	223,	223,	73,	223,	223,
+	223,	223,	223,	223,	73,	223,	223,	223,
 	223,	223,	223,	223,	223,	223,	223,	223,
-	223,	223,	223,	223,	85,	223,	223,	223,
+	223,	223,	223,	223,	223,	52,	52,	86,
 	223,	223,	223,	223,	223,	223,	223,	223,
-	223,	69,	69,	223,	223,	223,	223,	95,
-	223,	223,	98,	223,	223,	223,	223,	223,
-	103,	106,	223,	223,	223,	223,	223,	110,
-	115,	118,	223,	223,	223,	223,	223,	223,
-	223,	126,	223,	223,	223,	130,	223,	223,
-	223,	223,	135,	223,	223,	223,	223,	223,
+	223,	223,	223,	223,	223,	94,	223,	223,
+	223,	223,	98,	100,	102,	223,	223,	223,
+	223,	223,	223,	223,	223,	223,	223,	109,
+	114,	117,	223,	223,	223,	223,	223,	223,
+	223,	223,	223,	223,	129,	130,	223,	132,
 	223,	223,	223,	223,	223,	223,	223,	223,
-	223,	223,	223,	223,	223,	223,	141,	223,
+	223,	223,	223,	223,	223,	223,	223,	223,
+	223,	223,	223,	223,	223,	223,	223,	223,
+	223,	73,	143,	223,	223,	223,	223,	223,
 	223,	223,	223,	223,	223,	223,	223,	73,
-	223,	223,	223,	223,	223,	73,	223,	223,
 	223
 };
 
 const int coder_parser_t::yypgrn[145] = {
-32,	32,	32,	0,	0,	32,	32,	32,
-	0,	2,	32,	32,	32,	32,	0,	2,
-	32,	32,	32,	32,	32,	32,	4,	32,
+32,	32,	32,	0,	0,	32,	0,	2,
+	32,	32,	32,	0,	2,	32,	32,	32,
+	32,	32,	32,	4,	32,	32,	32,	32,
 	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	32,	32,	32,	32,	2,	32,	32,
+	32,	32,	32,	32,	2,	32,	32,	32,
 	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	32,	32,	32,	0,	32,	32,	32,
+	32,	32,	32,	32,	32,	2,	2,	0,
 	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	2,	2,	32,	32,	32,	32,	0,
-	32,	32,	0,	32,	32,	32,	32,	32,
-	0,	0,	32,	32,	32,	32,	32,	0,
+	32,	32,	32,	32,	32,	0,	32,	32,
+	32,	32,	0,	0,	0,	32,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	0,
 	0,	0,	32,	32,	32,	32,	32,	32,
-	32,	0,	32,	32,	32,	0,	32,	32,
-	32,	32,	4,	32,	32,	32,	32,	32,
+	32,	32,	32,	32,	4,	0,	32,	0,
 	32,	32,	32,	32,	32,	32,	32,	32,
-	32,	32,	32,	32,	32,	32,	4,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	32,	32,	32,	32,	32,	32,	32,
+	32,	2,	4,	32,	32,	32,	32,	32,
 	32,	32,	32,	32,	32,	32,	32,	2,
-	32,	32,	32,	32,	32,	2,	32,	32,
 	32
 };
 
@@ -4129,10 +4129,10 @@ int coder_parse(coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr) {
 }
 } // namspace
 
-#line 894 "./meta/coderyac.upg"
+#line 894 "meta/coderyac.upg"
 
 
 
-#line 4136 "./gcode/coderyac.cpp"
+#line 4136 "gcode/coderyac.cpp"
 
 
