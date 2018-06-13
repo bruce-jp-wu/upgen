@@ -527,7 +527,7 @@ var		[A-Z_a-z][A-Z_a-z0-9]*
 	char *pchVal;
 %}
 
-/* declaration of local varaibles used in <<prefix/>>parse */
+/* declaration of local varaibles used in yyparse */
 %parsevar-decl%{
 	s2i_map_t mapVars;
 	string strVar;
@@ -551,7 +551,7 @@ var		[A-Z_a-z][A-Z_a-z0-9]*
 
 %%
 
-[0-9]+				<<prefix/>>lval.nVal = atoi(yytext);
+[0-9]+				yylval.nVal = atoi(yytext);
 				return NUM;
 "quit"				return QUIT;
 "clear"				return CLEAR;
@@ -737,12 +737,12 @@ using namespace <<prefix/>>nsx;
 
 int main(int argc, char **argv) {
 <<before_buffer_init/>>
-	if(<<prefix/>><<buffer_init2/>>) {
+	if(yy<<buffer_init2/>>) {
 		cerr << "Error: initialization failed." << endl;
 		return -1;
 	}
 
-	<<prefix/>>parse();
+	yyparse();
 <<after_buffer_usage/>>
 	return 0;
 }
@@ -797,7 +797,7 @@ var		[A-Z_a-z][A-Z_a-z0-9]*
 	char *pchVal;
 %}
 
-/* declaration of local varaibles used in <<prefix/>>parse */
+/* declaration of local varaibles used in yyparse */
 %parsevar-decl%{
 	s2i_map_t mapVars;
 	string strVar;
@@ -822,7 +822,7 @@ var		[A-Z_a-z][A-Z_a-z0-9]*
 			
 %%
 
-[0-9]+				<<prefix/>>lval.nVal = atoi(yytext);
+[0-9]+				yylval.nVal = atoi(yytext);
 				return NUM;
 "quit"				return QUIT;
 "clear"				return CLEAR;
@@ -1003,12 +1003,12 @@ using namespace <<prefix/>>nsx;
 
 int main(int argc, char **argv) {
 <<before_buffer_init/>>	
-	if(<<prefix/>><<buffer_init2/>>) {
+	if(yy<<buffer_init2/>>) {
 		cerr << "Error: initialization failed." << endl;
 		return -1;
 	}
 
-	<<prefix/>>parse();
+	yyparse();
 <<after_buffer_usage/>>
 	return 0;
 }
@@ -1063,7 +1063,7 @@ static string	s_strVarName;
 	char *pchVal;
 %}
 
-/* declaration of local varaibles used in <<prefix/>>parse */
+/* declaration of local varaibles used in yyparse */
 %parsevar-decl%{
 	s2i_map_t mapVars;
 	string strVar;
@@ -1288,7 +1288,7 @@ int myscanner(void) {
 			}while(isdigit(c));
 
 			ungetc(c, s_pfile );
-			<<prefix/>>lval.nVal = atoi(yytext.c_str());
+			yylval.nVal = atoi(yytext.c_str());
 
 			return NUM;
 		}
@@ -1416,9 +1416,9 @@ int myscanner(void) {
 int main(int argc, char **argv) {
 	
 	<<before_myinput/>>
-	<<prefix/>>setlex(myscanner);
+	yysetlex(myscanner);
 
-	<<prefix/>>parse();
+	yyparse();
 	if(s_pfile && s_pfile != stdin) {
 		fclose(s_pfile);
 	}
@@ -1475,7 +1475,7 @@ static string	s_strVarName;
 	char *pchVal;
 %}
 
-/* declaration of local varaibles used in <<prefix/>>parse */
+/* declaration of local varaibles used in yyparse */
 %parsevar-decl%{
 	s2i_map_t mapVars;
 	string strVar;
@@ -1695,7 +1695,7 @@ int myscanner(void) {
 			}while(isdigit(c));
 
 			ungetc(c, s_pfile );
-			<<prefix/>>lval.nVal = atoi(yytext.c_str());
+			yylval.nVal = atoi(yytext.c_str());
 
 			return NUM;
 		}
@@ -1823,9 +1823,9 @@ int myscanner(void) {
 int main(int argc, char **argv) {
 	
 	<<before_myinput/>>
-	<<prefix/>>setlex(myscanner);
+	yysetlex(myscanner);
 
-	<<prefix/>>parse();
+	yyparse();
 	if(s_pfile && s_pfile != stdin) {
 		fclose(s_pfile);
 	}
@@ -1873,8 +1873,8 @@ extern string	s_strVarName;
 
 namespace zznsx {
 
-extern bool zz<<filebuf_decl2/>>
-extern int zzlex(void);
+extern bool yy<<filebuf_decl2/>>
+extern int yylex(void);
 }
 
 %}
@@ -2088,12 +2088,12 @@ string	s_strVarName;
 
 int main(int argc, char **argv) {
 <<before_buffer_init/>>	
-	if(zz<<buffer_init2/>>) {
+	if(yy<<buffer_init2/>>) {
 		cerr << "Error: initialization failed." << endl;
 		return -1;
 	}
 
-	yysetlex(zzlex);
+	yysetlex(yylex);
 
 	yyparse();
 <<after_buffer_usage/>>
@@ -2141,12 +2141,12 @@ using namespace yynsx;
 
 int main(int argc, char **argv) {
 <<before_buffer_init/>>	
-	if(<<prefix/>><<buffer_init2/>>) {
+	if(yy<<buffer_init2/>>) {
 		cerr << "Error: initialization failed." << endl;
 		return -1;
 	}
 
-	<<prefix/>>lex();
+	yylex();
 <<after_buffer_usage/>>
 	return 0;
 }
@@ -14082,102 +14082,102 @@ Reduce action: => Program, go to state 2 by rule at 91.
 Next symbol is VARI
 Shift VARI, go to state 7
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 Next symbol is NUM
-Shift NUM, go to state 6
+Shift NUM, go to state 15
 Reduce action: NUM => Expr, go to state 42 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
 Reduce action: Expr ^ Expr => Expr, go to state 42 by rule at 187.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 Next symbol is -
 Shift -, go to state 12
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 24 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 29 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 24 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 29 by rule at 187.
 Next symbol is -
-Reduce action: - Expr => Expr, go to state 37 by rule at 222.
+Reduce action: - Expr => Expr, go to state 34 by rule at 222.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 152.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 Next symbol is +
-Shift +, go to state 11
+Shift +, go to state 13
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 22 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 31 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 22 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 31 by rule at 187.
 Next symbol is -
-Reduce action: + Expr => Expr, go to state 37 by rule at 228.
+Reduce action: + Expr => Expr, go to state 34 by rule at 228.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 152.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 37 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 34 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 37 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 34 by rule at 187.
 Next symbol is unprintable-char{10}
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 152.
 Next symbol is unprintable-char{10}
@@ -14187,39 +14187,39 @@ Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is VARI
 Shift VARI, go to state 7
 Next symbol is %
-Reduce action: VARI => Expr, go to state 15 by rule at 241.
+Reduce action: VARI => Expr, go to state 6 by rule at 241.
 Next symbol is %
-Shift %, go to state 31
+Shift %, go to state 21
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 40 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 37 by rule at 238.
 Next symbol is unprintable-char{10}
-Reduce action: Expr % Expr => Expr, go to state 15 by rule at 174.
+Reduce action: Expr % Expr => Expr, go to state 6 by rule at 174.
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 26
+Shift unprintable-char{10}, go to state 16
 Reduce action: Expr unprintable-char{10} => Line, go to state 4 by rule at 101.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is VARI
 Shift VARI, go to state 7
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 241.
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 238.
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 162.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 238.
 Next symbol is unprintable-char{10}
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 157.
 Next symbol is unprintable-char{10}
@@ -14229,31 +14229,31 @@ Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is VARI
 Shift VARI, go to state 7
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 241.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 238.
 Next symbol is /
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 157.
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 238.
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 162.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 238.
 Next symbol is unprintable-char{10}
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 157.
 Next symbol is unprintable-char{10}
@@ -14263,29 +14263,29 @@ Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is VARI
 Shift VARI, go to state 7
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 Next symbol is (
 Shift (, go to state 14
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 25 by rule at 241.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 32 by rule at 241.
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 Next symbol is )
-Reduce action: Expr ^ Expr => Expr, go to state 25 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 32 by rule at 187.
 Next symbol is )
-Shift ), go to state 35
+Shift ), go to state 41
 Reduce action: ( Expr ) => Expr, go to state 42 by rule at 233.
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 39 by rule at 241.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 36 by rule at 241.
 Next symbol is unprintable-char{10}
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 162.
 Next symbol is unprintable-char{10}
@@ -14295,22 +14295,22 @@ Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is LIST
 Shift LIST, go to state 9
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 20
+Shift unprintable-char{10}, go to state 26
 Reduce action: LIST unprintable-char{10} => Line, go to state 4 by rule at 132.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is CLEAR
 Shift CLEAR, go to state 8
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 19
+Shift unprintable-char{10}, go to state 25
 Reduce action: CLEAR unprintable-char{10} => Line, go to state 4 by rule at 128.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is VARI
 Shift VARI, go to state 7
 Next symbol is ?
 Error: at 8:1; description: sup is unset variable.
-Reduce action: => @@2, go to state 18 by rule at 116.
+Reduce action: => @@2, go to state 24 by rule at 116.
 Next symbol is ?
-Shift ?, go to state 34
+Shift ?, go to state 40
 Next symbol is unprintable-char{10}
 Shift unprintable-char{10}, go to state 43
 Reduce action: VARI @@2 ? unprintable-char{10} => Line, go to state 4 by rule at 116.
@@ -14318,7 +14318,7 @@ Reduce action: Program Line => Program, go to state 2 by rule at 94.
 Next symbol is QUIT
 Shift QUIT, go to state 10
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 21
+Shift unprintable-char{10}, go to state 27
 Reduce action: QUIT unprintable-char{10} => Line, go to state 4 by rule at 137.
 Clearup : Pop up unprintable-char{10} from stack
 Clearup : Pop up QUIT from stack
@@ -14370,130 +14370,130 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`='}, rule at line: 85 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {`2'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
+Shift NUM, go to state 15
 Reduce action: NUM => Expr, go to state 42 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`-'}, rule at line: 85 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
 Reduce action: Expr ^ Expr => Expr, go to state 42 by rule at 187.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`-'}, rule at line: 85 
 Next symbol is -
 Shift -, go to state 12
 .................... accept {`3'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 24 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 29 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`-'}, rule at line: 85 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 24 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 29 by rule at 187.
 Next symbol is -
-Reduce action: - Expr => Expr, go to state 37 by rule at 222.
+Reduce action: - Expr => Expr, go to state 34 by rule at 222.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 152.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`+'}, rule at line: 85 
 Next symbol is +
-Shift +, go to state 11
+Shift +, go to state 13
 .................... accept {`4'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 22 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 31 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`-'}, rule at line: 85 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 22 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 31 by rule at 187.
 Next symbol is -
-Reduce action: + Expr => Expr, go to state 37 by rule at 228.
+Reduce action: + Expr => Expr, go to state 34 by rule at 228.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 152.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`3'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 37 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 34 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 187.
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 37 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 34 by rule at 187.
 Next symbol is unprintable-char{10}
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 152.
 Next symbol is unprintable-char{10}
@@ -14506,19 +14506,19 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`%'}, rule at line: 85 
 Next symbol is %
-Reduce action: VARI => Expr, go to state 15 by rule at 241.
+Reduce action: VARI => Expr, go to state 6 by rule at 241.
 Next symbol is %
-Shift %, go to state 31
+Shift %, go to state 21
 .................... accept {` '}, rule at line: 87 
 .................... accept {`1011'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 40 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 37 by rule at 238.
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
-Reduce action: Expr % Expr => Expr, go to state 15 by rule at 174.
+Reduce action: Expr % Expr => Expr, go to state 6 by rule at 174.
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 26
+Shift unprintable-char{10}, go to state 16
 Reduce action: Expr unprintable-char{10} => Line, go to state 4 by rule at 101.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 .................... accept {`sub'}, rule at line: 83 
@@ -14527,34 +14527,34 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`='}, rule at line: 85 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 87 
 .................... accept {`ans'}, rule at line: 83 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 241.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`/'}, rule at line: 85 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 87 
 .................... accept {`31'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 238.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`*'}, rule at line: 85 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 162.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 87 
 .................... accept {`31'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 238.
 .................... accept {` '}, rule at line: 87 
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
@@ -14569,45 +14569,45 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`='}, rule at line: 85 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 87 
 .................... accept {`sub'}, rule at line: 83 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 241.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`*'}, rule at line: 85 
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 87 
 .................... accept {`9'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 238.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`/'}, rule at line: 85 
 Next symbol is /
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 157.
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 87 
 .................... accept {`216'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 238.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`*'}, rule at line: 85 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 162.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 87 
 .................... accept {`24'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 238.
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 157.
@@ -14621,41 +14621,41 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`='}, rule at line: 85 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 87 
 .................... accept {`('}, rule at line: 85 
 Next symbol is (
 Shift (, go to state 14
 .................... accept {`sub'}, rule at line: 83 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 25 by rule at 241.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 32 by rule at 241.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`^'}, rule at line: 85 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {` '}, rule at line: 87 
 .................... accept {`3'}, rule at line: 78 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 238.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 238.
 .................... accept {`)'}, rule at line: 85 
 Next symbol is )
-Reduce action: Expr ^ Expr => Expr, go to state 25 by rule at 187.
+Reduce action: Expr ^ Expr => Expr, go to state 32 by rule at 187.
 Next symbol is )
-Shift ), go to state 35
+Shift ), go to state 41
 Reduce action: ( Expr ) => Expr, go to state 42 by rule at 233.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`/'}, rule at line: 85 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 87 
 .................... accept {`ans'}, rule at line: 83 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 39 by rule at 241.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 36 by rule at 241.
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 162.
@@ -14668,7 +14668,7 @@ Next symbol is LIST
 Shift LIST, go to state 9
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 20
+Shift unprintable-char{10}, go to state 26
 Reduce action: LIST unprintable-char{10} => Line, go to state 4 by rule at 132.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 .................... accept {`clear'}, rule at line: 81 
@@ -14676,7 +14676,7 @@ Next symbol is CLEAR
 Shift CLEAR, go to state 8
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 19
+Shift unprintable-char{10}, go to state 25
 Reduce action: CLEAR unprintable-char{10} => Line, go to state 4 by rule at 128.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 .................... accept {`sup'}, rule at line: 83 
@@ -14685,9 +14685,9 @@ Shift VARI, go to state 7
 .................... accept {`?'}, rule at line: 85 
 Next symbol is ?
 Error: at 8:1; description: sup is unset variable.
-Reduce action: => @@2, go to state 18 by rule at 116.
+Reduce action: => @@2, go to state 24 by rule at 116.
 Next symbol is ?
-Shift ?, go to state 34
+Shift ?, go to state 40
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
 Shift unprintable-char{10}, go to state 43
@@ -14698,7 +14698,7 @@ Next symbol is QUIT
 Shift QUIT, go to state 10
 .................... accept unprintable-char{10}, rule at line: 85 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 21
+Shift unprintable-char{10}, go to state 27
 Reduce action: QUIT unprintable-char{10} => Line, go to state 4 by rule at 137.
 Clearup : Pop up unprintable-char{10} from stack
 Clearup : Pop up QUIT from stack
@@ -14750,6 +14750,49 @@ Error: at 8:1; description: Sup is unset variable.
 	<</case>>
 <<<----------case: /invoke/option-i----------------->>>
 
+<<<----------case: /invoke/script-option-i----------------->>>
+	<<case "script-option-i" make="invoke-make-template">>
+		<<upgen_options>>-l<</upgen_options>>
+		<<script "invoke-full-template">>
+			<<desc>>/*
+invoking test:
+	using %option CaseSensitive = False so that pattern will be matched case-insensitively
+*/
+%option CaseSensitive = False
+			<</desc>>
+<<default_action>>.<</default_action>>
+<<option_prefix>>%option NamePrefix=yy<</option_prefix>>
+<<prefix>>yy<</prefix>>
+		<</script>>
+		<<textfile "test.input">>
+sub=2^2^2^2--3^3^3-+4^4^3-3^4^3
+sub % 1011
+SUB = ans / 31 * 31 
+Sub = sub * 9 / 216 * 24
+sup = (sub ^ 3) / ans
+LIST
+cLear
+Sup?
+quiT
+		<</textfile>>
+		<<textfile "result.out">>
+sub = 		-7748934
+ans = 		-630
+SUB = 		-620
+Sub = 		-7748928
+sup = 		2100269
+SUB = 		-620
+Sub = 		-7748928
+ans = 		-630
+sub = 		-7748934
+sup = 		2100269
+		<</textfile>>
+		<<textfile "result.err">>
+Error: at 8:1; description: Sup is unset variable.
+		<</textfile>>
+	<</case>>
+<<<----------case: /invoke/script-option-i----------------->>>
+
 <<<----------case: /invoke/option-l----------------->>>
 	<<case "option-l" make="invoke-make-template">>
 <<<<-----------<<upgen_options>>-l<</upgen_options>>
@@ -14798,7 +14841,7 @@ Error: sup is unset variable.
 		<<script "invoke-myscanner-template">>
 			<<desc>>/*
 invoking test:
-	using option -m to disable generating pattern-matching program
+	using option -m to disable generating scanner program
 		-m -o FILE
 */
 			<</desc>>
@@ -14832,13 +14875,53 @@ Error: at 0:0; description: sup is unset variable.
 	<</case>>
 <<<----------case: /invoke/option-m----------------->>>
 
+<<<----------case: /invoke/script-option-m----------------->>>
+	<<case "script-option-m" make="invoke-make-template">>
+		<<upgen_options>>-l<</upgen_options>>
+		<<script "invoke-myscanner-template">>
+			<<desc>>/*
+invoking test:
+	using %option NoScanner = True in to disable generating scanner program
+*/
+%option NoScanner = True
+			<</desc>>
+<<option_prefix>>%option prefix=yy<</option_prefix>>
+<<prefix>>yy<</prefix>>
+		<</script>>
+		<<textfile "test.input">>
+sub=2^2^2^2--3^3^3-+4^4^3-3^4^3
+sub % 1011
+sub = ans / 31 * 31 
+sub = sub * 9 / 216 * 24
+sup = (sub ^ 3) / ans
+list
+clear
+sup?
+quit
+		<</textfile>>
+		<<textfile "result.out">>
+sub = 		-7748934
+ans = 		-630
+sub = 		-620
+sub = 		-600
+sup = 		342857
+ans = 		-630
+sub = 		-600
+sup = 		342857
+		<</textfile>>
+		<<textfile "result.err">>
+Error: at 0:0; description: sup is unset variable.
+		<</textfile>>
+	<</case>>
+<<<----------case: /invoke/script-option-m----------------->>>
+
 <<<----------case: /invoke/option-p----------------->>>
 	<<case "option-p" make="invoke-make-template">>
 		<<upgen_options>>-lp<</upgen_options>>
 		<<script "invoke-noparser-template">>
 			<<desc>>/*
 invoking test:
-	using option -p to disable generating pattern-matching program
+	using option -p to disable generating parser program
 		-p -o FILE
 */
 			<</desc>>
@@ -14889,6 +14972,68 @@ undefined symbol `.'
 		<</textfile>>
 	<</case>>
 <<<----------case: /invoke/option-p----------------->>>
+
+
+<<<----------case: /invoke/script-option-p----------------->>>
+	<<case "script-option-p" make="invoke-make-template">>
+		<<upgen_options>>-lp<</upgen_options>>
+		<<script "invoke-noparser-template">>
+			<<desc>>/*
+invoking test:
+	using %option NoParser = True to disable generating parser program
+		-p -o FILE
+*/
+%option NoParser = True
+			<</desc>>
+<<default_action>>.				cerr << "undefined symbol `" << yytext[0] << '\'' << endl;
+<</default_action>>
+<<option_prefix>>%option prefix=yy<</option_prefix>>
+<<prefix>>yy<</prefix>>
+		<</script>>
+		<<textfile "test.input">>
+EOF[0-9]+quit-clear{var}list+-*/%^=()?
+\n
+.
+		<</textfile>>
+		<<textfile "result.out">>
+identifier: EOF
+number: 0
+operator: -
+number: 9
+operator: +
+keyword: quit
+operator: -
+keyword: clear
+identifier: var
+keyword: list
+operator: +
+operator: -
+operator: *
+operator: /
+operator: %
+operator: ^
+operator: =
+operator: (
+operator: )
+operator: ?
+new line encountered.
+identifier: n
+new line encountered.
+new line encountered.
+Good-bye!
+		<</textfile>>
+		<<textfile "result.err">>
+undefined symbol `['
+undefined symbol `]'
+undefined symbol `{'
+undefined symbol `}'
+undefined symbol `\'
+undefined symbol `.'
+		<</textfile>>
+	<</case>>
+<<<----------case: /invoke/script-option-p----------------->>>
+
+
 
 <<<----------case: /invoke/option-decl-file----------------->>>
 	<<case "option-decl-file" make="invoke-make-template">>
@@ -15012,6 +15157,47 @@ Error: at 8:1; description: sup is unset variable.
 		<</textfile>>
 	<</case>>
 <<<----------case: /invoke/option-S----------------->>>
+
+
+<<<----------case: /invoke/script-option-S----------------->>>
+	<<case "script-option-S" make="invoke-make-template">>
+		<<upgen_options>>-lS<</upgen_options>>
+		<<script "invoke-full-template">>
+			<<desc>>/*
+invoking test:
+	using %option DefaultAction = True to enable default action in pattern-matching
+*/
+DefaultAction = True
+			<</desc>>
+<<option_prefix>>%option prefix=yy<</option_prefix>>
+<<prefix>>yy<</prefix>>
+		<</script>>
+		<<textfile "test.input">>
+sub=2^2^2^2--3^3^3-+4^4^3-3^4^3
+sub % 1011
+sub = ans / 31 * 31 
+sub = sub * 9 / 216 * 24
+sup = (sub ^ 3) / ans
+list
+clear
+sup?
+quit
+		<</textfile>>
+		<<textfile "result.out">>
+sub = 		-7748934
+ans = 		-630
+sub = 		-620
+sub = 		-600
+sup = 		342857
+ans = 		-630
+sub = 		-600
+sup = 		342857
+		<</textfile>>
+		<<textfile "result.err">>
+Error: at 8:1; description: sup is unset variable.
+		<</textfile>>
+	<</case>>
+<<<----------case: /invoke/script-option-S----------------->>>
 
 
 <<<----------case: /invoke/option-v----------------->>>
@@ -15289,130 +15475,130 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
+Shift NUM, go to state 15
 Reduce action: NUM => Expr, go to state 42 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
 Reduce action: Expr ^ Expr => Expr, go to state 42 by rule at 186.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
 Shift -, go to state 12
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 24 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 29 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 24 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 29 by rule at 186.
 Next symbol is -
-Reduce action: - Expr => Expr, go to state 37 by rule at 221.
+Reduce action: - Expr => Expr, go to state 34 by rule at 221.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 151.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`+'}, rule at line: 84 
 Next symbol is +
-Shift +, go to state 11
+Shift +, go to state 13
 .................... accept {`4'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 22 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 31 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 22 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 31 by rule at 186.
 Next symbol is -
-Reduce action: + Expr => Expr, go to state 37 by rule at 227.
+Reduce action: + Expr => Expr, go to state 34 by rule at 227.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 151.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 37 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 34 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 37 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 34 by rule at 186.
 Next symbol is unprintable-char{10}
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 151.
 Next symbol is unprintable-char{10}
@@ -15425,19 +15611,19 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 86 
 .................... accept {`%'}, rule at line: 84 
 Next symbol is %
-Reduce action: VARI => Expr, go to state 15 by rule at 240.
+Reduce action: VARI => Expr, go to state 6 by rule at 240.
 Next symbol is %
-Shift %, go to state 31
+Shift %, go to state 21
 .................... accept {` '}, rule at line: 86 
 .................... accept {`1011'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 40 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 37 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Reduce action: Expr % Expr => Expr, go to state 15 by rule at 173.
+Reduce action: Expr % Expr => Expr, go to state 6 by rule at 173.
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 26
+Shift unprintable-char{10}, go to state 16
 Reduce action: Expr unprintable-char{10} => Line, go to state 4 by rule at 100.
 Reduce action: Program Line => Program, go to state 2 by rule at 93.
 .................... accept {`sub'}, rule at line: 82 
@@ -15446,34 +15632,34 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 86 
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 86 
 .................... accept {`ans'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 240.
 .................... accept {` '}, rule at line: 86 
 .................... accept {`/'}, rule at line: 84 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 86 
 .................... accept {`31'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 237.
 .................... accept {` '}, rule at line: 86 
 .................... accept {`*'}, rule at line: 84 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 161.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 86 
 .................... accept {`31'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 237.
 .................... accept {` '}, rule at line: 86 
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
@@ -15488,45 +15674,45 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 86 
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 86 
 .................... accept {`sub'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 240.
 .................... accept {` '}, rule at line: 86 
 .................... accept {`*'}, rule at line: 84 
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 86 
 .................... accept {`9'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 237.
 .................... accept {` '}, rule at line: 86 
 .................... accept {`/'}, rule at line: 84 
 Next symbol is /
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 156.
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 86 
 .................... accept {`216'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 237.
 .................... accept {` '}, rule at line: 86 
 .................... accept {`*'}, rule at line: 84 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 161.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 86 
 .................... accept {`24'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 156.
@@ -15540,41 +15726,41 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 86 
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 86 
 .................... accept {`('}, rule at line: 84 
 Next symbol is (
 Shift (, go to state 14
 .................... accept {`sub'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 25 by rule at 240.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 32 by rule at 240.
 .................... accept {` '}, rule at line: 86 
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {` '}, rule at line: 86 
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`)'}, rule at line: 84 
 Next symbol is )
-Reduce action: Expr ^ Expr => Expr, go to state 25 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 32 by rule at 186.
 Next symbol is )
-Shift ), go to state 35
+Shift ), go to state 41
 Reduce action: ( Expr ) => Expr, go to state 42 by rule at 232.
 .................... accept {` '}, rule at line: 86 
 .................... accept {`/'}, rule at line: 84 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 86 
 .................... accept {`ans'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 39 by rule at 240.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 36 by rule at 240.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 161.
@@ -15587,7 +15773,7 @@ Next symbol is LIST
 Shift LIST, go to state 9
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 20
+Shift unprintable-char{10}, go to state 26
 Reduce action: LIST unprintable-char{10} => Line, go to state 4 by rule at 131.
 Reduce action: Program Line => Program, go to state 2 by rule at 93.
 .................... accept {`clear'}, rule at line: 80 
@@ -15595,7 +15781,7 @@ Next symbol is CLEAR
 Shift CLEAR, go to state 8
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 19
+Shift unprintable-char{10}, go to state 25
 Reduce action: CLEAR unprintable-char{10} => Line, go to state 4 by rule at 127.
 Reduce action: Program Line => Program, go to state 2 by rule at 93.
 .................... accept {`sup'}, rule at line: 82 
@@ -15604,9 +15790,9 @@ Shift VARI, go to state 7
 .................... accept {`?'}, rule at line: 84 
 Next symbol is ?
 Error: at 8:1; description: sup is unset variable.
-Reduce action: => @@2, go to state 18 by rule at 115.
+Reduce action: => @@2, go to state 24 by rule at 115.
 Next symbol is ?
-Shift ?, go to state 34
+Shift ?, go to state 40
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
 Shift unprintable-char{10}, go to state 43
@@ -15617,7 +15803,7 @@ Next symbol is QUIT
 Shift QUIT, go to state 10
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 21
+Shift unprintable-char{10}, go to state 27
 Reduce action: QUIT unprintable-char{10} => Line, go to state 4 by rule at 136.
 Clearup : Pop up unprintable-char{10} from stack
 Clearup : Pop up QUIT from stack
@@ -15668,130 +15854,130 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`='}, rule at line: 86 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {`2'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
+Shift NUM, go to state 15
 Reduce action: NUM => Expr, go to state 42 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`-'}, rule at line: 86 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 183.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 183.
 Next symbol is -
 Reduce action: Expr ^ Expr => Expr, go to state 42 by rule at 183.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`-'}, rule at line: 86 
 Next symbol is -
 Shift -, go to state 12
 .................... accept {`3'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 24 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 29 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`-'}, rule at line: 86 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 183.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 24 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 29 by rule at 183.
 Next symbol is -
-Reduce action: - Expr => Expr, go to state 37 by rule at 218.
+Reduce action: - Expr => Expr, go to state 34 by rule at 218.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 150.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`+'}, rule at line: 86 
 Next symbol is +
-Shift +, go to state 11
+Shift +, go to state 13
 .................... accept {`4'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 22 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 31 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`-'}, rule at line: 86 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 183.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 22 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 31 by rule at 183.
 Next symbol is -
-Reduce action: + Expr => Expr, go to state 37 by rule at 224.
+Reduce action: + Expr => Expr, go to state 34 by rule at 224.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 150.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`3'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 37 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 34 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 183.
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 37 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 34 by rule at 183.
 Next symbol is unprintable-char{10}
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 150.
 Next symbol is unprintable-char{10}
@@ -15804,19 +15990,19 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`%'}, rule at line: 86 
 Next symbol is %
-Reduce action: VARI => Expr, go to state 15 by rule at 237.
+Reduce action: VARI => Expr, go to state 6 by rule at 237.
 Next symbol is %
-Shift %, go to state 31
+Shift %, go to state 21
 .................... accept {` '}, rule at line: 87 
 .................... accept {`1011'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 40 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 37 by rule at 234.
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
-Reduce action: Expr % Expr => Expr, go to state 15 by rule at 171.
+Reduce action: Expr % Expr => Expr, go to state 6 by rule at 171.
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 26
+Shift unprintable-char{10}, go to state 16
 Reduce action: Expr unprintable-char{10} => Line, go to state 4 by rule at 101.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 .................... accept {`sub'}, rule at line: 84 
@@ -15825,34 +16011,34 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`='}, rule at line: 86 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 87 
 .................... accept {`ans'}, rule at line: 84 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 237.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`/'}, rule at line: 86 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 87 
 .................... accept {`31'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 234.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`*'}, rule at line: 86 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 160.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 87 
 .................... accept {`31'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 234.
 .................... accept {` '}, rule at line: 87 
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
@@ -15867,45 +16053,45 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`='}, rule at line: 86 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 87 
 .................... accept {`sub'}, rule at line: 84 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 237.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`*'}, rule at line: 86 
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 87 
 .................... accept {`9'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 234.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`/'}, rule at line: 86 
 Next symbol is /
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 155.
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 87 
 .................... accept {`216'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 234.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`*'}, rule at line: 86 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 160.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {` '}, rule at line: 87 
 .................... accept {`24'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 234.
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 155.
@@ -15919,41 +16105,41 @@ Shift VARI, go to state 7
 .................... accept {` '}, rule at line: 87 
 .................... accept {`='}, rule at line: 86 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 107.
+Reduce action: => @@1, go to state 23 by rule at 107.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {` '}, rule at line: 87 
 .................... accept {`('}, rule at line: 86 
 Next symbol is (
 Shift (, go to state 14
 .................... accept {`sub'}, rule at line: 84 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 25 by rule at 237.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 32 by rule at 237.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`^'}, rule at line: 86 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {` '}, rule at line: 87 
 .................... accept {`3'}, rule at line: 79 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 234.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 234.
 .................... accept {`)'}, rule at line: 86 
 Next symbol is )
-Reduce action: Expr ^ Expr => Expr, go to state 25 by rule at 183.
+Reduce action: Expr ^ Expr => Expr, go to state 32 by rule at 183.
 Next symbol is )
-Shift ), go to state 35
+Shift ), go to state 41
 Reduce action: ( Expr ) => Expr, go to state 42 by rule at 229.
 .................... accept {` '}, rule at line: 87 
 .................... accept {`/'}, rule at line: 86 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {` '}, rule at line: 87 
 .................... accept {`ans'}, rule at line: 84 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 39 by rule at 237.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 36 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 160.
@@ -15966,7 +16152,7 @@ Next symbol is LIST
 Shift LIST, go to state 9
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 20
+Shift unprintable-char{10}, go to state 26
 Reduce action: LIST unprintable-char{10} => Line, go to state 4 by rule at 131.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 .................... accept {`clear'}, rule at line: 82 
@@ -15974,7 +16160,7 @@ Next symbol is CLEAR
 Shift CLEAR, go to state 8
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 19
+Shift unprintable-char{10}, go to state 25
 Reduce action: CLEAR unprintable-char{10} => Line, go to state 4 by rule at 127.
 Reduce action: Program Line => Program, go to state 2 by rule at 94.
 .................... accept {`sup'}, rule at line: 84 
@@ -15983,9 +16169,9 @@ Shift VARI, go to state 7
 .................... accept {`?'}, rule at line: 86 
 Next symbol is ?
 Error: sup is unset variable.
-Reduce action: => @@2, go to state 18 by rule at 116.
+Reduce action: => @@2, go to state 24 by rule at 116.
 Next symbol is ?
-Shift ?, go to state 34
+Shift ?, go to state 40
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
 Shift unprintable-char{10}, go to state 43
@@ -15996,7 +16182,7 @@ Next symbol is QUIT
 Shift QUIT, go to state 10
 .................... accept unprintable-char{10}, rule at line: 86 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 21
+Shift unprintable-char{10}, go to state 27
 Reduce action: QUIT unprintable-char{10} => Line, go to state 4 by rule at 136.
 Clearup : Pop up unprintable-char{10} from stack
 Clearup : Pop up QUIT from stack
@@ -16046,130 +16232,130 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
+Shift NUM, go to state 15
 Reduce action: NUM => Expr, go to state 42 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`2'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
 Reduce action: Expr ^ Expr => Expr, go to state 42 by rule at 186.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
 Shift -, go to state 12
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 24 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 29 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 24 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 29 by rule at 186.
 Next symbol is -
-Reduce action: - Expr => Expr, go to state 37 by rule at 221.
+Reduce action: - Expr => Expr, go to state 34 by rule at 221.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 151.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`+'}, rule at line: 84 
 Next symbol is +
-Shift +, go to state 11
+Shift +, go to state 13
 .................... accept {`4'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 22 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 31 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`-'}, rule at line: 84 
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is -
-Reduce action: Expr ^ Expr => Expr, go to state 22 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 31 by rule at 186.
 Next symbol is -
-Reduce action: + Expr => Expr, go to state 37 by rule at 227.
+Reduce action: + Expr => Expr, go to state 34 by rule at 227.
 Next symbol is -
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 151.
 Next symbol is -
-Shift -, go to state 28
+Shift -, go to state 18
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 37 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 34 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`4'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 41 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 38 by rule at 186.
 Next symbol is unprintable-char{10}
-Reduce action: Expr ^ Expr => Expr, go to state 37 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 34 by rule at 186.
 Next symbol is unprintable-char{10}
 Reduce action: Expr - Expr => Expr, go to state 42 by rule at 151.
 Next symbol is unprintable-char{10}
@@ -16181,18 +16367,18 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`%'}, rule at line: 84 
 Next symbol is %
-Reduce action: VARI => Expr, go to state 15 by rule at 240.
+Reduce action: VARI => Expr, go to state 6 by rule at 240.
 Next symbol is %
-Shift %, go to state 31
+Shift %, go to state 21
 .................... accept {`1011'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 40 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 37 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Reduce action: Expr % Expr => Expr, go to state 15 by rule at 173.
+Reduce action: Expr % Expr => Expr, go to state 6 by rule at 173.
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 26
+Shift unprintable-char{10}, go to state 16
 Reduce action: Expr unprintable-char{10} => Line, go to state 4 by rule at 100.
 Reduce action: Program Line => Program, go to state 2 by rule at 93.
 .................... accept {`sub'}, rule at line: 82 
@@ -16200,29 +16386,29 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {`ans'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 240.
 .................... accept {`/'}, rule at line: 84 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {`31'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 237.
 .................... accept {`*'}, rule at line: 84 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 161.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {`31'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 156.
@@ -16235,38 +16421,38 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {`sub'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
+Shift VARI, go to state 30
 Reduce action: VARI => Expr, go to state 42 by rule at 240.
 .................... accept {`*'}, rule at line: 84 
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {`9'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 237.
 .................... accept {`/'}, rule at line: 84 
 Next symbol is /
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 156.
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {`216'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 39 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 36 by rule at 237.
 .................... accept {`*'}, rule at line: 84 
 Next symbol is *
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 161.
 Next symbol is *
-Shift *, go to state 29
+Shift *, go to state 19
 .................... accept {`24'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 38 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 35 by rule at 237.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
 Reduce action: Expr * Expr => Expr, go to state 42 by rule at 156.
@@ -16279,36 +16465,36 @@ Next symbol is VARI
 Shift VARI, go to state 7
 .................... accept {`='}, rule at line: 84 
 Next symbol is =
-Reduce action: => @@1, go to state 17 by rule at 106.
+Reduce action: => @@1, go to state 23 by rule at 106.
 Next symbol is =
-Shift =, go to state 33
+Shift =, go to state 39
 .................... accept {`('}, rule at line: 84 
 Next symbol is (
 Shift (, go to state 14
 .................... accept {`sub'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 25 by rule at 240.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 32 by rule at 240.
 .................... accept {`^'}, rule at line: 84 
 Next symbol is ^
-Shift ^, go to state 32
+Shift ^, go to state 22
 .................... accept {`3'}, rule at line: 77 
 Next symbol is NUM
-Shift NUM, go to state 6
-Reduce action: NUM => Expr, go to state 41 by rule at 237.
+Shift NUM, go to state 15
+Reduce action: NUM => Expr, go to state 38 by rule at 237.
 .................... accept {`)'}, rule at line: 84 
 Next symbol is )
-Reduce action: Expr ^ Expr => Expr, go to state 25 by rule at 186.
+Reduce action: Expr ^ Expr => Expr, go to state 32 by rule at 186.
 Next symbol is )
-Shift ), go to state 35
+Shift ), go to state 41
 Reduce action: ( Expr ) => Expr, go to state 42 by rule at 232.
 .................... accept {`/'}, rule at line: 84 
 Next symbol is /
-Shift /, go to state 30
+Shift /, go to state 20
 .................... accept {`ans'}, rule at line: 82 
 Next symbol is VARI
-Shift VARI, go to state 23
-Reduce action: VARI => Expr, go to state 39 by rule at 240.
+Shift VARI, go to state 30
+Reduce action: VARI => Expr, go to state 36 by rule at 240.
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
 Reduce action: Expr / Expr => Expr, go to state 42 by rule at 161.
@@ -16321,7 +16507,7 @@ Next symbol is LIST
 Shift LIST, go to state 9
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 20
+Shift unprintable-char{10}, go to state 26
 Reduce action: LIST unprintable-char{10} => Line, go to state 4 by rule at 131.
 Reduce action: Program Line => Program, go to state 2 by rule at 93.
 .................... accept {`clear'}, rule at line: 80 
@@ -16329,7 +16515,7 @@ Next symbol is CLEAR
 Shift CLEAR, go to state 8
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 19
+Shift unprintable-char{10}, go to state 25
 Reduce action: CLEAR unprintable-char{10} => Line, go to state 4 by rule at 127.
 Reduce action: Program Line => Program, go to state 2 by rule at 93.
 .................... accept {`sup'}, rule at line: 82 
@@ -16338,9 +16524,9 @@ Shift VARI, go to state 7
 .................... accept {`?'}, rule at line: 84 
 Next symbol is ?
 Error: at 8:1; description: sup is unset variable.
-Reduce action: => @@2, go to state 18 by rule at 115.
+Reduce action: => @@2, go to state 24 by rule at 115.
 Next symbol is ?
-Shift ?, go to state 34
+Shift ?, go to state 40
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
 Shift unprintable-char{10}, go to state 43
@@ -16351,7 +16537,7 @@ Next symbol is QUIT
 Shift QUIT, go to state 10
 .................... accept unprintable-char{10}, rule at line: 84 
 Next symbol is unprintable-char{10}
-Shift unprintable-char{10}, go to state 21
+Shift unprintable-char{10}, go to state 27
 Reduce action: QUIT unprintable-char{10} => Line, go to state 4 by rule at 136.
 Clearup : Pop up unprintable-char{10} from stack
 Clearup : Pop up QUIT from stack

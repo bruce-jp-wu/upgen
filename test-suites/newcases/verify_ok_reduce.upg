@@ -1,0 +1,37 @@
+%token VID
+%left '+'
+ 
+%%
+ 
+[;=\+\-\(\)]       		return yytext[0];
+ 
+[[:cidf:]][[:cids:]]*	return VID;
+ 
+%%
+ 
+prog:
+        prog exp ';'
+    |   // empty
+    ;
+ 
+exp:
+        '(' bind ')' exp
+    |   binary
+    ;
+ 
+bind:
+        VID '=' exp
+    ;
+ 
+binary:
+        binary '+' atom
+    |   VID '=' exp
+    |   atom
+    ;
+ 
+atom:
+        VID
+    |   VID '(' ')'
+    ;
+ 
+%%

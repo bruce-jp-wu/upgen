@@ -1,0 +1,62 @@
+%{
+#include <string>
+#include <iostream>
+%}
+
+%union %{ int nVal; %}
+%start prog
+
+%token<nVal> NUM
+
+%left '+' '-'
+
+%type<nVal> expr
+
+%%
+
+[\+\-]					return yytext[0];
+[[:digit:]]+			
+						yylval.nVal = std::stol(yytext);
+						return NUM;
+\r?\n					return '\n';
+
+[ \t]
+
+%%
+
+prog:
+		prog	expr '\n'
+		%{
+			std::cout << "ans: " << $2 << std::endl;
+		%}
+	|	prog	'\n'
+	|	// empty
+	;
+
+expr:
+		expr '+' expr
+		%{
+			$$ = $1 + $3;
+		%}
+	|	expr '-' expr
+		%{
+			$$ = $1 + $3;
+		%}
+	|	NUM
+		%{
+			$$ = $1;
+		%}
+	;
+%%
+
+using namespace yynsx;
+
+int main(void) {
+	if(yylexfile(nullptr, true) != 0) {
+		std::cerr << "Error, failed to initialize scanner!" << std::endl;
+		return -1;
+	}
+
+	return yyparse();
+}
+

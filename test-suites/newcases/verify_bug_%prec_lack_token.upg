@@ -1,0 +1,25 @@
+
+%token NUM
+
+%left '+' '-'
+%right MINUS
+
+%%
+
+[\+\-]			return yytext[0];
+
+[[:digit:]]+		return NUM;
+
+.|\r?\n
+
+%%
+
+expr:
+		expr '+' expr
+	|	expr '-' expr
+	|	'-' %prec expr
+	|	NUM
+	;
+
+%%
+
