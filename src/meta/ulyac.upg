@@ -62,6 +62,19 @@ using coder_ns::dmmap_t;
 
 */
 
+/***********************************************************
+  * Options in script
+  * %option CaseSensitive = bool value [TRUE]
+  * %option NoScanner = bool value [FALSE]
+  * %option NoParser = bool value [FALSE]
+  * %option LocCompute = bool value [FALSE]
+  * %option ColCompute = bool value [FALSE]
+  * %option DefaultAction = bool value [FALSE]
+  * %option EnableDeclare = bool value [FALSE]
+  * %option EnableLineNo = bool value [FALSE]
+  * %option NamePrefix = string value ["yy"]
+  **********************************************************/
+
 #ifdef UPGEN_TEST_VERSION
 #include <iostream>
 using std::cerr;
@@ -443,13 +456,13 @@ qstr_mc     (\"{qchr_mc}+\")
 	
 <OPT_SC>([Oo][nN])|([Yy][Ee][Ss])|([Tt][Rr][Uu][Ee])	{
 
-		return KW_ON;
-	}
-	
+        return KW_ON;
+    }
+
 <OPT_SC>([Oo]([fF]{2}))|([Nn][Oo][Tt])|([Ff][Aa][Ll][Ss][Ee])	{
 
-		return KW_OFF;
-	}
+        return KW_OFF;
+    }
 
 <OPT_SC>\"([^\"\\\r\n]|(\\[\"\\]))*\" |
 <OPT_SC>([^\r\n \t\"\\\=]|(\\[\"\\]))+	{
@@ -2231,142 +2244,157 @@ SymbSet: SymbSet CID %{
 	;
 		
 Option : OPT_KEY '=' CSTR %{
-			
-			if(! dmap.insert($1, $3)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+            if(!gsetup.setStringOption($1, $3)) {
+                if(! dmap.insert($1, $3)) {
+
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
 			
 			delete[] $1;
 			delete[] $3;
 		%}
 		| OPT_KEY '=' INT %{
 		
-			if( ! dmap.insert($1, $3)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+            if(!gsetup.setIntOption($1, $3)) {
+                if( ! dmap.insert($1, $3)) {
+
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
 
 			delete[] $1;
 		%}
 		| OPT_KEY '=' KW_OFF %{
-		
-			if( ! dmap.insert($1, false)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+
+            if(!gsetup.setBoolOption($1, false)) {
+                if( ! dmap.insert($1, false)) {
+
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
 
 			delete[] $1;
 		%}
 		| OPT_KEY '=' KW_ON	%{
 		
-			if( ! dmap.insert($1, true)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+            if(!gsetup.setBoolOption($1, true)) {
+                if( ! dmap.insert($1, true)) {
+
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
 
 			delete[] $1;
 		%}
-		| OPT_KEY CSTR	%{
-			
-			if( ! dmap.insert($1, $2)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+        | OPT_KEY CSTR	%{
 
-			delete[] $1;
-			delete[] $2;
-		%}
-		| OPT_KEY INT		%{
-		
-			if( ! dmap.insert($1, $2)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+            if(!gsetup.setStringOption($1, $2)) {
+                if( ! dmap.insert($1, $2)) {
 
-			delete[] $1;
-		%}
-		| OPT_KEY KW_OFF	%{
-		
-			if( ! dmap.insert($1, false)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
 
-			delete[] $1;
-		%}
-		| OPT_KEY KW_ON	%{
-		
-			if( ! dmap.insert($1, true)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+            delete[] $1;
+            delete[] $2;
+        %}
+        | OPT_KEY INT		%{
 
-			delete[] $1;
-		%}
-		| OPT_KEY		%{
-		
-			if( ! dmap.insert($1, true)) {
-			
-				strMsg = strhelper_t::fromInt(@1.firstLine);
-				strMsg += ':';
-				strMsg += strhelper_t::fromInt(@1.firstColumn);
-				strMsg += "; description: option `";
-				strMsg += $1;
-				strMsg += "\' duplicated and discarded.";
-				_WARNING(strMsg);
-			}
+            if(!gsetup.setIntOption($1, $2)) {
+                if( ! dmap.insert($1, $2)) {
 
-			delete $1;
-		%}
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
+
+            delete[] $1;
+        %}
+        | OPT_KEY KW_OFF	%{
+
+            if(!gsetup.setBoolOption($1, false)) {
+                if( ! dmap.insert($1, false)) {
+
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
+
+            delete[] $1;
+        %}
+        | OPT_KEY KW_ON	%{
+            if(!gsetup.setBoolOption($1, true)) {
+                if( ! dmap.insert($1, true)) {
+
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
+
+            delete[] $1;
+        %}
+        | OPT_KEY		%{
+            if(!gsetup.setBoolOption($1, true)) {
+                if( ! dmap.insert($1, true)) {
+
+                    strMsg = strhelper_t::fromInt(@1.firstLine);
+                    strMsg += ':';
+                    strMsg += strhelper_t::fromInt(@1.firstColumn);
+                    strMsg += "; description: option `";
+                    strMsg += $1;
+                    strMsg += "\' duplicated and discarded.";
+                    _WARNING(strMsg);
+                }
+            }
+
+            delete $1;
+        %}
 		;
 		
 Macro : CID Re '\n' %{

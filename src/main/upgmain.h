@@ -29,17 +29,47 @@
 // number of minor version
 #define VERSION_MINOR	5
 // build number
-#define VERSION_RELEASE	3
-
-// update 14/12/17
-//#define VERSION_DESC	"0.5.2"
+#define VERSION_RELEASE	4
 
 #define UPGEN_TEST_VERSION	1
 #undef UPGEN_TEST_VERSION
 
+#include <ostream>
+
 // global setting for upgen
 typedef struct _gsetting_t {
-	
+private:
+    enum {
+        GLOBAL_OPTION_COUNT = 5,
+    };
+
+    enum OptValueType{
+        BOOL_TYPE,
+        STR_TYPE,
+        INT_TYPE
+    };
+
+    enum OptionID {
+        CASE_SENSITIVE,
+        NO_SCANNER,
+        NO_PARSER,
+        LOC_COMPUTE,
+        COL_COMPUTE,
+        DEFAULT_ACTION,
+        ENABLE_DECLARE,
+        ENABLE_LINENO,
+        NAME_PREFIX,
+    };
+
+    struct OptionItem {
+        const char *mOptName;
+        OptValueType mOptType;
+        int mOptID;
+    };
+
+    static const OptionItem sSettingOptions[GLOBAL_OPTION_COUNT];
+
+    static int checkOption(const char *strOptName, OptValueType optType);
 public:
 	
 	// @m_bCaseSensitive: flag indicating whether or not 
@@ -70,11 +100,11 @@ public:
 	// @m_bEnableDeclare: flag indication whether or not
 	//		declaration should be seperated from definition
 	bool m_bEnableDeclare;
-	// @m_nParseDLevel: debug level for parsing program, if it is zero,
-	//		then no any debug information about parsing is produced
+    // @m_bEnableLineNo:  flag indicating whether
+    //		generate #line directives or not
 	bool m_bEnableLineNo;
-	// @m_bEnableLineNo:  flag indicating whether
-	//		generate #line directives or not
+    // @m_nParseDLevel: debug level for parsing program, if it is zero,
+    //		then no any debug information about parsing is produced
 	int m_nParseDLevel;
 	// @m_nLexDLevel: debug level for pattern-matching program, if it is
 	//		then no any debug information about pattern-matching is produced
@@ -91,11 +121,19 @@ public:
 	
 	// name prefix
 	char *m_pchNamePrefix;
+
+
 public:
 	
 	_gsetting_t(void);
 	~_gsetting_t(void);
 
+    bool setBoolOption(const char *strOptName, bool bValue);
+    bool setStringOption(const char *strOptName, const char *strValue);
+    bool setIntOption(const char *strOptName, int nValue);
+
+
+    friend std::ostream& operator<<(std::ostream& os, const _gsetting_t &gsetup);
 } gsetting_t;
 
 

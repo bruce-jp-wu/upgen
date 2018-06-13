@@ -31,6 +31,7 @@ using std::ofstream;
 // update 14/12/17
 #include <ctime>
 #include <cctype>
+#include <assert.h>
 
 #include "./upgmain.h"
 
@@ -690,6 +691,19 @@ int upgmain(int argc, char **argv) {
 }
 
 _gsetting_t::_gsetting_t(void) {
+
+    /***********************************************************
+      * Corresponding options in script
+      * m_bCaseSensitive: %option CaseSensitive = TRUE/FALSE
+      * m_bNoScanner: %option NoScanner = FALSE/TRUE
+      * m_bNoParser: %option NoParser = FALSE/TRUE
+      * m_bLocCompute: %option LocCompute = FALSE/TRUE
+      * m_bColCompute: %option ColCompute = FALSE/TRUE
+      * m_bDefaultAction: %option DefaultAction = FALSE/TRUE
+      * m_bEnableDeclare: %option EnableDeclare = FALSE/TRUE
+      * m_bEnableLineNo: %option EnableLineNo = FALSE/TRUE
+      * m_pchNamePrefix: %option NamePrefix = "yy"/other string
+      **********************************************************/
 	
 	m_bCaseSensitive = true;
 	m_nLexDLevel = 0;
@@ -725,4 +739,126 @@ _gsetting_t::~_gsetting_t(void) {
 		delete pfos;
 		m_posDetail = nullptr;
 	}
+}
+
+const _gsetting_t::OptionItem
+    _gsetting_t::sSettingOptions[_gsetting_t::GLOBAL_OPTION_COUNT] = {
+    {"CaseSensitive",   _gsetting_t::BOOL_TYPE, _gsetting_t::CASE_SENSITIVE},
+    {"NoScanner",       _gsetting_t::BOOL_TYPE, _gsetting_t::NO_SCANNER},
+    {"NoParser",        _gsetting_t::BOOL_TYPE, _gsetting_t::NO_PARSER},
+    {"DefaultAction",   _gsetting_t::BOOL_TYPE, _gsetting_t::DEFAULT_ACTION},
+    {"NamePrefix",      _gsetting_t::STR_TYPE,  _gsetting_t::NAME_PREFIX},
+};
+
+int _gsetting_t::checkOption(const char *strOptName, OptValueType optType) {
+    for(int i = 0; i < (int)GLOBAL_OPTION_COUNT; i++) {
+        const int sz1 = (int)strlen(sSettingOptions[i].mOptName);
+        const int sz2 = (int)strlen(strOptName);
+
+        if(sz1 == sz2
+                && !strncmp(sSettingOptions[i].mOptName, strOptName, sz1)
+                && sSettingOptions[i].mOptType == optType) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+bool _gsetting_t::setBoolOption(const char *strOptName, bool bValue) {
+    if( ! strOptName) {
+        return false;
+    }
+
+    int idx = checkOption(strOptName, OptValueType::BOOL_TYPE);
+    if(idx < 0) {
+        return false;
+    }
+    switch(sSettingOptions[idx].mOptID) {
+    case CASE_SENSITIVE:
+        m_bCaseSensitive = bValue;
+        break;
+    case NO_SCANNER:
+        m_bNoScanner = bValue;
+        break;
+    case NO_PARSER:
+        m_bNoParser = bValue;
+        break;
+    case LOC_COMPUTE:
+        m_bLocCompute = bValue;
+        break;
+    case COL_COMPUTE:
+        m_bColCompute = bValue;
+        break;
+    case DEFAULT_ACTION:
+        m_bDefaultAction = bValue;
+        break;
+    case ENABLE_DECLARE:
+        m_bEnableDeclare = bValue;
+        break;
+    case ENABLE_LINENO:
+        m_bEnableLineNo = bValue;
+    default:
+        assert(false);
+    }
+
+    return true;
+}
+
+bool _gsetting_t::setStringOption(const char *strOptName, const char *strValue) {
+    if( ! strOptName) {
+        return false;
+    }
+    int idx = checkOption(strOptName, OptValueType::STR_TYPE);
+    if(idx < 0) {
+        return false;
+    }
+    switch(sSettingOptions[idx].mOptID) {
+    case NAME_PREFIX:
+        if(m_pchNamePrefix) {
+            delete[] m_pchNamePrefix;
+            m_pchNamePrefix = nullptr;
+        }
+        {
+            int sz = strlen(strValue);
+            m_pchNamePrefix = new char[sz];
+            strncpy(m_pchNamePrefix, strValue, sz);
+            m_pchNamePrefix[sz] = '\0';
+        }
+        break;
+    default:
+        assert(false);
+    }
+
+    return true;
+}
+
+bool _gsetting_t::setIntOption(const char *strOptName, int nValue) {
+    if( ! strOptName) {
+        return false;
+    }
+
+    int idx = checkOption(strOptName, OptValueType::INT_TYPE);
+    assert(idx < 0);
+    return idx >= 0;
+}
+
+std::ostream& operator<<(std::ostream& os, const _gsetting_t &gsetup) {
+    os << "Global settings" << std::endl
+       << "m_bCaseSensitive: " << (gsetup.m_bCaseSensitive? "true": "false") << std::endl
+       << "m_bNoScanner: " << (gsetup.m_bNoScanner? "true": "false") << std::endl
+       << "m_bNoParser: " << (gsetup.m_bNoParser? "true": "false") << std::endl
+       << "m_bOutTables: " << (gsetup.m_bOutTables? "true": "false") << std::endl
+       << "m_bLocCompute: " << (gsetup.m_bLocCompute? "true" : "false") << std::endl
+       << "m_bColCompute: " << (gsetup.m_bColCompute? "true" : "false") << std::endl
+       << "m_bOutVerbose: " << (gsetup.m_bOutVerbose? "true" : "false") << std::endl
+       << "m_bDefaultAction: " << (gsetup.m_bDefaultAction? "true" : "false") << std::endl
+       << "m_bEnableDeclare: " << (gsetup.m_bEnableDeclare? "true" : "false") << std::endl
+       << "m_bEnableLineNo: " << (gsetup.m_bEnableLineNo? "true" : "false") << std::endl
+       << "m_nParseDLevel: " << gsetup.m_nParseDLevel << std::endl
+       << "m_nLexDLevel: " << gsetup.m_nLexDLevel << std::endl
+       << "m_pchLangName: " << (gsetup.m_pchLangName? gsetup.m_pchLangName : "null") << std::endl
+       << "m_pchNamePrefix: " << (gsetup.m_pchNamePrefix? gsetup.m_pchNamePrefix : "null") << std::endl;
+    return os;
+
 }
