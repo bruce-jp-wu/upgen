@@ -70,6 +70,7 @@ public:
 	: m_nfromState(a_nfromState)
 	, m_ntoState(a_ntoState)
 	, m_nSymbol(a_nSymbol) {
+
 	}
 	
 	inline bool insertItem(int a_nProd, int a_nDot, int a_nLookahead) {
@@ -95,8 +96,23 @@ public:
 		return pairRet.first->second->size() > nOldSize;
 	}
 
-    inline void insertItems(const lr2si_map_t& lrMap) {
-        m_lrp2Lookaheads.insert(lrMap.begin(), lrMap.end());
+    bool insertItems(const lr2si_map_t& lrMap) {
+        bool bret = false;
+        for(lr2si_cit_t cit = lrMap.begin(); cit != lrMap.end(); cit++) {
+            std::pair<lr2si_it_t, bool> ret =
+                    m_lrp2Lookaheads.insert(std::make_pair(cit->first, nullptr));
+            if(ret.second) {
+                ret.first->second = new sint_t(*cit->second);
+                bret = true;
+            } else {
+                lr2si_map_t::size_type sz = ret.first->second->size();
+                ret.first->second->insert(cit->second->begin(), cit->second->end());
+                if( !bret) {
+                    bret = ret.first->second->size() > sz;
+                }
+            }
+        }
+        return bret;
     }
 	
 	inline item_it_t itemBegin(void) {
@@ -196,6 +212,14 @@ public:
 		}
 		pairRet.first->second->insert(a_siRRule.begin(), a_siRRule.end());
 	}
+
+    void addRRule(int a_nRule, const sint_t &a_siLa) {
+        for(sint_cit_t cit = a_siLa.begin();
+            cit != a_siLa.end();
+            cit++) {
+            addRRule(a_nRule, *cit);
+        }
+    }
 	
 	inline arc_cit_t inArcBegin(void) const {
 		return m_arcIn.begin();

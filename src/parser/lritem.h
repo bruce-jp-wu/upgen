@@ -116,6 +116,11 @@ typedef pair<int, lrpair_set_t* > i2lrps_pair_t;
 typedef i2lrps_map_t::iterator i2lrps_it_t;
 typedef i2lrps_map_t::const_iterator i2lrps_cit_t;
 
+typedef map<int, lr2si_map_t* > lr1_closure_t;
+typedef lr1_closure_t::iterator lr1_closure_it_t;
+typedef lr1_closure_t::const_iterator lr1_closure_cit_t;
+
+
 // LR(K) item
 struct lrk_item_t {
 public:

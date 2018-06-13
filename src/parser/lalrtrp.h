@@ -90,6 +90,11 @@ private:
 
 
 struct LR0Item {
+    LR0Item(int nRule = -1, int nDot = -1)
+        : mRuleID(nRule)
+        , mDotPos(nDot) {
+
+    }
     int mRuleID;
     int mDotPos;
 };

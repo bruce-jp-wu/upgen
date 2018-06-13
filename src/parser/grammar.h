@@ -115,32 +115,46 @@ private:
 	// report result of grammar adjustment
 	void reportAdjustLog(const sint_t &a_siSymb, const sint_t &a_siRule, ostream& oss);
 	
-	// compute LR(1) closure
-	// @a_lrp: LR(0) kernel item
-	// @a_psiLa: lookahead symbols
-	// @a_la2Rules(a map): lookahead-symbol -> empty-rule
-	// @a_cls(a map): shift-symbol -> (Rule, Lookahead)s
-	void calcClosure(const lri_pair_t &a_lrp, const sint_t *a_psiLa,
-			i2si_map_t &a_la2Rules, i2lrps_map_t &a_cls) const;
-	// compute propogated symbols
-	// @a_lrp: LR(0) kernel item
-	// @a_siRules: reduce rule ID(right part of the rule is empty)
-	// @a_shft2Rule(a map): symbol-to-be-shifted -> rule IDs
-	void calcPropogation(const lri_pair_t &a_lrp, sint_t &a_siRules, lrpair_set_t &a_shft2Rule) const;
-	
-	// initialize before conversion from grammar object to parse-tables
-	void initPTable(ptable_t & a_ptbl);
-	// convert from grammar object to parse graph
-	void gram2PGraph(pgraph_t &a_pgrp);
+
+    // compute lookaheads for a LR(1) item
+    // si: result lookaheads
+    // (nRule, nDot): LR(0) Item
+    // seeThroughLa: lookaheads that when all symbols
+    //          from position @nDot to the end of the Rule @nRule are nullable,
+    //          add it to @si
+    void getLR1ItemLookaheads(sint_t& si, int nRule, int nDot,
+                              const sint_t &seeThroughLa) const;
+
+    // compute LR(0) closure
+    // @a_lrp: LR(0) kernel item
+    // @a_cls: set of rule IDs
+    void calcLR0Closure(const lri_pair_t &a_lrp, sint_t &a_cls) const;
+    // compute LR(1) closures
+    // @node: Parser graph node, which represents LR(0) kernel items
+    // @closure: output closures; it is a map:
+    //      symbol ID -> (map: LR(0) item -> lookaheads)
+    void calcLR1Closure(const pgnode_t &node, lr1_closure_t &closure) const;
+    // compute spontaneous lookaheads
+    void calcLookaheads(pgraph_t &a_pgrp) const;
+    // compute reductions
+    void calcReductions(pgraph_t &a_pgrp) const;
+
+    // compute LR(0) kernel itemsets
+    void calcLR0Items(pgraph_t &a_pgrp);
+    // convert from grammar object to parse graph
+    void gram2PGraph(pgraph_t &a_pgrp);
 
 
     // calculate LR(1) closure
-    void calcLR1Closure(LALRGraphNode &curNode);
+    void calcLR1Closure2(LALRGraphNode &curNode);
     // calculate LR(1) Items
-    void calcLR1Items(LALRGraph &lalrGraph);
+    void calcLR1Items2(LALRGraph &lalrGraph);
     // merge LR(1) Items into LALR Items group by Core Items
     // convert from grammar object to parse graph
     void gram2PGraph2(pgraph_t &a_pgrp);
+
+    // initialize before conversion from grammar object to parse-tables
+    void initPTable(ptable_t & a_ptbl);
 	
 public:
 	

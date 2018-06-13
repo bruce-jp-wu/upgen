@@ -28,6 +28,7 @@ class grammar_t;
 class prod_t;
 class symbol_t;
 class pgraph_t;
+class pgnode_t;
 
 }
 
