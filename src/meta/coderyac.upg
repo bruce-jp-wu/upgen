@@ -147,7 +147,7 @@ symb_mc		[\<\>\/\?\=\#\!]
 		
 		if(coder.isThrowAway()) {
 		
-			coder_lval.m_textVal = nullptr;
+            yylval.m_textVal = nullptr;
 			
 			while((c = yyinput()) != END_OF_FILE) {
 			
@@ -181,9 +181,9 @@ symb_mc		[\<\>\/\?\=\#\!]
 		}
 		else {
 			
-			coder_lval.m_textVal = new int2pstr_t;
-			coder_lval.m_textVal->second = new string;
-			coder_lval.m_textVal->first = 0;
+            yylval.m_textVal = new int2pstr_t;
+            yylval.m_textVal->second = new string;
+            yylval.m_textVal->first = 0;
 			c = yyinput();
 			
 			while(END_OF_FILE != c) {
@@ -194,15 +194,15 @@ symb_mc		[\<\>\/\?\=\#\!]
 					if(']' == c) {
 						c = yyinput();
 						if(c != '>') {
-							(*coder_lval.m_textVal->second) += ']';
-							(*coder_lval.m_textVal->second) += ']';
+                            (*yylval.m_textVal->second) += ']';
+                            (*yylval.m_textVal->second) += ']';
 						}
 						else {
 							break;
 						}
 					}
 					else {
-						(*coder_lval.m_textVal->second) += ']';
+                        (*yylval.m_textVal->second) += ']';
 					}
 				}
 				else if('&' == c) {
@@ -216,14 +216,14 @@ symb_mc		[\<\>\/\?\=\#\!]
 							if('t' == c) {
 								c = yyinput();
 								if(';' == c) {
-									(*coder_lval.m_textVal->second) += "&gt;";
+                                    (*yylval.m_textVal->second) += "&gt;";
 								}
 								else {
-									(*coder_lval.m_textVal->second) += "&&gt";
+                                    (*yylval.m_textVal->second) += "&&gt";
 								}
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&&g";
+                                (*yylval.m_textVal->second) += "&&g";
 							}
 							break;
 						case 'l':
@@ -231,18 +231,18 @@ symb_mc		[\<\>\/\?\=\#\!]
 							if('t' == c) {
 								c = yyinput();
 								if(';' == c) {
-									(*coder_lval.m_textVal->second) += "&lt;";
+                                    (*yylval.m_textVal->second) += "&lt;";
 								}
 								else {
-									(*coder_lval.m_textVal->second) += "&&lt";
+                                    (*yylval.m_textVal->second) += "&&lt";
 								}
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&&l";
+                                (*yylval.m_textVal->second) += "&&l";
 							}
 							break;
 						default:
-							(*coder_lval.m_textVal->second) += "&&";
+                            (*yylval.m_textVal->second) += "&&";
 							break;
 						}
 						break;
@@ -251,15 +251,15 @@ symb_mc		[\<\>\/\?\=\#\!]
 						if('t' == c) {
 							c = yyinput();
 							if(';' == c) {
-								(*coder_lval.m_textVal->second) += '>';
+                                (*yylval.m_textVal->second) += '>';
 								c = yyinput();
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&gt";
+                                (*yylval.m_textVal->second) += "&gt";
 							}
 						}
 						else {
-							(*coder_lval.m_textVal->second) += "&g";
+                            (*yylval.m_textVal->second) += "&g";
 						}
 						break;
 					case 'l':
@@ -267,19 +267,19 @@ symb_mc		[\<\>\/\?\=\#\!]
 						if('t' == c) {
 							c = yyinput();
 							if(';' == c) {
-								(*coder_lval.m_textVal->second) += '<';
+                                (*yylval.m_textVal->second) += '<';
 								c = yyinput();
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&lt";
+                                (*yylval.m_textVal->second) += "&lt";
 							}
 						}
 						else {
-							(*coder_lval.m_textVal->second) += "&l";
+                            (*yylval.m_textVal->second) += "&l";
 						}
 						break;
 					default:
-						(*coder_lval.m_textVal->second) += '&';
+                        (*yylval.m_textVal->second) += '&';
 						break;
 					}
 				}
@@ -287,9 +287,9 @@ symb_mc		[\<\>\/\?\=\#\!]
 				if(END_OF_FILE != c) {
 					if(']' != c && '&' != c) {
 						if('\n' == c) {
-							++coder_lval.m_textVal->first;
+                            ++yylval.m_textVal->first;
 						}
-						(*coder_lval.m_textVal->second) += c;
+                        (*yylval.m_textVal->second) += c;
 						c = yyinput();
 					}
 				}
@@ -362,25 +362,25 @@ symb_mc		[\<\>\/\?\=\#\!]
 {qstr_mc}		{
 		if( ! coder.isThrowAway()) {
 			yytext[yyleng - 1] = '\0';
-			coder_lval.m_pstrVal = new string(&yytext[1]);
+            yylval.m_pstrVal = new string(&yytext[1]);
 		}
 		else {
-			coder_lval.m_pstrVal = nullptr;
+            yylval.m_pstrVal = nullptr;
 		}
 		return QUOTEDSTR;
 	}
 {cid_mc}		{
 		if( ! coder.isThrowAway()) {		
-			coder_lval.m_pstrVal = new string(yytext);
+            yylval.m_pstrVal = new string(yytext);
 		}
 		else {
-			coder_lval.m_pstrVal = nullptr;
+            yylval.m_pstrVal = nullptr;
 		}
 		return CID;
 	}
 {int_mc}		{
 		
-		strhelper_t::toSnum(yytext, coder_lval.m_nVal);
+        strhelper_t::toSnum(yytext, yylval.m_nVal);
 
 		return INTEGER;
 	}

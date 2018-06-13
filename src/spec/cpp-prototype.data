@@ -112,7 +112,7 @@ case ]]><Integer #0/><![[:]]><$UserDiscardActions/></Default>
 
 	<Macro "$TypeName">
 		<Case Has><Action #0/></Case>
-		<Default><Scalar "Prefix"/><Text #1/></Default>
+		<Default><![[yy]]><Text #1/></Default>
 	</Macro>
 </Macros>
 
@@ -393,14 +393,14 @@ protected:
 <If EnableDeclare><Declare/></If>
 <![[
 // function type for error-reporting
-typedef void(*]]><$YY "error_t"/><![[)(const char* msg]]><If Has?"FormalParams"><![[, ]]><Action "FormalParams"/></If><![[);
+typedef void(*yyerror_t)(const char* msg]]><If Has?"FormalParams"><![[, ]]><Action "FormalParams"/></If><![[);
 
 // assign new log stream
-void ]]><$YY "setstream"/><![[(FILE *poutput, FILE *plogger);
+void yysetstream(FILE *poutput, FILE *plogger);
 // assign new error-reporter and return the old one
-]]><$YY "error_t"/><![[ ]]><$YY "seterror"/><![[(]]><$YY "error_t"/><![[);
+yyerror_t yyseterror(yyerror_t);
 // reset all (both scanner and parser, if they are available)
-void ]]><$YY "clearall"/><![[(void);
+void yyclearall(void);
 ]]>
 <If EnableParser>
 <If Has?"LTypeName">
@@ -408,7 +408,7 @@ void ]]><$YY "clearall"/><![[(void);
 // location type is defined by user as ]]><Action "LTypeName"/></If>
 <Else><![[
 // location defines here
-struct ]]><$YY "ltype_t"/><![[ {
+struct yyltype_t {
 	]]>
 <If Has?"LTypeDeclare"><Action "LTypeDeclare"/></If>
 <Else><![[int firstLine;
@@ -423,7 +423,7 @@ struct ]]><$YY "ltype_t"/><![[ {
 // semantic value type defined by user as ]]><Action "STypeName"/></If>
 <Else><![[
 // semantic value type define here
-struct ]]><$YY "stype_t"/><![[ {
+struct yystype_t {
 	]]>
 <If Has?"STypeDeclare"><Action "STypeDeclare"/></If>
 <Else><![[int nVal;]]></Else>
@@ -434,34 +434,34 @@ struct ]]><$YY "stype_t"/><![[ {
 typedef ]]><$TypeName "STypeName" "stype_t"/><![[ xstype_t;
 typedef ]]><$TypeName "LTypeName" "ltype_t"/><![[ xltype_t;
 // function type for scanning
-typedef int (*]]><$YY "lex_t"/><![[)(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[);
+typedef int (*yylex_t)(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[);
 
 // assign new scanner and return the old one
-]]><$YY "lex_t"/><![[ ]]><$YY "setlex"/><![[(]]><$YY "lex_t"/><![[);
+yylex_t yysetlex(yylex_t);
 ]]>
 </If>
 
 <If EnableScanner><![[
 // initializing file buffer before parsing or patter-matching
-int ]]><$YY "lexfile"/><![[(const char* pchFile, bool iMod = false);
+int yylexfile(const char* pchFile, bool iMod = false);
 // initializing string buffer before parsing or patter-matching
-int ]]><$YY "lexstr"/><![[(char *strbuffer, int size);
+int yylexstr(char *strbuffer, int size);
 // initializing const string buffer before parsing or patter-matching
-int ]]><$YY "lexcstr"/><![[(const char *strbuffer, int size);
+int yylexcstr(const char *strbuffer, int size);
 
 // generated scanner, can be replaced
-int ]]><$YY "lex"/><![[(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[);
+int yylex(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[);
 
 ]]></If><If EnableParser><![[
 // generated parser, it should not be replaced
-int ]]><$YY "parse"/><![[(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[);
+int yyparse(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[);
 ]]>
 </If>
 
 <Declare/>
 <If EnableParser><![[
-extern xstype_t ]]><$YY "lval"/><![[;
-extern xltype_t ]]><$YY "lloc"/><![[;
+extern xstype_t yylval;
+extern xltype_t yylloc;
 ]]></If>
 <If EnableDeclare><![[
 } // namespace
@@ -470,8 +470,8 @@ extern xltype_t ]]><$YY "lloc"/><![[;
 
 <Define/>
 <If EnableParser><![[
-xstype_t ]]><$YY "lval"/><![[;
-xltype_t ]]><$YY "lloc"/><![[;
+xstype_t yylval;
+xltype_t yylloc;
 
 ]]></If>
 <![[
@@ -502,11 +502,11 @@ inline static const char* sym_text__(const char* ps) {
 
 static void yyemit_error__(const char *s]]><If Has?"FormalParams"><![[, ]]><Action "FormalParams"/></If><![[);
 
-class ]]><$YY "parser_t"/><![[ {
+class yyparser_t {
 
-	friend void ]]><$YY "setstream"/><![[(FILE *poutput, FILE *plogger);
-	friend ]]><$YY "error_t"/><![[ ]]><$YY "seterror"/><![[(]]><$YY "error_t"/><![[);
-	]]><If EnableParser><![[friend ]]><$YY "lex_t"/><![[ ]]><$YY "setlex"/><![[(]]><$YY "lex_t"/><![[);
+    friend void yysetstream(FILE *poutput, FILE *plogger);
+    friend yyerror_t yyseterror(yyerror_t);
+    ]]><If EnableParser><![[friend yylex_t yysetlex(yylex_t);
 ]]></If>
 <If EnableScanner><![[
 private:
@@ -1207,8 +1207,8 @@ private:
 ]]></If><![[
 public:
 
-	inline ]]><$YY "parser_t"/><![[(]]>
-<If EnableParser><$YY "lex_t"/><![[ plex = NULL]]></If>
+    inline yyparser_t(]]>
+<If EnableParser><![[yylex_t plex = NULL]]></If>
 <Else><![[void]]></Else><![[)
 	: yyecode__(YYE_ALIVE)]]>
 <If EnableScanner><![[
@@ -1230,7 +1230,7 @@ public:
 	, yyerror(yyemit_error__) {
 
 	}
-	~]]><$YY "parser_t"/><![[(void) {
+    ~yyparser_t(void) {
 ]]><If EnableScanner><![[
 		if(yytext) {
 			delete[] yytext;
@@ -1417,10 +1417,10 @@ public:
 						++ncol;
 					}
 				}]]><If EnableParser><![[
-				]]><$YY "lloc"/><![[.firstLine = yyget_lineno();
-				]]><$YY "lloc"/><![[.firstColumn = yyget_colno();
-				]]><$YY "lloc"/><![[.lastLine  = nline;
-				]]><$YY "lloc"/><![[.lastColumn = (ncol < 0)?0: ncol;
+                yylloc.firstLine = yyget_lineno();
+                yylloc.firstColumn = yyget_colno();
+                yylloc.lastLine  = nline;
+                yylloc.lastColumn = (ncol < 0)?0: ncol;
 				]]></If><![[yyset_lineno(nline);
 				yyset_colno(ncol + 1);
 			}]]>
@@ -1433,10 +1433,10 @@ public:
 						++nline;
 					}
 				}]]><If EnableParser><![[
-				]]><$YY "lloc"/><![[.firstLine = yyget_lineno();
-				]]><$YY "lloc"/><![[.firstColumn = 0;
-				]]><$YY "lloc"/><![[.lastLine  = nline;
-				]]><$YY "lloc"/><![[.lastColumn = 0;
+                yylloc.firstLine = yyget_lineno();
+                yylloc.firstColumn = 0;
+                yylloc.lastLine  = nline;
+                yylloc.lastColumn = 0;
 				]]></If><![[yyset_lineno(nline);
 				yyset_colno(0);
 			}]]>
@@ -1563,9 +1563,9 @@ if(yylogger)
 ]]></If><![[
 					yys_symb__.push(yysidx__);
 					yys_stt__.push(yypstate__);
-					yys_sv__.push(]]><$YY "lval"/><![[);
+                    yys_sv__.push(yylval);
 ]]><If EnableLocation><![[
-					yys_loc__.push(]]><$YY "lloc"/><![[);
+                    yys_loc__.push(yylloc);
 ]]></If><![[ 
 					yytok__ = PARSE_UNDEFSYMB_ID;
 					yyreducing__ = false;
@@ -1587,9 +1587,7 @@ if(yylogger)
 							if(yyerror) {
 ]]><If EnableLocation><![[
 char yycc[MAX_MSG_LENG];
-sprintf(yycc, "Error: syntax error at %d:%d.", ]]>
-	<$YY "lloc"/><![[.firstLine, ]]>
-	<$YY "lloc"/><![[.firstColumn);
+sprintf(yycc, "Error: syntax error at %d:%d.", yylloc.firstLine, yylloc.firstColumn);
 yyerror(yycc]]><If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
 ]]></If><Else><![[
 yyerror("Error: syntax error."]]><If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
@@ -1635,7 +1633,7 @@ if(yylogger) {
 							<If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
 						yys_loc__.pop(1);
 ]]></If><Else><![[
-						yydiscard__(yys_sv__.top(), ]]><$YY "lloc"/><![[, yys_symb__.top()]]>
+                        yydiscard__(yys_sv__.top(), yylloc, yys_symb__.top()]]>
 							<If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
 ]]></Else><![[
 
@@ -1702,7 +1700,7 @@ if(yylogger)
 			yydiscard__(yys_sv__.top(), yys_loc__.top(), yys_symb__.top()]]>
 				<If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
 ]]></If><Else><![[
-			yydiscard__(yys_sv__.top(), ]]><$YY "lloc"/><![[, yys_symb__.top()]]>
+            yydiscard__(yys_sv__.top(), yylloc, yys_symb__.top()]]>
 				<If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
 ]]></Else><![[
 			yys_sv__.pop(1);
@@ -1715,7 +1713,7 @@ if(yylogger)
 			yydiscard__(yyval, yyloc, yyplid[yyprule__] + PARSE_TYPE_BASE]]>
 				<If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
 ]]></If><Else><![[
-			yydiscard__(yyval, ]]><$YY "lloc"/><![[, yyplid[yyprule__] + PARSE_TYPE_BASE]]>
+            yydiscard__(yyval, yylloc, yyplid[yyprule__] + PARSE_TYPE_BASE]]>
 				<If Has?"ActualParams"><![[, ]]><Action "ActualParams"/></If><![[);
 ]]></Else><![[
 		}
@@ -2008,11 +2006,11 @@ private:
 	]]></If><If EnableParser><![[
 	bool yyerr_flag__;
 	int yyltok;
-	]]><$YY "lex_t"/><![[ yylexer;
+    yylex_t yylexer;
 ]]></If><![[
 	FILE* yyoutput;
 	FILE* yylogger;
-	]]><$YY "error_t"/><![[ yyerror;
+    yyerror_t yyerror;
 	
 private:
 	
@@ -2093,51 +2091,51 @@ private:
 };
 
 ]]><If EnableScanner><![[
-char ]]><$YY "parser_t"/><![[::YYMSG_UNMATCHED[] = "Error: unmatched character ` \'.";
+char yyparser_t::YYMSG_UNMATCHED[] = "Error: unmatched character ` \'.";
 
-const int ]]><$YY "parser_t"/><![[::yydsc[]]><Size "LexStartStates"/><![[] = {
+const int yyparser_t::yydsc[]]><Size "LexStartStates"/><![[] = {
 ]]>
 <$IntArray "LexStartStates"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yydcmap[]]><Size "LexCharMap"/><![[] = {
+const int yyparser_t::yydcmap[]]><Size "LexCharMap"/><![[] = {
 ]]>
 <$IntArray "LexCharMap"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yydmeta[]]><Size "LexMetaChars"/><![[] = {
+const int yyparser_t::yydmeta[]]><Size "LexMetaChars"/><![[] = {
 ]]>
 <$IntArray "LexMetaChars"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yydbase[]]><Size "LexDFABases"/><![[] = {
+const int yyparser_t::yydbase[]]><Size "LexDFABases"/><![[] = {
 ]]>
 <$IntArray "LexDFABases"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yyddef[]]><Size "LexDFADefaults"/><![[] = {
+const int yyparser_t::yyddef[]]><Size "LexDFADefaults"/><![[] = {
 ]]>
 <$IntArray "LexDFADefaults"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yydnxt[]]><Size "LexDFANexts"/><![[] = {
+const int yyparser_t::yydnxt[]]><Size "LexDFANexts"/><![[] = {
 ]]>
 <$IntArray "LexDFANexts"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yydchk[]]><Size "LexDFAChecks"/><![[] = {
+const int yyparser_t::yydchk[]]><Size "LexDFAChecks"/><![[] = {
 ]]>
 <$IntArray "LexDFAChecks"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yydaccpt[]]><Size "LexDFAAccepts"/><![[] = {
+const int yyparser_t::yydaccpt[]]><Size "LexDFAAccepts"/><![[] = {
 ]]>
 <$IntArray "LexDFAAccepts"/>
 <![[
@@ -2145,35 +2143,35 @@ const int ]]><$YY "parser_t"/><![[::yydaccpt[]]><Size "LexDFAAccepts"/><![[] = {
 ]]></If><If EnableParser><![[
 // token map: token ID --> token index in token ID table
 // in fact, it acts like inverse table of token ID table
-const int ]]><$YY "parser_t"/><![[::yyptmap[]]><Size "ParseTokenMap"/><![[] = {
+const int yyparser_t::yyptmap[]]><Size "ParseTokenMap"/><![[] = {
 ]]>
 <$IntArray "ParseTokenMap"/>
 <![[
 };
 /*
 // token ID table, containing token IDs
-const int ]]><$YY "parser_t"/><![[::yyptid[]]><Size "ParseTokenID"/><![[] = {
+const int yyparser_t::yyptid[]]><Size "ParseTokenID"/><![[] = {
 ]]>
 <$IntArray "ParseTokenID"/>
 <![[
 };
 */
 // prnum table, its element is number of symbols in right part of corresponding grammar rule
-const int ]]><$YY "parser_t"/><![[::yyprnum[]]><Size "ParseRPNum"/><![[] = {
+const int yyparser_t::yyprnum[]]><Size "ParseRPNum"/><![[] = {
 ]]>
 <$IntArray "ParseRPNum"/>
 <![[
 };
 
 // plid table, its element is the index of left part of corresponding grammar rule in token ID table
-const int ]]><$YY "parser_t"/><![[::yyplid[]]><Size "ParseLPID"/><![[] = {
+const int yyparser_t::yyplid[]]><Size "ParseLPID"/><![[] = {
 ]]>
 <$IntArray "ParseLPID"/>
 <![[
 };
 
 // parse action table
-const int ]]><$YY "parser_t"/><![[::yypact[]]><Size "ParseActEntries"/><![[] = {
+const int yyparser_t::yypact[]]><Size "ParseActEntries"/><![[] = {
 ]]>
 <$IntArray "ParseActEntries"/>
 <![[
@@ -2182,69 +2180,69 @@ const int ]]><$YY "parser_t"/><![[::yypact[]]><Size "ParseActEntries"/><![[] = {
 // base array for parse action table
 // which is used to determine the base location of the entries
 // for each state stored in the yypack table
-const int ]]><$YY "parser_t"/><![[::yypabase[]]><Size "PActionBases"/><![[] = {
+const int yyparser_t::yypabase[]]><Size "PActionBases"/><![[] = {
 ]]>
 <$IntArray "PActionBases"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yypgoto[]]><Size "ParseGotos"/><![[] = {
+const int yyparser_t::yypgoto[]]><Size "ParseGotos"/><![[] = {
 ]]>
 <$IntArray "ParseGotos"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yypgbase[]]><Size "PGotoBases"/><![[] = {
+const int yyparser_t::yypgbase[]]><Size "PGotoBases"/><![[] = {
 ]]>
 <$IntArray "PGotoBases"/>
 <![[
 };
 
-const by_te_t ]]><$YY "parser_t"/><![[::yyvbmap[]]><Size "ParseValidBMap"/><![[] = {
+const by_te_t yyparser_t::yyvbmap[]]><Size "ParseValidBMap"/><![[] = {
 ]]>
 <$IntArray "ParseValidBMap"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yyparv[]]><Size "ParseActRowVal"/><![[] = {
+const int yyparser_t::yyparv[]]><Size "ParseActRowVal"/><![[] = {
 ]]>
 <$IntArray "ParseActRowVal"/>
 <![[
 };
 
 
-const int ]]><$YY "parser_t"/><![[::yyparn[]]><Size "ParseActRowNice"/><![[] = {
+const int yyparser_t::yyparn[]]><Size "ParseActRowNice"/><![[] = {
 ]]>
 <$IntArray "ParseActRowNice"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yypcv[]]><Size "ParseColVal"/><![[] = {
+const int yyparser_t::yypcv[]]><Size "ParseColVal"/><![[] = {
 ]]>
 <$IntArray "ParseColVal"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yypcn[]]><Size "ParseColNice"/><![[] = {
+const int yyparser_t::yypcn[]]><Size "ParseColNice"/><![[] = {
 ]]>
 <$IntArray "ParseColNice"/>
 <![[
 };
 
 
-const int ]]><$YY "parser_t"/><![[::yypgrv[]]><Size "ParseGotoRowVal"/><![[] = {
+const int yyparser_t::yypgrv[]]><Size "ParseGotoRowVal"/><![[] = {
 ]]>
 <$IntArray "ParseGotoRowVal"/>
 <![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yypgrn[]]><Size "ParseGotoRowNice"/><![[] = {
+const int yyparser_t::yypgrn[]]><Size "ParseGotoRowNice"/><![[] = {
 ]]>
 <$IntArray "ParseGotoRowNice"/>
 <![[
 };
 
-const std::unordered_map<std::string, int> ]]><$YY "parser_t"/><![[::yyslexemID{
+const std::unordered_map<std::string, int> yyparser_t::yyslexemID{
 ]]>
 <$StrIntMapDefine "ParseStrTokenNames" "ParseStrTokenValues"/>
 <![[
@@ -2252,33 +2250,33 @@ const std::unordered_map<std::string, int> ]]><$YY "parser_t"/><![[::yyslexemID{
 ]]></If>
 <If EnableScanner>
 <If Has?"LexDFALookaheads"><![[
-const int ]]><$YY "parser_t"/><![[::yylad[]]><Size "LexDFALookaheads"/><![[] = {
+const int yyparser_t::yylad[]]><Size "LexDFALookaheads"/><![[] = {
 ]]><$IntArray "LexDFALookaheads"/><![[
 };]]></If>
 
 <If LexDebugMode><![[
-const char* ]]><$YY "parser_t"/><![[::yydscnam[]]><Size "LexStartLabels"/><![[] = {
+const char* yyparser_t::yydscnam[]]><Size "LexStartLabels"/><![[] = {
 ]]><$QStrArray "LexStartLabels"/><![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yydline[]]><Size "LexRule2Lines"/><![[] = {
+const int yyparser_t::yydline[]]><Size "LexRule2Lines"/><![[] = {
 ]]><$IntArray "LexRule2Lines"/><![[
 };]]></If></If>
 <If EnableParser>
 <If ParseDebugMode><![[
-const char* ]]><$YY "parser_t"/><![[::yypsnam[]]><Size "ParseSymName"/><![[] = {
+const char* yyparser_t::yypsnam[]]><Size "ParseSymName"/><![[] = {
 ]]><$QStrArray "ParseSymName"/><![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yyprpbase[]]><Size "ParseRPBases"/><![[] = {
+const int yyparser_t::yyprpbase[]]><Size "ParseRPBases"/><![[] = {
 ]]><$IntArray "ParseRPBases"/><![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yyprpidx[]]><Size "ParseRPIndexes"/><![[] = {
+const int yyparser_t::yyprpidx[]]><Size "ParseRPIndexes"/><![[] = {
 ]]><$IntArray "ParseRPIndexes"/><![[
 };
 
-const int ]]><$YY "parser_t"/><![[::yypline[]]><Size "ParseRule2Lines"/><![[] = {
+const int yyparser_t::yypline[]]><Size "ParseRule2Lines"/><![[] = {
 ]]><$IntArray "ParseRule2Lines"/><![[
 };]]></If></If>
 
@@ -2286,61 +2284,61 @@ const int ]]><$YY "parser_t"/><![[::yypline[]]><Size "ParseRule2Lines"/><![[] = 
 
 // get global parser object,
 // it's invisiable to user
-static ]]><$YY "parser_t"/><![[& getTheParser(void) {
+static yyparser_t& getTheParser(void) {
 
-	static ]]><$YY "parser_t"/><![[ yyp]]>
-		<If EnableParser><If EnableScanner><![[(]]><$YY "lex"/><![[)]]></If></If>
+    static yyparser_t yyp]]>
+        <If EnableParser><If EnableScanner><![[(yylex)]]></If></If>
 	<![[;
 	return yyp;
 }
 
 // assign new log stream
-void ]]><$YY "setstream"/><![[(FILE *poutput, FILE *plogger) {
+void yysetstream(FILE *poutput, FILE *plogger) {
 
-	]]><$YY "parser_t"/><![[& yyp = getTheParser();
+    yyparser_t& yyp = getTheParser();
 	yyp.yyoutput = poutput;
 	yyp.yylogger = plogger;
 }
 
 void yyemit_error__(const char *s]]><If Has?"FormalParams"><![[, ]]><Action "FormalParams"/></If><![[) {
-	]]><$YY "parser_t"/><![[& yyp = getTheParser();
+    yyparser_t& yyp = getTheParser();
 	if(yyp.yylogger) 
 		fprintf(yyp.yylogger, "%s\n", s);
 }
 
 // assign new error-reporter and return the old one
-]]><$YY "error_t"/><![[ ]]><$YY "seterror"/><![[(]]><$YY "error_t"/><![[ perror) {
+yyerror_t yyseterror(yyerror_t perror) {
 
-	]]><$YY "parser_t"/><![[& yyp = getTheParser();
-	]]><$YY "error_t"/><![[ pold = yyp.yyerror;
+    yyparser_t& yyp = getTheParser();
+    yyerror_t pold = yyp.yyerror;
 	yyp.yyerror = perror;
 
 	return pold;
 }
 
 // reset all (both scanner and parser, if they are available)
-void ]]><$YY "clearall"/><![[(void) {
+void yyclearall(void) {
 	getTheParser().yyclearall__();
 }
 ]]>
 <If EnableScanner><![[
 
 // initializing file buffer before parsing or patter-matching
-int ]]><$YY "lexfile"/><![[(const char* pchFile, bool iMod) {
+int yylexfile(const char* pchFile, bool iMod) {
 	
 	return getTheParser().yylexinit__(pchFile, iMod)? 0: -1;
 }
 // initializing string buffer before parsing or patter-matching
-int ]]><$YY "lexstr"/><![[(char *strbuffer, int size) {
+int yylexstr(char *strbuffer, int size) {
 	return getTheParser().yylexinit__(strbuffer, size)? 0: -1;
 }
 // initializing const string buffer before parsing or patter-matching
-int ]]><$YY "lexcstr"/><![[(const char *strbuffer, int size) {
+int yylexcstr(const char *strbuffer, int size) {
 	return getTheParser().yylexinit__(strbuffer, size)? 0: -1;
 }
 
 // generated scanner, can be replaced
-int ]]><$YY "lex"/><![[(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[) {
+int yylex(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[) {
 
 	return getTheParser().yylex__(]]><If Has?"ActualParams"><Action "ActualParams"/></If><![[);
 } 
@@ -2348,17 +2346,17 @@ int ]]><$YY "lex"/><![[(]]><If Has?"FormalParams"><Action "FormalParams"/></If><
 
 <If EnableParser><![[
 // assign new scanner and return the old one 
-]]><$YY "lex_t"/><![[ ]]><$YY "setlex"/><![[(]]><$YY "lex_t"/><![[ plex) {
+yylex_t yysetlex(yylex_t plex) {
 	
-	]]><$YY "parser_t"/><![[& yyp = getTheParser();
-	]]><$YY "lex_t"/><![[ pold = yyp.yylexer;
+    yyparser_t& yyp = getTheParser();
+    yylex_t pold = yyp.yylexer;
 	yyp.yylexer = plex;
 
 	return pold;
 }
 
 // generated parser, it should not be replaced
-int ]]><$YY "parse"/><![[(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[) {
+int yyparse(]]><If Has?"FormalParams"><Action "FormalParams"/></If><![[) {
 	return getTheParser().yyparse__(]]><If Has?"ActualParams"><Action "ActualParams"/></If><![[);
 }]]></If>
 <![[

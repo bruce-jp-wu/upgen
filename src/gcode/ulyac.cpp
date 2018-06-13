@@ -434,9 +434,9 @@ static void yyemit_error__(const char *s, lexer_ns::lexer_t& lexer, lexer_ns::dt
 
 class yyparser_t {
 
-	friend void yysetstream(FILE *poutput, FILE *plogger);
-	friend yyerror_t yyseterror(yyerror_t);
-	friend yylex_t yysetlex(yylex_t);
+    friend void yysetstream(FILE *poutput, FILE *plogger);
+    friend yyerror_t yyseterror(yyerror_t);
+    friend yylex_t yysetlex(yylex_t);
 
 private:
 
@@ -1130,7 +1130,7 @@ private:
 
 public:
 
-	inline yyparser_t(yylex_t plex = NULL)
+    inline yyparser_t(yylex_t plex = NULL)
 	: yyecode__(YYE_ALIVE)
 	, yysize__(0)
 	, yystart__(INITIAL)
@@ -1147,7 +1147,7 @@ public:
 	, yyerror(yyemit_error__) {
 
 	}
-	~yyparser_t(void) {
+    ~yyparser_t(void) {
 
 		if(yytext) {
 			delete[] yytext;
@@ -1302,10 +1302,10 @@ public:
 						++ncol;
 					}
 				}
-				yylloc.firstLine = yyget_lineno();
-				yylloc.firstColumn = yyget_colno();
-				yylloc.lastLine  = nline;
-				yylloc.lastColumn = (ncol < 0)?0: ncol;
+                yylloc.firstLine = yyget_lineno();
+                yylloc.firstColumn = yyget_colno();
+                yylloc.lastLine  = nline;
+                yylloc.lastColumn = (ncol < 0)?0: ncol;
 				yyset_lineno(nline);
 				yyset_colno(ncol + 1);
 			}
@@ -4178,9 +4178,9 @@ case 133:
 
 					yys_symb__.push(yysidx__);
 					yys_stt__.push(yypstate__);
-					yys_sv__.push(yylval);
+                    yys_sv__.push(yylval);
 
-					yys_loc__.push(yylloc);
+                    yys_loc__.push(yylloc);
  
 					yytok__ = PARSE_UNDEFSYMB_ID;
 					yyreducing__ = false;
@@ -7046,11 +7046,11 @@ private:
 	
 	bool yyerr_flag__;
 	int yyltok;
-	yylex_t yylexer;
+    yylex_t yylexer;
 
 	FILE* yyoutput;
 	FILE* yylogger;
-	yyerror_t yyerror;
+    yyerror_t yyerror;
 	
 private:
 	
@@ -8816,14 +8816,14 @@ const std::unordered_map<std::string, int> yyparser_t::yyslexemID{
 // it's invisiable to user
 static yyparser_t& getTheParser(void) {
 
-	static yyparser_t yyp(yylex);
+    static yyparser_t yyp(yylex);
 	return yyp;
 }
 
 // assign new log stream
 void yysetstream(FILE *poutput, FILE *plogger) {
 
-	yyparser_t& yyp = getTheParser();
+    yyparser_t& yyp = getTheParser();
 	yyp.yyoutput = poutput;
 	yyp.yylogger = plogger;
 }
@@ -8831,7 +8831,7 @@ void yysetstream(FILE *poutput, FILE *plogger) {
 void yyemit_error__(const char *s, lexer_ns::lexer_t& lexer, lexer_ns::dtable_t &dtbl,
 	parser_ns::grammar_t &grammar, parser_ns::ptable_t &ptbl,
 	dmmap_t &dmap, gsetting_t &gsetup) {
-	yyparser_t& yyp = getTheParser();
+    yyparser_t& yyp = getTheParser();
 	if(yyp.yylogger) 
 		fprintf(yyp.yylogger, "%s\n", s);
 }
@@ -8839,8 +8839,8 @@ void yyemit_error__(const char *s, lexer_ns::lexer_t& lexer, lexer_ns::dtable_t 
 // assign new error-reporter and return the old one
 yyerror_t yyseterror(yyerror_t perror) {
 
-	yyparser_t& yyp = getTheParser();
-	yyerror_t pold = yyp.yyerror;
+    yyparser_t& yyp = getTheParser();
+    yyerror_t pold = yyp.yyerror;
 	yyp.yyerror = perror;
 
 	return pold;
@@ -8877,8 +8877,8 @@ int yylex(lexer_ns::lexer_t& lexer, lexer_ns::dtable_t &dtbl,
 // assign new scanner and return the old one 
 yylex_t yysetlex(yylex_t plex) {
 	
-	yyparser_t& yyp = getTheParser();
-	yylex_t pold = yyp.yylexer;
+    yyparser_t& yyp = getTheParser();
+    yylex_t pold = yyp.yylexer;
 	yyp.yylexer = plex;
 
 	return pold;

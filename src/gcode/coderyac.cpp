@@ -287,8 +287,8 @@ protected:
 
 };
 
-xstype_t coder_lval;
-xltype_t coder_lloc;
+xstype_t yylval;
+xltype_t yylloc;
 
 
 // program abort due to out of memory
@@ -318,11 +318,11 @@ inline static const char* sym_text__(const char* ps) {
 
 static void yyemit_error__(const char *s, coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr);
 
-class coder_parser_t {
+class yyparser_t {
 
-	friend void coder_setstream(FILE *poutput, FILE *plogger);
-	friend coder_error_t coder_seterror(coder_error_t);
-	friend coder_lex_t coder_setlex(coder_lex_t);
+    friend void yysetstream(FILE *poutput, FILE *plogger);
+    friend yyerror_t yyseterror(yyerror_t);
+    friend yylex_t yysetlex(yylex_t);
 
 private:
 
@@ -1012,7 +1012,7 @@ private:
 
 public:
 
-	inline coder_parser_t(coder_lex_t plex = NULL)
+    inline yyparser_t(yylex_t plex = NULL)
 	: yyecode__(YYE_ALIVE)
 	, yysize__(0)
 	, yystart__(INITIAL)
@@ -1029,7 +1029,7 @@ public:
 	, yyerror(yyemit_error__) {
 
 	}
-	~coder_parser_t(void) {
+    ~yyparser_t(void) {
 
 		if(yytext) {
 			delete[] yytext;
@@ -1181,10 +1181,10 @@ public:
 						++ncol;
 					}
 				}
-				coder_lloc.firstLine = yyget_lineno();
-				coder_lloc.firstColumn = yyget_colno();
-				coder_lloc.lastLine  = nline;
-				coder_lloc.lastColumn = (ncol < 0)?0: ncol;
+                yylloc.firstLine = yyget_lineno();
+                yylloc.firstColumn = yyget_colno();
+                yylloc.lastLine  = nline;
+                yylloc.lastColumn = (ncol < 0)?0: ncol;
 				yyset_lineno(nline);
 				yyset_colno(ncol + 1);
 			}
@@ -1205,7 +1205,7 @@ case 0:
 		
 		if(coder.isThrowAway()) {
 		
-			coder_lval.m_textVal = nullptr;
+            yylval.m_textVal = nullptr;
 			
 			while((c = yyinput()) != END_OF_FILE) {
 			
@@ -1239,9 +1239,9 @@ case 0:
 		}
 		else {
 			
-			coder_lval.m_textVal = new int2pstr_t;
-			coder_lval.m_textVal->second = new string;
-			coder_lval.m_textVal->first = 0;
+            yylval.m_textVal = new int2pstr_t;
+            yylval.m_textVal->second = new string;
+            yylval.m_textVal->first = 0;
 			c = yyinput();
 			
 			while(END_OF_FILE != c) {
@@ -1252,15 +1252,15 @@ case 0:
 					if(']' == c) {
 						c = yyinput();
 						if(c != '>') {
-							(*coder_lval.m_textVal->second) += ']';
-							(*coder_lval.m_textVal->second) += ']';
+                            (*yylval.m_textVal->second) += ']';
+                            (*yylval.m_textVal->second) += ']';
 						}
 						else {
 							break;
 						}
 					}
 					else {
-						(*coder_lval.m_textVal->second) += ']';
+                        (*yylval.m_textVal->second) += ']';
 					}
 				}
 				else if('&' == c) {
@@ -1274,14 +1274,14 @@ case 0:
 							if('t' == c) {
 								c = yyinput();
 								if(';' == c) {
-									(*coder_lval.m_textVal->second) += "&gt;";
+                                    (*yylval.m_textVal->second) += "&gt;";
 								}
 								else {
-									(*coder_lval.m_textVal->second) += "&&gt";
+                                    (*yylval.m_textVal->second) += "&&gt";
 								}
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&&g";
+                                (*yylval.m_textVal->second) += "&&g";
 							}
 							break;
 						case 'l':
@@ -1289,18 +1289,18 @@ case 0:
 							if('t' == c) {
 								c = yyinput();
 								if(';' == c) {
-									(*coder_lval.m_textVal->second) += "&lt;";
+                                    (*yylval.m_textVal->second) += "&lt;";
 								}
 								else {
-									(*coder_lval.m_textVal->second) += "&&lt";
+                                    (*yylval.m_textVal->second) += "&&lt";
 								}
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&&l";
+                                (*yylval.m_textVal->second) += "&&l";
 							}
 							break;
 						default:
-							(*coder_lval.m_textVal->second) += "&&";
+                            (*yylval.m_textVal->second) += "&&";
 							break;
 						}
 						break;
@@ -1309,15 +1309,15 @@ case 0:
 						if('t' == c) {
 							c = yyinput();
 							if(';' == c) {
-								(*coder_lval.m_textVal->second) += '>';
+                                (*yylval.m_textVal->second) += '>';
 								c = yyinput();
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&gt";
+                                (*yylval.m_textVal->second) += "&gt";
 							}
 						}
 						else {
-							(*coder_lval.m_textVal->second) += "&g";
+                            (*yylval.m_textVal->second) += "&g";
 						}
 						break;
 					case 'l':
@@ -1325,19 +1325,19 @@ case 0:
 						if('t' == c) {
 							c = yyinput();
 							if(';' == c) {
-								(*coder_lval.m_textVal->second) += '<';
+                                (*yylval.m_textVal->second) += '<';
 								c = yyinput();
 							}
 							else {
-								(*coder_lval.m_textVal->second) += "&lt";
+                                (*yylval.m_textVal->second) += "&lt";
 							}
 						}
 						else {
-							(*coder_lval.m_textVal->second) += "&l";
+                            (*yylval.m_textVal->second) += "&l";
 						}
 						break;
 					default:
-						(*coder_lval.m_textVal->second) += '&';
+                        (*yylval.m_textVal->second) += '&';
 						break;
 					}
 				}
@@ -1345,9 +1345,9 @@ case 0:
 				if(END_OF_FILE != c) {
 					if(']' != c && '&' != c) {
 						if('\n' == c) {
-							++coder_lval.m_textVal->first;
+                            ++yylval.m_textVal->first;
 						}
-						(*coder_lval.m_textVal->second) += c;
+                        (*yylval.m_textVal->second) += c;
 						c = yyinput();
 					}
 				}
@@ -1730,10 +1730,10 @@ case 31:
 		{
 		if( ! coder.isThrowAway()) {
 			yytext[yyleng - 1] = '\0';
-			coder_lval.m_pstrVal = new string(&yytext[1]);
+            yylval.m_pstrVal = new string(&yytext[1]);
 		}
 		else {
-			coder_lval.m_pstrVal = nullptr;
+            yylval.m_pstrVal = nullptr;
 		}
 		return QUOTEDSTR;
 	}
@@ -1749,10 +1749,10 @@ case 32:
 #line 372 "meta/coderyac.upg"
 		{
 		if( ! coder.isThrowAway()) {		
-			coder_lval.m_pstrVal = new string(yytext);
+            yylval.m_pstrVal = new string(yytext);
 		}
 		else {
-			coder_lval.m_pstrVal = nullptr;
+            yylval.m_pstrVal = nullptr;
 		}
 		return CID;
 	}
@@ -1768,7 +1768,7 @@ case 33:
 #line 381 "meta/coderyac.upg"
 		{
 		
-		strhelper_t::toSnum(yytext, coder_lval.m_nVal);
+        strhelper_t::toSnum(yytext, yylval.m_nVal);
 
 		return INTEGER;
 	}
@@ -1928,9 +1928,9 @@ case 37:
 
 					yys_symb__.push(yysidx__);
 					yys_stt__.push(yypstate__);
-					yys_sv__.push(coder_lval);
+                    yys_sv__.push(yylval);
 
-					yys_loc__.push(coder_lloc);
+                    yys_loc__.push(yylloc);
  
 					yytok__ = PARSE_UNDEFSYMB_ID;
 					yyreducing__ = false;
@@ -3027,7 +3027,7 @@ case 37:
 							if(yyerror) {
 
 char yycc[MAX_MSG_LENG];
-sprintf(yycc, "Error: syntax error at %d:%d.", coder_lloc.firstLine, coder_lloc.firstColumn);
+sprintf(yycc, "Error: syntax error at %d:%d.", yylloc.firstLine, yylloc.firstColumn);
 yyerror(yycc, coder, dmap, cmmgr);
 				}
 
@@ -3389,11 +3389,11 @@ private:
 	
 	bool yyerr_flag__;
 	int yyltok;
-	coder_lex_t yylexer;
+    yylex_t yylexer;
 
 	FILE* yyoutput;
 	FILE* yylogger;
-	coder_error_t yyerror;
+    yyerror_t yyerror;
 	
 private:
 	
@@ -3465,13 +3465,13 @@ private:
 };
 
 
-char coder_parser_t::YYMSG_UNMATCHED[] = "Error: unmatched character ` \'.";
+char yyparser_t::YYMSG_UNMATCHED[] = "Error: unmatched character ` \'.";
 
-const int coder_parser_t::yydsc[2] = {
+const int yyparser_t::yydsc[2] = {
 173,	173
 };
 
-const int coder_parser_t::yydcmap[258] = {
+const int yyparser_t::yydcmap[258] = {
 0,	0,	0,	0,	0,	0,	0,	0,
 	0,	1,	2,	0,	0,	3,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
@@ -3507,7 +3507,7 @@ const int coder_parser_t::yydcmap[258] = {
 	46,	46
 };
 
-const int coder_parser_t::yydmeta[47] = {
+const int yyparser_t::yydmeta[47] = {
 0,	0,	1,	1,	0,	0,	0,	2,
 	0,	0,	2,	0,	0,	0,	2,	2,
 	2,	2,	2,	2,	2,	2,	2,	2,
@@ -3516,7 +3516,7 @@ const int coder_parser_t::yydmeta[47] = {
 	2,	2,	2,	2,	2,	2,	3
 };
 
-const int coder_parser_t::yydbase[198] = {
+const int yyparser_t::yydbase[198] = {
 224,	224,	224,	224,	224,	224,	224,	224,
 	224,	224,	224,	224,	224,	224,	224,	224,
 	224,	224,	224,	224,	224,	224,	224,	224,
@@ -3544,7 +3544,7 @@ const int coder_parser_t::yydbase[198] = {
 	204,	203,	202,	200,	201,	198
 };
 
-const int coder_parser_t::yyddef[198] = {
+const int yyparser_t::yyddef[198] = {
 174,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	105,	168,
@@ -3572,7 +3572,7 @@ const int coder_parser_t::yyddef[198] = {
 	0,	0,	0,	0,	0,	0
 };
 
-const int coder_parser_t::yydnxt[271] = {
+const int yyparser_t::yydnxt[271] = {
 20,	73,	18,	76,	16,	22,	16,	21,
 	122,	16,	121,	172,	16,	16,	108,	106,
 	170,	140,	125,	141,	167,	129,	166,	38,
@@ -3609,7 +3609,7 @@ const int coder_parser_t::yydnxt[271] = {
 	0,	0,	0,	0,	0,	0,	0
 };
 
-const int coder_parser_t::yydchk[271] = {
+const int yyparser_t::yydchk[271] = {
 173,	173,	173,	173,	173,	173,	173,	105,
 	173,	173,	173,	173,	173,	173,	122,	121,
 	173,	173,	173,	173,	128,	173,	173,	172,
@@ -3646,7 +3646,7 @@ const int coder_parser_t::yydchk[271] = {
 	174,	174,	174,	174,	174,	174,	174
 };
 
-const int coder_parser_t::yydaccpt[174] = {
+const int yyparser_t::yydaccpt[174] = {
 -1,	0,	30,	20,	29,	28,	19,	17,
 	16,	26,	22,	15,	25,	21,	24,	27,
 	1,	33,	34,	23,	36,	31,	36,	14,
@@ -3673,7 +3673,7 @@ const int coder_parser_t::yydaccpt[174] = {
 
 // token map: token ID --> token index in token ID table
 // in fact, it acts like inverse table of token ID table
-const int coder_parser_t::yyptmap[291] = {
+const int yyparser_t::yyptmap[291] = {
 0,	2,	2,	2,	2,	2,	2,	2,
 	2,	2,	2,	2,	2,	2,	2,	2,
 	2,	2,	2,	2,	2,	2,	2,	2,
@@ -3714,7 +3714,7 @@ const int coder_parser_t::yyptmap[291] = {
 };
 /*
 // token ID table, containing token IDs
-const int coder_parser_t::yyptid[43] = {
+const int yyparser_t::yyptid[43] = {
 0,	256,	257,	258,	259,	260,	261,	262,
 	263,	264,	265,	266,	267,	268,	269,	270,
 	271,	272,	273,	274,	275,	276,	277,	278,
@@ -3724,7 +3724,7 @@ const int coder_parser_t::yyptid[43] = {
 };
 */
 // prnum table, its element is number of symbols in right part of corresponding grammar rule
-const int coder_parser_t::yyprnum[77] = {
+const int yyparser_t::yyprnum[77] = {
 2,	3,	4,	4,	3,	3,	1,	2,
 	3,	3,	4,	4,	1,	2,	3,	3,
 	3,	1,	2,	1,	1,	5,	5,	1,
@@ -3738,7 +3738,7 @@ const int coder_parser_t::yyprnum[77] = {
 };
 
 // plid table, its element is the index of left part of corresponding grammar rule in token ID table
-const int coder_parser_t::yyplid[77] = {
+const int yyparser_t::yyplid[77] = {
 17,	2,	18,	21,	21,	19,	22,	22,
 	11,	11,	13,	23,	12,	12,	14,	14,
 	1,	10,	10,	9,	9,	9,	9,	7,
@@ -3752,7 +3752,7 @@ const int coder_parser_t::yyplid[77] = {
 };
 
 // parse action table
-const int coder_parser_t::yypact[110] = {
+const int yyparser_t::yypact[110] = {
 17,	29,	38,	16,	29,	29,	31,	42,
 	223,	31,	31,	58,	57,	59,	60,	61,
 	64,	62,	63,	29,	38,	81,	80,	29,
@@ -3772,7 +3772,7 @@ const int coder_parser_t::yypact[110] = {
 // base array for parse action table
 // which is used to determine the base location of the entries
 // for each state stored in the yypack table
-const int coder_parser_t::yypabase[145] = {
+const int yyparser_t::yypabase[145] = {
 0,	0,	0,	0,	0,	0,	0,	0,
 	-33,	0,	0,	0,	0,	0,	-33,	0,
 	0,	0,	0,	-32,	0,	0,	0,	0,
@@ -3794,13 +3794,13 @@ const int coder_parser_t::yypabase[145] = {
 	0
 };
 
-const int coder_parser_t::yypgoto[23] = {
+const int yyparser_t::yypgoto[23] = {
 28,	27,	49,	28,	50,	23,	28,	51,
 	67,	223,	223,	47,	223,	223,	223,	223,
 	223,	223,	223,	223,	223,	223,	65
 };
 
-const int coder_parser_t::yypgbase[145] = {
+const int yyparser_t::yypgbase[145] = {
 0,	0,	0,	0,	0,	0,	0,	0,
 	0,	0,	0,	0,	0,	0,	-9,	0,
 	0,	0,	0,	0,	0,	0,	-12,	0,
@@ -3822,7 +3822,7 @@ const int coder_parser_t::yypgbase[145] = {
 	0
 };
 
-const by_te_t coder_parser_t::yyvbmap[870] = {
+const by_te_t yyparser_t::yyvbmap[870] = {
 0,	0,	0,	0,	0,	0,	0,	0,
 	0,	4,	0,	0,	1,	0,	0,	0,
 	0,	0,	8,	0,	0,	0,	0,	0,
@@ -3934,7 +3934,7 @@ const by_te_t coder_parser_t::yyvbmap[870] = {
 	0,	60,	0,	26,	132,	0
 };
 
-const int coder_parser_t::yyparv[145] = {
+const int yyparser_t::yyparv[145] = {
 223,	4,	5,	7,	9,	146,	11,	15,
 	223,	18,	147,	198,	15,	152,	223,	32,
 	33,	34,	35,	223,	151,	153,	48,	158,
@@ -3957,7 +3957,7 @@ const int coder_parser_t::yyparv[145] = {
 };
 
 
-const int coder_parser_t::yyparn[145] = {
+const int yyparser_t::yyparn[145] = {
 32,	0,	0,	0,	0,	0,	0,	0,
 	32,	0,	0,	0,	2,	0,	32,	0,
 	0,	0,	0,	32,	0,	0,	2,	0,
@@ -3979,7 +3979,7 @@ const int coder_parser_t::yyparn[145] = {
 	0
 };
 
-const int coder_parser_t::yypcv[75] = {
+const int yyparser_t::yypcv[75] = {
 223,	223,	223,	223,	20,	223,	26,	84,
 	24,	83,	46,	144,	75,	142,	223,	223,
 	223,	223,	223,	223,	223,	223,	110,	111,
@@ -3992,7 +3992,7 @@ const int coder_parser_t::yypcv[75] = {
 	41,	223,	223
 };
 
-const int coder_parser_t::yypcn[75] = {
+const int yyparser_t::yypcn[75] = {
 32,	32,	32,	32,	1,	32,	1,	1,
 	1,	1,	3,	3,	1,	3,	32,	32,
 	32,	32,	32,	32,	32,	32,	1,	1,
@@ -4006,7 +4006,7 @@ const int coder_parser_t::yypcn[75] = {
 };
 
 
-const int coder_parser_t::yypgrv[145] = {
+const int yyparser_t::yypgrv[145] = {
 223,	223,	223,	6,	8,	223,	10,	13,
 	223,	223,	223,	19,	21,	223,	223,	223,
 	223,	223,	223,	36,	223,	223,	223,	223,
@@ -4028,7 +4028,7 @@ const int coder_parser_t::yypgrv[145] = {
 	223
 };
 
-const int coder_parser_t::yypgrn[145] = {
+const int yyparser_t::yypgrn[145] = {
 32,	32,	32,	0,	0,	32,	0,	2,
 	32,	32,	32,	0,	2,	32,	32,	32,
 	32,	32,	32,	4,	32,	32,	32,	32,
@@ -4050,81 +4050,81 @@ const int coder_parser_t::yypgrn[145] = {
 	32
 };
 
-const std::unordered_map<std::string, int> coder_parser_t::yyslexemID{
+const std::unordered_map<std::string, int> yyparser_t::yyslexemID{
 
 };
 
 
 // get global parser object,
 // it's invisiable to user
-static coder_parser_t& getTheParser(void) {
+static yyparser_t& getTheParser(void) {
 
-	static coder_parser_t yyp(coder_lex);
+    static yyparser_t yyp(yylex);
 	return yyp;
 }
 
 // assign new log stream
-void coder_setstream(FILE *poutput, FILE *plogger) {
+void yysetstream(FILE *poutput, FILE *plogger) {
 
-	coder_parser_t& yyp = getTheParser();
+    yyparser_t& yyp = getTheParser();
 	yyp.yyoutput = poutput;
 	yyp.yylogger = plogger;
 }
 
 void yyemit_error__(const char *s, coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr) {
-	coder_parser_t& yyp = getTheParser();
+    yyparser_t& yyp = getTheParser();
 	if(yyp.yylogger) 
 		fprintf(yyp.yylogger, "%s\n", s);
 }
 
 // assign new error-reporter and return the old one
-coder_error_t coder_seterror(coder_error_t perror) {
+yyerror_t yyseterror(yyerror_t perror) {
 
-	coder_parser_t& yyp = getTheParser();
-	coder_error_t pold = yyp.yyerror;
+    yyparser_t& yyp = getTheParser();
+    yyerror_t pold = yyp.yyerror;
 	yyp.yyerror = perror;
 
 	return pold;
 }
 
 // reset all (both scanner and parser, if they are available)
-void coder_clearall(void) {
+void yyclearall(void) {
 	getTheParser().yyclearall__();
 }
 
 
 // initializing file buffer before parsing or patter-matching
-int coder_lexfile(const char* pchFile, bool iMod) {
+int yylexfile(const char* pchFile, bool iMod) {
 	
 	return getTheParser().yylexinit__(pchFile, iMod)? 0: -1;
 }
 // initializing string buffer before parsing or patter-matching
-int coder_lexstr(char *strbuffer, int size) {
+int yylexstr(char *strbuffer, int size) {
 	return getTheParser().yylexinit__(strbuffer, size)? 0: -1;
 }
 // initializing const string buffer before parsing or patter-matching
-int coder_lexcstr(const char *strbuffer, int size) {
+int yylexcstr(const char *strbuffer, int size) {
 	return getTheParser().yylexinit__(strbuffer, size)? 0: -1;
 }
 
 // generated scanner, can be replaced
-int coder_lex(coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr) {
+int yylex(coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr) {
 
 	return getTheParser().yylex__(coder, dmap, cmmgr);
 } 
 
 // assign new scanner and return the old one 
-coder_lex_t coder_setlex(coder_lex_t plex) {
+yylex_t yysetlex(yylex_t plex) {
 	
-	coder_parser_t& yyp = getTheParser();
-	coder_lex_t pold = yyp.yylexer;
+    yyparser_t& yyp = getTheParser();
+    yylex_t pold = yyp.yylexer;
 	yyp.yylexer = plex;
 
 	return pold;
 }
 
 // generated parser, it should not be replaced
-int coder_parse(coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr) {
+int yyparse(coder_t &coder, dmmap_t &dmap, cmacro_mgr_t &cmmgr) {
 	return getTheParser().yyparse__(coder, dmap, cmmgr);
 }
 } // namspace

@@ -25,7 +25,7 @@
 namespace spec_ns {
 
 #define SPEC_NUM			2
-#define	CPP_SPEC_SIZE		61750
+#define	CPP_SPEC_SIZE		64000
 #define PAS_SPEC_SIZE		71680
 
 // array of language SPEC names

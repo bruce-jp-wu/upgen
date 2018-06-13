@@ -177,12 +177,12 @@ bool coder_t::gencode(const string &a_inFileName, const string &a_outFileName) {
 	
 	do {
 	
-		if(0 != coder_lexfile(a_inFileName.c_str(), false)) {
+        if(0 != coder_nsx::yylexfile(a_inFileName.c_str(), false)) {
 			_ERROR("failed to SPEC file.", ECMD(11));
 			break;
 		}
 	
-		if(0 != coder_parse(*this, m_dmap, cmmgr)) {
+        if(0 != coder_nsx::yyparse(*this, m_dmap, cmmgr)) {
 			
 			break;
 		}
@@ -210,13 +210,13 @@ bool coder_t::gencode(char *a_strSpec, int a_nSize, const string &a_outFileName)
 	
 	do {
 
-		if(0 != coder_lexstr(a_strSpec, a_nSize)) {
+        if(0 != coder_nsx::yylexstr(a_strSpec, a_nSize)) {
 			
 			_ERROR("failed to open buffer", ECMD(11));
 			break;	
 		}
 	
-		if(0 != coder_parse(*this, m_dmap,cmmgr)) {
+        if(0 != coder_nsx::yyparse(*this, m_dmap,cmmgr)) {
 			
 			break;
 		}
